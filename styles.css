@@ -2561,7 +2561,8 @@ label {
 }
 
 .cookie-modal,
-.booking-notice-modal {
+.booking-notice-modal,
+.success-modal {
   width: min(680px, 100%);
   max-height: calc(100vh - 36px);
   overflow: auto;
@@ -2571,11 +2572,13 @@ label {
   box-shadow: var(--shadow);
 }
 
-.booking-notice-modal {
+.booking-notice-modal,
+.success-modal {
   width: min(520px, 100%);
 }
 
-.booking-notice-modal p:not(.eyebrow) {
+.booking-notice-modal p:not(.eyebrow),
+.success-modal p:not(.eyebrow) {
   margin: 0 0 22px;
   color: var(--soft-ink);
   line-height: 1.7;

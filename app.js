@@ -1453,6 +1453,18 @@ function showToast(message) {
   window.setTimeout(() => toast.classList.remove("visible"), 2600);
 }
 
+function showSuccessPopup(message) {
+  const modal = document.querySelector("#successModal");
+  const messageNode = document.querySelector("#successMessage");
+  if (!modal || !messageNode) {
+    showToast(message);
+    return;
+  }
+
+  messageNode.textContent = message;
+  modal.hidden = false;
+}
+
 function collectForm(form) {
   const data = {};
   new FormData(form).forEach((value, key) => {
@@ -1520,8 +1532,9 @@ function wireForms() {
         throw new Error(formspreeMessage(result, "Impossible d'envoyer la candidature pour le moment."));
       }
 
-      note.textContent = "Votre candidature a bien été envoyée. L’équipe Lazoya vous recontactera si votre profil correspond à nos besoins.";
-      showToast("Candidature envoyée avec succès.");
+      const message = "Votre candidature a bien été envoyée. L’équipe Lazoya vous recontactera si votre profil correspond à nos besoins.";
+      note.textContent = message;
+      showSuccessPopup(message);
       form.reset();
     } catch (error) {
       note.textContent = error.message || "Impossible d'envoyer la candidature pour le moment. Merci de nous contacter par téléphone.";
@@ -1555,8 +1568,9 @@ function wireForms() {
         throw new Error(formspreeMessage(result, "Impossible d'envoyer la demande pour le moment."));
       }
 
-      note.textContent = "Votre demande a bien été envoyée. L’équipe Lazoya vous contactera si votre profil correspond à un besoin du moment.";
-      showToast("Demande modèle envoyée avec succès.");
+      const message = "Votre demande a bien été envoyée. L’équipe Lazoya vous contactera si votre profil correspond à un besoin du moment.";
+      note.textContent = message;
+      showSuccessPopup(message);
       form.reset();
     } catch (error) {
       note.textContent = error.message || "Impossible d'envoyer la demande pour le moment. Merci de nous contacter par téléphone.";
@@ -1830,6 +1844,24 @@ function wireBookingNotice() {
   });
 }
 
+function wireSuccessModal() {
+  const modal = document.querySelector("#successModal");
+  const close = document.querySelector("#closeSuccess");
+  const ok = document.querySelector("#successOk");
+
+  if (!modal || !close || !ok) return;
+
+  const hide = () => {
+    modal.hidden = true;
+  };
+
+  close.addEventListener("click", hide);
+  ok.addEventListener("click", hide);
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) hide();
+  });
+}
+
 document.querySelector("#resetDemo").addEventListener("click", () => {
   localStorage.removeItem(keys.services);
   localStorage.removeItem(keys.products);
@@ -1852,5 +1884,6 @@ wireFilters();
 wireForms();
 wireCookies();
 wireBookingNotice();
+wireSuccessModal();
 renderServices();
 renderProducts();
