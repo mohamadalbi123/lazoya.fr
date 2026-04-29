@@ -1510,9 +1510,12 @@ function wireForms() {
     submitButton.disabled = true;
 
     try {
-      const response = await fetch("/api/modeles", {
+      const response = await fetch("https://formspree.io/f/xlgzrrpe", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify(data)
       });
       const result = await response.json().catch(() => ({}));
