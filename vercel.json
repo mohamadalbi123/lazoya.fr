@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/accueil",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/accueil/",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}
