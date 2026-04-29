@@ -1492,11 +1492,35 @@ function wireForms() {
     showToast("Produit ajouté à Lazoya.");
   });
 
-  document.querySelector("#careerForm").addEventListener("submit", (event) => {
+  document.querySelector("#careerForm").addEventListener("submit", async (event) => {
     event.preventDefault();
-    document.querySelector("#careerNote").textContent =
-      "Candidature reçue pour démonstration. Prochaine étape : connecter ce formulaire à votre boîte mail.";
-    event.currentTarget.reset();
+    const form = event.currentTarget;
+    const note = document.querySelector("#careerNote");
+    const submitButton = form.querySelector("button[type='submit']");
+
+    note.textContent = "Envoi de votre candidature...";
+    submitButton.disabled = true;
+
+    try {
+      const response = await fetch("https://formspree.io/f/xykogglg", {
+        method: "POST",
+        headers: { "Accept": "application/json" },
+        body: new FormData(form)
+      });
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(result.message || "Impossible d'envoyer la candidature pour le moment.");
+      }
+
+      note.textContent = "Votre candidature a bien été envoyée. L’équipe Lazoya vous recontactera si votre profil correspond à nos besoins.";
+      showToast("Candidature envoyée avec succès.");
+      form.reset();
+    } catch (error) {
+      note.textContent = error.message || "Impossible d'envoyer la candidature pour le moment. Merci de nous contacter par téléphone.";
+    } finally {
+      submitButton.disabled = false;
+    }
   });
 
   document.querySelector("#modelForm").addEventListener("submit", async (event) => {
@@ -1525,6 +1549,7 @@ function wireForms() {
       }
 
       note.textContent = "Votre demande a bien été envoyée. L’équipe Lazoya vous contactera si votre profil correspond à un besoin du moment.";
+      showToast("Demande modèle envoyée avec succès.");
       form.reset();
     } catch (error) {
       note.textContent = error.message || "Impossible d'envoyer la demande pour le moment. Merci de nous contacter par téléphone.";
