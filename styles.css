@@ -1965,6 +1965,14 @@ body[data-view]:not([data-view="home"]) .models-section {
   padding: 22px;
 }
 
+.form-honey {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .product-card {
   min-height: 310px;
   display: flex;

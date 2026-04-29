@@ -1454,7 +1454,15 @@ function showToast(message) {
 }
 
 function collectForm(form) {
-  return Object.fromEntries(new FormData(form).entries());
+  const data = {};
+  new FormData(form).forEach((value, key) => {
+    if (data[key]) {
+      data[key] = Array.isArray(data[key]) ? [...data[key], value] : [data[key], value];
+      return;
+    }
+    data[key] = value;
+  });
+  return data;
 }
 
 function resetForm(form) {
@@ -1491,11 +1499,35 @@ function wireForms() {
     event.currentTarget.reset();
   });
 
-  document.querySelector("#modelForm").addEventListener("submit", (event) => {
+  document.querySelector("#modelForm").addEventListener("submit", async (event) => {
     event.preventDefault();
-    document.querySelector("#modelNote").textContent =
-      "Demande reçue pour démonstration. Prochaine étape : connecter ce formulaire à votre boîte mail.";
-    event.currentTarget.reset();
+    const form = event.currentTarget;
+    const note = document.querySelector("#modelNote");
+    const submitButton = form.querySelector("button[type='submit']");
+    const data = collectForm(form);
+
+    note.textContent = "Envoi de votre demande...";
+    submitButton.disabled = true;
+
+    try {
+      const response = await fetch("/api/modeles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(result.message || "Impossible d'envoyer la demande pour le moment.");
+      }
+
+      note.textContent = "Votre demande a bien été envoyée. L’équipe Lazoya vous contactera si votre profil correspond à un besoin du moment.";
+      form.reset();
+    } catch (error) {
+      note.textContent = error.message || "Impossible d'envoyer la demande pour le moment. Merci de nous contacter par téléphone.";
+    } finally {
+      submitButton.disabled = false;
+    }
   });
 }
 
