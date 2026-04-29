@@ -1471,6 +1471,13 @@ function resetForm(form) {
   if (first) first.focus();
 }
 
+function formspreeMessage(result, fallback) {
+  if (result?.errors?.length) {
+    return result.errors.map((error) => error.message).filter(Boolean).join(" ");
+  }
+  return result?.message || result?.error || fallback;
+}
+
 function wireForms() {
   document.querySelector("#serviceForm").addEventListener("submit", (event) => {
     event.preventDefault();
@@ -1510,7 +1517,7 @@ function wireForms() {
       const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(result.message || "Impossible d'envoyer la candidature pour le moment.");
+        throw new Error(formspreeMessage(result, "Impossible d'envoyer la candidature pour le moment."));
       }
 
       note.textContent = "Votre candidature a bien été envoyée. L’équipe Lazoya vous recontactera si votre profil correspond à nos besoins.";
@@ -1545,7 +1552,7 @@ function wireForms() {
       const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(result.message || "Impossible d'envoyer la demande pour le moment.");
+        throw new Error(formspreeMessage(result, "Impossible d'envoyer la demande pour le moment."));
       }
 
       note.textContent = "Votre demande a bien été envoyée. L’équipe Lazoya vous contactera si votre profil correspond à un besoin du moment.";

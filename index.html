@@ -702,7 +702,7 @@
             <p>Location mensuelle possible pour une professionnelle souhaitant exercer au sein du salon.</p>
           </article>
         </div>
-        <form class="application-form" id="careerForm">
+        <form class="application-form" id="careerForm" action="https://formspree.io/f/xykogglg" method="POST">
           <h3>Candidature spontanée</h3>
           <label class="form-honey" aria-hidden="true">
             <span>Site web</span>
@@ -751,8 +751,8 @@
             </label>
           </div>
           <label>
-            <span>CV au format PDF uniquement</span>
-            <input name="cv" type="file" accept="application/pdf,.pdf" required>
+            <span>Lien vers votre CV</span>
+            <input name="cv_link" type="url" placeholder="Google Drive, Dropbox, LinkedIn ou portfolio" required>
           </label>
           <label>
             <span>Message</span>
