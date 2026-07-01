@@ -1282,8 +1282,7 @@ const defaults = {
 const keys = {
   services: "lazoya.v5.prestations",
   products: "lazoya.v9.herbsom-selection",
-  cookies: "lazoya.cookies",
-  diagnosticInvite: "lazoya.diagnosticInvite"
+  cookies: "lazoya.cookies"
 };
 
 const state = {
@@ -1302,10 +1301,9 @@ const serviceFilters = document.querySelector("#serviceFilters");
 const productGrid = document.querySelector("#productGrid");
 const bookingService = document.querySelector("#bookingService");
 const toast = document.querySelector("#toast");
-const views = new Set(["home", "services", "booking", "diagnostic", "products", "careers", "models", "about", "privacy", "legal", "studio", "console"]);
+const views = new Set(["home", "services", "booking", "products", "careers", "models", "about", "privacy", "legal", "studio", "console"]);
 const routeAliases = {
-  careerForm: "careers",
-  "diagnostic-quiz": "diagnostic"
+  careerForm: "careers"
 };
 
 function read(type) {
@@ -1335,134 +1333,6 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
-
-const diagnosticQuestions = [
-  {
-    kicker: "Votre miroir",
-    question: "Quel détail attire votre attention en ce moment ?",
-    hint: "Touchez l’image qui ressemble le plus à votre envie beauté.",
-    options: [
-      { icon: "L", title: "Glow discret", text: "Une peau fraîche, lumineuse, reposée.", visual: "glow", image: "assets/products/lifestyle-model-cream.jpg", scores: { glow: 3 } },
-      { icon: "F", title: "Traits plus fermes", text: "Un visage lissé, tonique, plus sculpté.", visual: "lift", image: "assets/products/lifestyle-model-application.jpg", scores: { antiAge: 3 } },
-      { icon: "U", title: "Teint uniforme", text: "Moins de marques, un grain plus régulier.", visual: "spots", image: "assets/products/herbsom-peeling-aha-pha.jpg", scores: { spots: 3 } },
-      { icon: "N", title: "Peau nette", text: "Une sensation propre, douce, impeccable.", visual: "smooth", image: "assets/products/lifestyle-model-portrait.jpg", scores: { hairRemoval: 3 } },
-      { icon: "M", title: "Mains soignées", text: "Des ongles élégants, propres, durables.", visual: "nails", image: "assets/products/DSC04048.HEIC.png", scores: { nails: 3 } },
-      { icon: "C", title: "Cheveux plus beaux", text: "Une matière brillante, souple, disciplinée.", visual: "hair", image: "assets/products/lifestyle-model-actives.jpg", scores: { hair: 3 } }
-    ]
-  },
-  {
-    kicker: "Résultat rêvé",
-    question: "Quelle sensation voulez-vous garder après le rendez-vous ?",
-    hint: "Ici, on choisit l’émotion finale, pas seulement la technique.",
-    options: [
-      { icon: "A", title: "Rayonnante", text: "Bonne mine immédiate, effet peau réveillée.", visual: "radiant", image: "assets/products/lifestyle-model-cream.jpg", scores: { glow: 2, nails: 1, eyes: 1 } },
-      { icon: "B", title: "Transformée", text: "Un soin de fond, visible dans le temps.", visual: "premium", image: "assets/interior-before.png", scores: { antiAge: 2, spots: 2, hair: 1 } },
-      { icon: "C", title: "Libre", text: "Moins d’entretien, plus de simplicité.", visual: "minimal", image: "assets/products/lifestyle-model-portrait.jpg", scores: { hairRemoval: 2, nails: 1, eyes: 1 } },
-      { icon: "D", title: "Apaisée", text: "Un corps plus léger, une vraie pause.", visual: "calm", image: "assets/storefront.jpg", scores: { massage: 3 } }
-    ]
-  },
-  {
-    kicker: "Diagnostic sensoriel",
-    question: "Votre peau, vos cheveux ou votre corps vous semblent plutôt...",
-    hint: "Choisissez la texture ou la sensation la plus proche de votre quotidien.",
-    options: [
-      { icon: "S", title: "Délicate", text: "Je veux du doux, du rassurant, du confortable.", visual: "soft", image: "assets/products/herbsom-cream-choice.jpg", scores: { glow: 1, massage: 1 } },
-      { icon: "T", title: "Moins ferme", text: "Les traits paraissent plus marqués.", visual: "lift", image: "assets/products/lifestyle-model-application.jpg", scores: { antiAge: 3 } },
-      { icon: "G", title: "Irrégulière", text: "Texture, pores, marques ou taches.", visual: "texture", image: "assets/products/herbsom-peeling-bha.jpg", scores: { spots: 3 } },
-      { icon: "H", title: "Cheveux fatigués", text: "Sec, terne, sensibilisé ou difficile à coiffer.", visual: "hair", image: "assets/products/lifestyle-model-actives.jpg", scores: { hair: 3 } }
-    ]
-  },
-  {
-    kicker: "Zone signature",
-    question: "Quelle zone mérite le plus d’attention ?",
-    hint: "La recommandation se précise selon votre zone prioritaire.",
-    options: [
-      { icon: "V", title: "Visage", text: "Teint, texture, rides, taches ou éclat.", visual: "face", image: "assets/products/lifestyle-model-cream.jpg", scores: { glow: 2, antiAge: 2, spots: 2 } },
-      { icon: "R", title: "Regard", text: "Cils, sourcils, intensité ou structure.", visual: "eyes", image: "assets/products/lifestyle-model-portrait.jpg", scores: { eyes: 3 } },
-      { icon: "O", title: "Mains & pieds", text: "Ongles, vernis, soin ou beauté des pieds.", visual: "nails", image: "assets/products/DSC04048.HEIC.png", scores: { nails: 3 } },
-      { icon: "C", title: "Corps", text: "Épilation, jambes, détente ou légèreté.", visual: "body", image: "assets/interior-before.png", scores: { hairRemoval: 2, massage: 2 } },
-      { icon: "H", title: "Cheveux", text: "Coupe, brushing, soin ou discipline.", visual: "hair", image: "assets/products/lifestyle-model-actives.jpg", scores: { hair: 3 } }
-    ]
-  },
-  {
-    kicker: "Votre rythme",
-    question: "Pour ce rendez-vous, quelle énergie choisissez-vous ?",
-    hint: "Dernière étape avant votre profil beauté Lazoya.",
-    options: [
-      { icon: "1", title: "Express chic", text: "Un résultat net, facile à réserver.", visual: "minimal", image: "assets/products/herbsom-cleanser-01.jpg", scores: { hairRemoval: 1, nails: 1, eyes: 1, glow: 1, hair: 1 } },
-      { icon: "2", title: "Rituel premium", text: "Je prends le temps pour un vrai avant/après.", visual: "premium", image: "assets/interior-before.png", scores: { antiAge: 2, spots: 1, massage: 1, hair: 1 } },
-      { icon: "3", title: "Conseil d’experte", text: "Je veux être guidée avant de choisir.", visual: "consult", image: "assets/products/lifestyle-model-application.jpg", scores: { antiAge: 1, spots: 1, glow: 1, hair: 1 } },
-      { icon: "4", title: "Pause totale", text: "Je veux ressortir détendue et légère.", visual: "calm", image: "assets/storefront.jpg", scores: { massage: 3 } }
-    ]
-  }
-];
-
-const diagnosticRecommendations = {
-  glow: {
-    title: "Micro-needling Visage Classique + LED",
-    category: "Micro-Nano needling ( visage + corps + cuir chevelu)",
-    image: "assets/products/lifestyle-model-cream.jpg",
-    match: "Profil glow",
-    text: "D’après vos réponses, Lazoya peut vous orienter vers un soin visage qui ravive l’éclat, affine le grain de peau et donne un effet plus frais.",
-    benefits: ["Teint plus lumineux", "Texture de peau plus lisse", "Idéal quand la peau semble fatiguée"]
-  },
-  antiAge: {
-    title: "Visage – Contour Collagen Boost + Luminothérapie",
-    category: "Contour collagen boost (Radiofréquence)",
-    image: "assets/products/lifestyle-model-application.jpg",
-    match: "Profil fermeté",
-    text: "Votre diagnostic pointe vers un soin raffermissant qui stimule le collagène, aide à lisser les traits et travaille l’ovale du visage.",
-    benefits: ["Peau plus ferme", "Contours du visage redessinés", "Effet anti-âge progressif"]
-  },
-  spots: {
-    title: "Peeling aux acides de fruits",
-    category: "Peeling aux acides de fruits",
-    image: "assets/products/herbsom-peeling-aha-pha.jpg",
-    match: "Profil uniforme",
-    text: "Pour les taches, marques ou irrégularités, un soin exfoliant et uniformisant peut aider à retrouver un teint plus net et plus lumineux.",
-    benefits: ["Teint plus uniforme", "Grain de peau affiné", "Éclat ravivé"]
-  },
-  hairRemoval: {
-    title: "Épilation à la cire",
-    category: "Épilation à la cire",
-    image: "assets/products/lifestyle-model-portrait.jpg",
-    match: "Profil peau nette",
-    text: "Votre besoin est clair: une peau nette, un résultat propre et une prestation facile à organiser selon les zones souhaitées.",
-    benefits: ["Peau nette", "Zones ciblées ou forfaits", "Résultat précis"]
-  },
-  nails: {
-    title: "Vernis semi-permanent mains ou pieds",
-    category: "Beauté des mains et des pieds",
-    image: "assets/products/DSC04048.HEIC.png",
-    match: "Profil mains soignées",
-    text: "Le diagnostic vous dirige vers une mise en beauté des mains ou des pieds, avec une finition nette, élégante et durable.",
-    benefits: ["Couleur durable", "Ongles soignés", "Finition propre et élégante"]
-  },
-  eyes: {
-    title: "Browlift, teinture ou extensions de cils",
-    category: "Atelier Cils & Sourcils",
-    image: "assets/products/lifestyle-model-portrait.jpg",
-    match: "Profil regard",
-    text: "Pour ouvrir le regard et structurer les traits, l’atelier cils et sourcils est le meilleur point de départ.",
-    benefits: ["Regard plus ouvert", "Sourcils structurés", "Effet naturel ou plus intense"]
-  },
-  hair: {
-    title: "Soin Blowtox express MYRIAM K",
-    category: "Coiffure",
-    image: "assets/products/lifestyle-model-actives.jpg",
-    match: "Profil cheveux lumineux",
-    text: "Votre profil met l’accent sur la matière du cheveu: brillance, souplesse et discipline. Un soin capillaire avec conseil Lazoya est le bon point de départ.",
-    benefits: ["Cheveux plus brillants", "Matière plus souple", "Conseil selon longueur et texture"]
-  },
-  massage: {
-    title: "Massage Signature – sur mesure",
-    category: "Massages corps",
-    image: "assets/interior-before.png",
-    match: "Profil détente",
-    text: "Vos réponses montrent surtout un besoin de détente, de confort et de relâchement. Un massage personnalisé est le soin le plus adapté.",
-    benefits: ["Détente profonde", "Tensions relâchées", "Soin adapté au besoin du jour"]
-  }
-};
 
 function getCategoryMeta(category) {
   return planityCategoryMeta[category] || {
@@ -1710,204 +1580,6 @@ function wireForms() {
   });
 }
 
-function wireDiagnostic() {
-  const card = document.querySelector("#diagnosticCard");
-  const result = document.querySelector("#diagnosticResult");
-  const stepLabel = document.querySelector("#diagnosticStepLabel");
-  const progressBar = document.querySelector("#diagnosticProgressBar");
-  const kicker = document.querySelector("#diagnosticKicker");
-  const question = document.querySelector("#diagnosticQuestion");
-  const hint = document.querySelector("#diagnosticHint");
-  const options = document.querySelector("#diagnosticOptions");
-  const back = document.querySelector("#diagnosticBack");
-  const next = document.querySelector("#diagnosticNext");
-  const restart = document.querySelector("#diagnosticRestart");
-  const resultTitle = document.querySelector("#diagnosticResultTitle");
-  const resultText = document.querySelector("#diagnosticResultText");
-  const resultBenefits = document.querySelector("#diagnosticResultBenefits");
-  const resultImage = document.querySelector("#diagnosticResultImage");
-  const resultMatch = document.querySelector("#diagnosticResultMatch");
-  const serviceLink = document.querySelector("#diagnosticServiceLink");
-  const previewOrb = document.querySelector("#diagnosticPreviewOrb");
-  const previewTitle = document.querySelector("#diagnosticPreviewTitle");
-  const previewText = document.querySelector("#diagnosticPreviewText");
-  const previewList = document.querySelector("#diagnosticPreviewList");
-  const profileChips = document.querySelector("#diagnosticProfileChips");
-
-  if (!card || !result || !options || !back || !next || !restart) return;
-
-  const answers = [];
-  let current = 0;
-
-  const selectedOptions = () => answers
-    .map((answerIndex, questionIndex) => diagnosticQuestions[questionIndex]?.options[answerIndex])
-    .filter(Boolean);
-
-  const updatePreview = () => {
-    const selected = selectedOptions();
-    const latest = selected[selected.length - 1];
-    const recommendation = selected.length ? getRecommendation() : null;
-
-    if (previewOrb) {
-      previewOrb.dataset.visual = latest?.visual || "glow";
-    }
-    if (previewTitle) {
-      previewTitle.textContent = recommendation ? recommendation.match : "Consultation Lazoya";
-    }
-    if (previewText) {
-      previewText.textContent = latest
-        ? `Votre profil s’oriente vers: ${latest.title.toLowerCase()}.`
-        : "Sélectionnez une première image pour commencer votre profil beauté.";
-    }
-    if (previewList) {
-      const labels = selected.length
-        ? selected.slice(-3).map((option) => option.title)
-        : ["Éclat", "Texture", "Conseil"];
-      previewList.innerHTML = labels.map((label) => `<span>${escapeHtml(label)}</span>`).join("");
-    }
-    if (profileChips) {
-      const chips = selected.length
-        ? selected.map((option) => option.title).slice(-4)
-        : ["Profil en création", "Conseil personnalisé"];
-      profileChips.innerHTML = chips.map((label) => `<span>${escapeHtml(label)}</span>`).join("");
-    }
-  };
-
-  const renderStep = () => {
-    const item = diagnosticQuestions[current];
-    const selectedIndex = answers[current];
-
-    card.hidden = false;
-    result.hidden = true;
-    card.classList.remove("is-entering");
-    window.requestAnimationFrame(() => card.classList.add("is-entering"));
-    stepLabel.textContent = `Étape ${current + 1} / ${diagnosticQuestions.length}`;
-    progressBar.style.width = `${((current + 1) / diagnosticQuestions.length) * 100}%`;
-    kicker.textContent = item.kicker;
-    question.textContent = item.question;
-    hint.textContent = item.hint;
-    back.hidden = current === 0;
-    next.textContent = current === diagnosticQuestions.length - 1 ? "Voir mon soin" : "Continuer";
-    next.disabled = selectedIndex === undefined;
-    options.innerHTML = item.options.map((option, index) => `
-      <button class="diagnostic-option" type="button" aria-pressed="${selectedIndex === index ? "true" : "false"}" data-option="${index}" style="--delay:${index * 45}ms">
-        <span class="diagnostic-option-media" data-visual="${escapeHtml(option.visual)}">
-          ${option.image ? `<img src="${escapeHtml(option.image)}" alt="" loading="lazy">` : ""}
-          <i>${escapeHtml(option.icon)}</i>
-        </span>
-        <span class="diagnostic-option-copy">
-          <strong>${escapeHtml(option.title)}</strong>
-          <span>${escapeHtml(option.text)}</span>
-        </span>
-      </button>
-    `).join("");
-    updatePreview();
-  };
-
-  const getRecommendation = () => {
-    const scores = {};
-
-    answers.forEach((answerIndex, questionIndex) => {
-      const answer = diagnosticQuestions[questionIndex].options[answerIndex];
-      Object.entries(answer.scores).forEach(([key, value]) => {
-        scores[key] = (scores[key] || 0) + value;
-      });
-    });
-
-    const [winner] = Object.entries(scores).sort((a, b) => b[1] - a[1])[0] || ["glow"];
-    return diagnosticRecommendations[winner] || diagnosticRecommendations.glow;
-  };
-
-  const showResult = () => {
-    const recommendation = getRecommendation();
-
-    card.hidden = true;
-    result.hidden = false;
-    stepLabel.textContent = "Résultat";
-    progressBar.style.width = "100%";
-    resultTitle.textContent = recommendation.title;
-    resultText.textContent = recommendation.text;
-    resultImage.src = recommendation.image;
-    resultImage.alt = recommendation.title;
-    resultMatch.textContent = recommendation.match;
-    resultBenefits.innerHTML = recommendation.benefits.map((benefit) => `<li>${escapeHtml(benefit)}</li>`).join("");
-    serviceLink.dataset.serviceCategory = recommendation.category;
-    localStorage.setItem(keys.diagnosticInvite, JSON.stringify({ completed: true, date: Date.now() }));
-    window.setTimeout(() => result.scrollIntoView({ block: "start", behavior: "smooth" }), 0);
-  };
-
-  options.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-option]");
-    if (!button) return;
-
-    answers[current] = Number(button.dataset.option);
-    next.disabled = false;
-    options.querySelectorAll(".diagnostic-option").forEach((option) => {
-      option.setAttribute("aria-pressed", String(option === button));
-    });
-    updatePreview();
-  });
-
-  back.addEventListener("click", () => {
-    if (current === 0) return;
-    current -= 1;
-    renderStep();
-  });
-
-  next.addEventListener("click", () => {
-    if (answers[current] === undefined) return;
-
-    if (current === diagnosticQuestions.length - 1) {
-      showResult();
-      return;
-    }
-
-    current += 1;
-    renderStep();
-  });
-
-  restart.addEventListener("click", () => {
-    answers.length = 0;
-    current = 0;
-    renderStep();
-    document.querySelector("#diagnostic-quiz").scrollIntoView({ block: "start", behavior: "smooth" });
-  });
-
-  renderStep();
-}
-
-function wireDiagnosticInvite() {
-  const invite = document.querySelector("#diagnosticInvite");
-  const close = document.querySelector("#closeDiagnosticInvite");
-  const open = document.querySelector("#openDiagnosticInvite");
-
-  if (!invite || !close || !open) return;
-
-  const remember = (action) => {
-    localStorage.setItem(keys.diagnosticInvite, JSON.stringify({ action, date: Date.now() }));
-  };
-
-  const hide = (action) => {
-    invite.hidden = true;
-    if (action) remember(action);
-  };
-
-  close.addEventListener("click", () => hide("dismissed"));
-  open.addEventListener("click", () => hide("opened"));
-
-  window.addEventListener("hashchange", () => {
-    if (window.location.hash === "#diagnostic") hide("opened");
-  });
-
-  window.setTimeout(() => {
-    const saved = JSON.parse(localStorage.getItem(keys.diagnosticInvite) || "null");
-    const recentlyHandled = saved && Date.now() - saved.date < 1000 * 60 * 60 * 24 * 7;
-
-    if (recentlyHandled || window.location.hash === "#diagnostic") return;
-    invite.hidden = false;
-  }, 9000);
-}
-
 function wireNavigation() {
   const setRoute = () => {
     const rawRoute = window.location.hash.replace("#", "") || "home";
@@ -1915,7 +1587,6 @@ function wireNavigation() {
     const view = views.has(route) ? route : "home";
 
     document.body.dataset.view = view;
-    document.body.dataset.subview = rawRoute;
     topbar.dataset.elevated = String(view !== "home" || window.scrollY > 20);
     document.querySelectorAll(".nav-links a").forEach((link) => {
       link.classList.toggle("active", link.getAttribute("href") === `#${view}`);
@@ -1923,9 +1594,6 @@ function wireNavigation() {
 
     if (rawRoute === "careerForm") {
       window.setTimeout(() => document.querySelector("#careerForm").scrollIntoView({ block: "start" }), 0);
-    } else if (rawRoute === "diagnostic-quiz") {
-      window.setTimeout(() => document.querySelector("#diagnostic-quiz").scrollIntoView({ block: "start" }), 0);
-      window.setTimeout(() => document.querySelector("#diagnostic-quiz").scrollIntoView({ block: "start" }), 120);
     } else {
       window.scrollTo({ top: 0, behavior: "auto" });
       window.setTimeout(() => window.scrollTo({ top: 0, behavior: "auto" }), 0);
@@ -2214,8 +1882,6 @@ wireNavigation();
 wireReviewSlider();
 wireFilters();
 wireForms();
-wireDiagnostic();
-wireDiagnosticInvite();
 wireCookies();
 wireBookingNotice();
 wireSuccessModal();
