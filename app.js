@@ -432,6 +432,13 @@ const planityPrestationsData = [
         "description": ""
       },
       {
+        "name": "Nail Art personnalisé pour les deux mains",
+        "duration": "35min",
+        "price": "25 €",
+        "bookable": true,
+        "description": ""
+      },
+      {
         "name": "Nail Art Niveau 1",
         "duration": "25min",
         "price": "5 €",
@@ -1301,7 +1308,7 @@ const defaults = {
 };
 
 const keys = {
-  services: "lazoya.v5.prestations",
+  services: "lazoya.v6.prestations",
   products: "lazoya.v9.herbsom-selection",
   cookies: "lazoya.cookies"
 };
