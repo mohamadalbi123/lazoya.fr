@@ -229,13 +229,6 @@ const planityPrestationsData = [
         "description": ""
       },
       {
-        "name": "Remplissage Volume Mixte 3 Semaines",
-        "duration": "1h 30min",
-        "price": "60 €",
-        "bookable": true,
-        "description": ""
-      },
-      {
         "name": "Option Massage (10 min)",
         "duration": "10min",
         "price": "7 €",
@@ -248,6 +241,27 @@ const planityPrestationsData = [
         "price": "10 €",
         "bookable": true,
         "description": ""
+      }
+    ]
+  },
+  {
+    "category": "Hydra Touch Coréen – Soin du visage nettoyant, purifiant & hydratant en profondeur",
+    "shortTitle": "Hydra Touch Coréen",
+    "description": "Le soin Hydra Touch est un traitement complet qui nettoie, exfolie et hydrate la peau en profondeur. Grâce à une technologie d’aspiration douce associée à des sérums adaptés, il aide à éliminer les impuretés, points noirs et cellules mortes tout en apportant une hydratation intense.",
+    "services": [
+      {
+        "name": "Une Séance Visage et Cou",
+        "duration": "45min",
+        "price": "150 €",
+        "bookable": true,
+        "description": "Soin nettoyant, purifiant et hydratant en profondeur pour le visage et le cou."
+      },
+      {
+        "name": "6 seances hydra touche",
+        "duration": "45min",
+        "price": "810 €",
+        "bookable": false,
+        "description": "Cure de six séances Hydra Touch pour accompagner l’éclat, la pureté et l’hydratation de la peau."
       }
     ]
   },
@@ -313,7 +327,7 @@ const planityPrestationsData = [
         "description": ""
       },
       {
-        "name": "Depose semi permanent seule + soin de l'ongle",
+        "name": "Depose semi permanent mains ou pieds",
         "duration": "30min",
         "price": "14 €",
         "bookable": true,
@@ -378,21 +392,21 @@ const planityPrestationsData = [
       {
         "name": "Pose Gel-X ( XL )",
         "duration": "1h 30min",
-        "price": "60 €",
+        "price": "70 €",
         "bookable": true,
         "description": ""
       },
       {
         "name": "Pose Gel-X ( L )",
         "duration": "1h 30min",
-        "price": "55 €",
+        "price": "65 €",
         "bookable": true,
         "description": ""
       },
       {
         "name": "Pose Gel-X ( S/M )",
         "duration": "1h 30min",
-        "price": "50 €",
+        "price": "60 €",
         "bookable": true,
         "description": ""
       },
@@ -406,7 +420,14 @@ const planityPrestationsData = [
       {
         "name": "French",
         "duration": "25min",
-        "price": "10 €",
+        "price": "20 €",
+        "bookable": true,
+        "description": ""
+      },
+      {
+        "name": "Nail Art personnalisé ( par ongle )",
+        "duration": "30min",
+        "price": "7 €",
         "bookable": true,
         "description": ""
       },
@@ -474,11 +495,11 @@ const planityPrestationsData = [
         "description": ""
       },
       {
-        "name": "Soin Express Éclat du Visage",
-        "duration": "40min",
+        "name": "Refresh Summer",
+        "duration": "35min",
         "price": "65 €",
         "bookable": true,
-        "description": ""
+        "description": "Offrez à votre peau une véritable pause fraîcheur avec notre protocole Refresh Summer. Ce soin est idéal pour réhydrater intensément la peau, apaiser les effets du soleil, redonner de l'éclat au teint, rafraîchir et revitaliser le visage."
       },
       {
         "name": "Soin Visage Anti-Acné Intensif",
