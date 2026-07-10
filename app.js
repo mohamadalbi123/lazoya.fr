@@ -1048,6 +1048,13 @@ const planityPrestationsData = [
         "description": "La teinture des cils intensifie le regard sans maquillage pour une durée de 5 semaines"
       },
       {
+        "name": "Teinture des sourcils",
+        "duration": "15min",
+        "price": "20 €",
+        "bookable": true,
+        "description": ""
+      },
+      {
         "name": "Browlift simple",
         "duration": "45min",
         "price": "55 €",
@@ -1308,7 +1315,7 @@ const defaults = {
 };
 
 const keys = {
-  services: "lazoya.v6.prestations",
+  services: "lazoya.v7.prestations",
   products: "lazoya.v9.herbsom-selection",
   cookies: "lazoya.cookies"
 };
