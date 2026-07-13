@@ -1875,6 +1875,10 @@ function wireBookingNotice() {
       return;
     }
 
+    if (typeof window.lazoyaTrackConversionForHref === "function") {
+      window.lazoyaTrackConversionForHref(pendingHref, { label: "booking_notice_continue" });
+    }
+
     window.open(pendingHref, pendingTarget === "_blank" ? "_blank" : "_self", "noreferrer");
   });
 }

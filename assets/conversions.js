@@ -24,33 +24,88 @@
     currency: "EUR"
   };
 
-  function trackConversion(conversion) {
-    if (typeof window.gtag !== "function") return;
-    window.gtag("event", "conversion", conversion);
+  function conversionForHref(href) {
+    if (href.includes(planityUrlPart)) {
+      return { name: "planity", conversion: planityConversion };
+    }
+
+    if (href === phoneUrl) {
+      return { name: "phone", conversion: phoneConversion };
+    }
+
+    if (href.includes(whatsappUrlPart)) {
+      return { name: "whatsapp", conversion: whatsappConversion };
+    }
+
+    if (href.includes(directionsUrlPart)) {
+      return { name: "directions", conversion: directionsConversion };
+    }
+
+    return null;
   }
 
+  function once(callback) {
+    let called = false;
+    return function runOnce() {
+      if (called) return;
+      called = true;
+      if (typeof callback === "function") callback();
+    };
+  }
+
+  function trackConversion(match, options = {}) {
+    const done = once(options.callback);
+
+    if (typeof window.gtag !== "function") {
+      done();
+      return false;
+    }
+
+    const payload = {
+      ...match.conversion,
+      event_category: "Lazoya reservation",
+      event_label: options.label || match.name,
+      event_callback: done,
+      event_timeout: 1200
+    };
+
+    window.gtag("event", "conversion", payload);
+    window.setTimeout(done, 1300);
+    return true;
+  }
+
+  function trackHref(href, options = {}) {
+    const match = conversionForHref(href || "");
+    if (!match) {
+      if (typeof options.callback === "function") options.callback();
+      return false;
+    }
+
+    return trackConversion(match, options);
+  }
+
+  window.lazoyaTrackConversionForHref = trackHref;
+
   document.addEventListener("click", (event) => {
+    if (event.defaultPrevented) return;
+
     const link = event.target.closest && event.target.closest("a[href]");
     if (!link) return;
 
     const href = link.getAttribute("href") || "";
-    if (href.includes(planityUrlPart)) {
-      trackConversion(planityConversion);
+    const match = conversionForHref(href);
+    if (!match) return;
+
+    if (link.target === "_blank" || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      trackConversion(match);
       return;
     }
 
-    if (href === phoneUrl) {
-      trackConversion(phoneConversion);
-      return;
-    }
-
-    if (href.includes(whatsappUrlPart)) {
-      trackConversion(whatsappConversion);
-      return;
-    }
-
-    if (href.includes(directionsUrlPart)) {
-      trackConversion(directionsConversion);
-    }
+    event.preventDefault();
+    trackConversion(match, {
+      callback: () => {
+        window.location.href = href;
+      }
+    });
   });
 }());
