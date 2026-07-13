@@ -4,7 +4,7 @@
   const directionsUrlPart = "google.com/maps";
   const phoneUrl = "tel:+33956673009";
   const planityConversion = {
-    send_to: "AW-18308603892/ROS3CNr5ic4cEPS_nJpE",
+    send_to: "AW-18308603892/5tRVCPLrls4cEPS_nJpE",
     value: 1.0,
     currency: "EUR"
   };
