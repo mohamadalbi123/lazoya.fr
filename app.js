@@ -1851,7 +1851,7 @@ function wireBookingNotice() {
     if (!link) return;
 
     const href = link.getAttribute("href") || "";
-    const isBookingLink = href === "#booking" || href.includes("planity.com/lazoya-17000-la-rochelle");
+    const isBookingLink = href === "#booking" || href === "/reservation/" || href.includes("planity.com/lazoya-17000-la-rochelle");
     if (!isBookingLink || link.dataset.bookingNoticeSeen === "true") return;
 
     event.preventDefault();
