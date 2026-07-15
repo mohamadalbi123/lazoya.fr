@@ -1,0 +1,1338 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Diagnostic beauté | Lazoya</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#9c1231">
+    <link rel="icon" href="../assets/favicon-32.png">
+    <link rel="stylesheet" href="../styles.css?v=20260713-2">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18308603892"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'AW-18308603892');
+    </script>
+    <style>
+      body {
+        background: var(--paper);
+      }
+
+      .diagnostic-main {
+        min-height: 100vh;
+        padding: 116px clamp(18px, 4vw, 54px) 58px;
+      }
+
+      .diagnostic-main.intro-backdrop {
+        background:
+          linear-gradient(90deg, rgba(45, 7, 16, 0.72), rgba(156, 18, 49, 0.24)),
+          url("../assets/diagnostique/red-satin-bg.png") center / cover no-repeat;
+      }
+
+      .diagnostic-shell {
+        max-width: 1160px;
+        margin: 0 auto;
+      }
+
+      .field p,
+      .result-text,
+      .photo-help {
+        color: var(--soft-ink);
+        line-height: 1.65;
+      }
+
+      .intro-panel,
+      .consultation-panel,
+      .result-panel {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.84);
+        box-shadow: 0 16px 48px rgba(29, 26, 26, 0.08);
+      }
+
+      .intro-panel {
+        position: relative;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 22px;
+        align-items: center;
+        width: min(100%, 820px);
+        margin-bottom: 18px;
+        margin-left: auto;
+        margin-right: auto;
+        border-color: rgba(156, 18, 49, 0.24);
+        padding: clamp(22px, 4vw, 34px);
+        background: rgba(255, 248, 247, 0.94);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 22px 58px rgba(94, 17, 32, 0.1);
+      }
+
+      .intro-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 5px;
+        border-radius: var(--radius) 0 0 var(--radius);
+        background: var(--wine);
+      }
+
+      .intro-panel .eyebrow,
+      .intro-panel h2,
+      .intro-panel p {
+        position: relative;
+        z-index: 1;
+      }
+
+      .intro-panel .audience-pill,
+      .intro-panel .button {
+        position: relative;
+        z-index: 1;
+      }
+
+      .intro-panel .audience-pill {
+        border-color: rgba(156, 18, 49, 0.18);
+        color: var(--wine);
+        background: #fff8f7;
+      }
+
+      .intro-panel .button.primary {
+        background: var(--wine);
+        color: #fff;
+        box-shadow: 0 16px 38px rgba(156, 18, 49, 0.18);
+      }
+
+      .intro-panel.hidden,
+      .consultation-panel.hidden {
+        display: none;
+      }
+
+      .intro-panel h2 {
+        max-width: 720px;
+        margin: 0 0 12px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(2rem, 4.4vw, 3.8rem);
+        line-height: 0.95;
+      }
+
+      .intro-panel p {
+        max-width: 660px;
+        margin: 0;
+        color: var(--soft-ink);
+        line-height: 1.65;
+      }
+
+      .audience-pill {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        margin-bottom: 14px;
+        border: 1px solid rgba(156, 18, 49, 0.18);
+        border-radius: 999px;
+        padding: 8px 12px;
+        color: var(--wine);
+        background: #fff8f7;
+        font-size: 0.78rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .consultation-panel {
+        overflow: hidden;
+      }
+
+      .consultation-head {
+        display: grid;
+        grid-template-columns: 1fr 240px;
+        gap: 18px;
+        align-items: end;
+        padding: clamp(22px, 4vw, 36px);
+        border-bottom: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.58);
+      }
+
+      .consultation-head h2 {
+        margin: 0 0 8px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(2rem, 4.4vw, 3.5rem);
+        line-height: 0.96;
+      }
+
+      .progress-label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--soft-ink);
+        font-size: 0.82rem;
+        font-weight: 850;
+        text-align: right;
+      }
+
+      .track {
+        height: 8px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(29, 26, 26, 0.1);
+      }
+
+      .track i {
+        display: block;
+        width: 20%;
+        height: 100%;
+        background: linear-gradient(90deg, var(--wine), var(--gold));
+        transition: width 180ms ease;
+      }
+
+      .step {
+        display: none;
+        padding: clamp(22px, 4vw, 36px);
+        animation: enter 220ms ease both;
+      }
+
+      .step.active {
+        display: block;
+      }
+
+      @keyframes enter {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .question {
+        max-width: 760px;
+        margin-bottom: 18px;
+      }
+
+      .question h3 {
+        margin: 0 0 8px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(1.9rem, 3.6vw, 3rem);
+        line-height: 1;
+      }
+
+      .question p {
+        margin: 0;
+        color: var(--soft-ink);
+        line-height: 1.62;
+      }
+
+      .validation-text {
+        display: none;
+        margin-top: 10px;
+        color: var(--wine);
+        font-size: 0.92rem;
+        font-weight: 850;
+      }
+
+      .step.needs-answer .validation-text {
+        display: block;
+      }
+
+      .step.needs-answer .question h3,
+      .step.needs-answer .mini-question[data-required="true"]:not(.answered) > span {
+        color: var(--wine);
+      }
+
+      .step.needs-answer .choice-grid[data-required="true"]:not(.answered) .choice,
+      .step.needs-answer .mini-question[data-required="true"]:not(.answered) {
+        border-color: rgba(156, 18, 49, 0.5);
+        box-shadow: 0 0 0 4px rgba(156, 18, 49, 0.08);
+      }
+
+      .field-grid,
+      .choice-grid,
+      .photo-grid,
+      .results-grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      .field-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .field {
+        position: relative;
+        display: grid;
+        gap: 8px;
+      }
+
+      .field span {
+        color: var(--soft-ink);
+        font-size: 0.82rem;
+        font-weight: 850;
+      }
+
+      .field select,
+      .field input,
+      .field textarea {
+        width: 100%;
+        min-height: 56px;
+        border: 1px solid rgba(29, 26, 26, 0.14);
+        border-radius: var(--radius);
+        padding: 0 16px;
+        color: var(--ink);
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        font: inherit;
+        transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+      }
+
+      .field select {
+        appearance: none;
+        padding-right: 42px;
+      }
+
+      .field:has(select)::after {
+        content: "";
+        position: absolute;
+        right: 18px;
+        bottom: 22px;
+        width: 8px;
+        height: 8px;
+        border-right: 1.5px solid var(--wine);
+        border-bottom: 1.5px solid var(--wine);
+        pointer-events: none;
+        transform: rotate(45deg);
+      }
+
+      .field select:focus,
+      .field input:focus,
+      .field textarea:focus {
+        outline: none;
+        border-color: rgba(156, 18, 49, 0.42);
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(156, 18, 49, 0.08);
+      }
+
+      .field textarea {
+        min-height: 150px;
+        padding: 14px;
+        resize: vertical;
+        line-height: 1.6;
+      }
+
+      .choice-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .smart-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .mini-question {
+        border: 1px solid rgba(29, 26, 26, 0.1);
+        border-radius: var(--radius);
+        padding: 18px;
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .mini-question > span {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 14px;
+        color: var(--wine);
+        font-size: 0.92rem;
+        font-weight: 950;
+        letter-spacing: 0;
+      }
+
+      .mini-question > span::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--gold);
+        box-shadow: 0 0 0 4px rgba(191, 151, 86, 0.12);
+      }
+
+      .option-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .option-choice {
+        min-height: 58px;
+        border: 1px solid rgba(29, 26, 26, 0.12);
+        border-radius: var(--radius);
+        padding: 12px 14px;
+        color: var(--ink);
+        background: #fff;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 850;
+        text-align: left;
+        transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+      }
+
+      .option-choice:hover,
+      .option-choice[aria-pressed="true"] {
+        transform: translateY(-1px);
+        border-color: rgba(156, 18, 49, 0.34);
+        background: #fff8f7;
+        box-shadow: 0 12px 28px rgba(29, 26, 26, 0.06);
+      }
+
+      .choice {
+        min-height: 132px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 16px;
+        background: var(--milk);
+        text-align: left;
+        cursor: pointer;
+        transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+      }
+
+      .choice:hover,
+      .choice[aria-pressed="true"] {
+        transform: translateY(-2px);
+        border-color: rgba(156, 18, 49, 0.34);
+        box-shadow: 0 16px 42px rgba(29, 26, 26, 0.08);
+      }
+
+      .choice[aria-pressed="true"] {
+        background: #fff5f3;
+      }
+
+      .choice b {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        margin-bottom: 12px;
+        border-radius: 999px;
+        background: var(--rose);
+        color: var(--wine);
+        font-size: 0.95rem;
+      }
+
+      .choice strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 1.05rem;
+      }
+
+      .choice span {
+        display: block;
+        color: var(--soft-ink);
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      [data-areas].hidden-option {
+        display: none;
+      }
+
+      .photo-grid {
+        grid-template-columns: minmax(280px, 0.75fr) minmax(0, 1fr);
+        align-items: stretch;
+      }
+
+      .photo-box {
+        display: flex;
+        min-height: 242px;
+        flex-direction: column;
+        justify-content: flex-start;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 18px;
+        background: var(--milk);
+      }
+
+      .photo-input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .photo-preview {
+        display: none;
+        width: 100%;
+        max-height: 360px;
+        margin-top: 14px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        object-fit: cover;
+      }
+
+      .photo-preview.visible {
+        display: block;
+      }
+
+      .photo-help {
+        margin: 12px 0 0;
+        font-size: 0.9rem;
+      }
+
+      .photo-grid .field {
+        height: 100%;
+      }
+
+      .photo-grid textarea {
+        min-height: 242px;
+        height: 100%;
+      }
+
+      .controls {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 0 clamp(22px, 4vw, 36px) clamp(22px, 4vw, 36px);
+      }
+
+      .ai-status {
+        min-height: 24px;
+        padding: 0 clamp(22px, 4vw, 36px) 18px;
+        color: var(--soft-ink);
+        font-size: 0.92rem;
+        font-weight: 800;
+      }
+
+      .result-panel {
+        display: none;
+        margin-top: 20px;
+        padding: clamp(22px, 4vw, 36px);
+      }
+
+      .result-panel.visible {
+        display: block;
+      }
+
+      .results-grid {
+        grid-template-columns: 310px 1fr;
+        align-items: start;
+      }
+
+      .profile-card,
+      .service-result {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--milk);
+      }
+
+      .profile-card {
+        position: sticky;
+        top: 96px;
+        padding: 22px;
+      }
+
+      .profile-card span {
+        display: inline-flex;
+        margin-bottom: 14px;
+        border-radius: 999px;
+        padding: 7px 10px;
+        background: var(--rose);
+        color: var(--wine);
+        font-size: 0.75rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .profile-card strong {
+        display: block;
+        margin-bottom: 10px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 2rem;
+        line-height: 1;
+      }
+
+      .service-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .service-result {
+        padding: 18px;
+      }
+
+      .service-result:first-child {
+        border-color: rgba(156, 18, 49, 0.32);
+        background: #fffaf8;
+      }
+
+      .service-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .service-top strong {
+        font-size: 1.08rem;
+      }
+
+      .service-top em {
+        color: var(--wine);
+        font-style: normal;
+        font-size: 0.82rem;
+        font-weight: 900;
+        white-space: nowrap;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-top: 14px;
+      }
+
+      .chips span {
+        border-radius: 999px;
+        padding: 7px 9px;
+        background: var(--rose);
+        color: var(--soft-ink);
+        font-size: 0.78rem;
+        font-weight: 850;
+      }
+
+      .result-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .specialist-actions {
+        display: none;
+        flex-wrap: wrap;
+        gap: 10px;
+        width: 100%;
+      }
+
+      .specialist-actions.visible {
+        display: flex;
+      }
+
+      .disclaimer {
+        margin-top: 18px;
+        border-left: 3px solid var(--sage);
+        padding-left: 12px;
+        color: var(--soft-ink);
+        font-size: 0.82rem;
+        line-height: 1.55;
+      }
+
+      @media (max-width: 980px) {
+        .intro-panel,
+        .consultation-head,
+        .photo-grid,
+        .results-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .progress-label {
+          text-align: left;
+        }
+
+        .field-grid,
+        .choice-grid,
+        .option-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .profile-card {
+          position: static;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .diagnostic-main {
+          padding: 92px 10px 42px;
+        }
+
+        .field-grid,
+        .choice-grid,
+        .option-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .controls,
+        .service-top {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar" data-elevated="true">
+      <a class="brand" href="../" aria-label="Accueil Lazoya">
+        <img class="brand-logo" src="../assets/lazoya-logo.png" alt="Lazoya">
+      </a>
+      <nav class="nav-links" aria-label="Navigation principale">
+        <a href="../">Accueil</a>
+        <a href="../#services">Prestations</a>
+        <a href="../#products">Produits</a>
+        <a href="../#models">Modèles</a>
+        <a href="../#about">À propos</a>
+        <a href="../#careers">Carrières</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="button primary" href="../reservation/">Réserver</a>
+      </div>
+      <button class="menu-button" type="button" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </header>
+
+    <main class="diagnostic-main">
+      <div class="diagnostic-shell">
+        <section class="intro-panel" id="introPanel">
+          <div>
+            <span class="audience-pill">Pour femmes</span>
+            <p class="eyebrow">Diagnostic beauté</p>
+            <h2>Mieux comprendre votre besoin.</h2>
+            <p>
+              Ce diagnostic aide à clarifier votre problème beauté, vos attentes et les points à observer avant de choisir librement la suite.
+            </p>
+          </div>
+          <button class="button primary" type="button" id="startButton">Commencer</button>
+        </section>
+
+        <section class="consultation-panel hidden" id="diagnostic">
+          <div class="consultation-head">
+            <div>
+              <p class="eyebrow">Consultation guidée</p>
+              <h2 id="stepTitle">Profil</h2>
+              <p id="stepHint">Pour adapter le conseil sans alourdir l’expérience.</p>
+            </div>
+            <div>
+              <span class="progress-label" id="progressLabel">Étape 1 / 7</span>
+              <div class="track"><i id="progressBar"></i></div>
+            </div>
+          </div>
+
+          <div class="step active" data-step="0">
+            <div class="question">
+              <h3>Votre âge.</h3>
+              <p>Une indication suffit pour ajuster les précautions.</p>
+              <span class="validation-text">Choisissez une réponse pour continuer.</span>
+            </div>
+            <div class="choice-grid" data-key="ageRange" data-mode="single" data-required="true">
+              <button class="choice" type="button" data-value="Moins de 18 ans"><b>1</b><strong>Moins de 18</strong><span>Conseil très doux.</span></button>
+              <button class="choice" type="button" data-value="18-24 ans"><b>2</b><strong>18-24</strong><span>Premiers besoins ciblés.</span></button>
+              <button class="choice" type="button" data-value="25-34 ans"><b>3</b><strong>25-34</strong><span>Éclat, entretien, prévention.</span></button>
+              <button class="choice" type="button" data-value="35-44 ans"><b>4</b><strong>35-44</strong><span>Texture, confort, fermeté.</span></button>
+              <button class="choice" type="button" data-value="45-54 ans"><b>5</b><strong>45-54</strong><span>Éclat et tonicité.</span></button>
+              <button class="choice" type="button" data-value="55 ans et plus"><b>6</b><strong>55+</strong><span>Soin, confort, régularité.</span></button>
+            </div>
+          </div>
+
+          <div class="step" data-step="1">
+            <div class="question">
+              <h3>Quelle zone voulez-vous comprendre ?</h3>
+              <p>La photo finale devra montrer cette zone.</p>
+              <span class="validation-text">Choisissez la zone principale.</span>
+            </div>
+            <div class="choice-grid" data-key="area" data-mode="single" data-required="true">
+              <button class="choice" type="button" data-value="skin"><b>V</b><strong>Peau / visage</strong><span>Éclat, pores, imperfections, rougeurs, rides, texture.</span></button>
+              <button class="choice" type="button" data-value="hair"><b>C</b><strong>Cheveux</strong><span>Sécheresse, casse, frisottis, cuir chevelu, brillance.</span></button>
+              <button class="choice" type="button" data-value="nails"><b>O</b><strong>Ongles</strong><span>Casse, stries, forme, longueur, tenue du vernis.</span></button>
+              <button class="choice" type="button" data-value="eyes"><b>R</b><strong>Cils / sourcils</strong><span>Ligne, densité, regard fatigué, intensité.</span></button>
+              <button class="choice" type="button" data-value="relaxation"><b>M</b><strong>Corps / détente</strong><span>Tensions, fatigue, besoin de massage ou confort.</span></button>
+              <button class="choice" type="button" data-value="not-sure"><b>?</b><strong>Je ne sais pas</strong><span>L’IA aidera à orienter la demande.</span></button>
+            </div>
+          </div>
+
+          <div class="step" data-step="2">
+            <div class="question">
+              <h3>Quel est le problème principal ?</h3>
+              <p>Sélection multiple possible.</p>
+              <span class="validation-text">Sélectionnez au moins un signe.</span>
+            </div>
+            <div class="choice-grid" data-key="concerns" data-mode="multi" data-required="true">
+              <button class="choice" type="button" data-value="dryness dehydrated tight skin" data-areas="skin not-sure"><b>H</b><strong>Sécheresse</strong><span>Peau qui tire, manque de confort, déshydratation.</span></button>
+              <button class="choice" type="button" data-value="dullness glow tired skin" data-areas="skin not-sure"><b>G</b><strong>Manque d’éclat</strong><span>Teint terne, fatigue visible, manque de fraîcheur.</span></button>
+              <button class="choice" type="button" data-value="pores acne oily imperfections skin" data-areas="skin not-sure"><b>P</b><strong>Imperfections</strong><span>Boutons, pores visibles, brillance, irrégularités.</span></button>
+              <button class="choice" type="button" data-value="sensitive redness irritation skin" data-areas="skin not-sure"><b>D</b><strong>Rougeurs / sensibilité</strong><span>Inconfort, peau réactive, rougeurs visibles.</span></button>
+              <button class="choice" type="button" data-value="firmness wrinkles texture skin" data-areas="skin not-sure"><b>F</b><strong>Fermeté / rides</strong><span>Ridules, relâchement, grain de peau.</span></button>
+              <button class="choice" type="button" data-value="hair dry brittle damaged breakage" data-areas="hair not-sure"><b>C</b><strong>Casse / cheveux secs</strong><span>Fibre sèche, longueurs sensibilisées, pointes fragiles.</span></button>
+              <button class="choice" type="button" data-value="hair dullness shine flat" data-areas="hair not-sure"><b>B</b><strong>Brillance</strong><span>Cheveux ternes, plats ou difficiles à sublimer.</span></button>
+              <button class="choice" type="button" data-value="hair frizz discipline volume" data-areas="hair not-sure"><b>L</b><strong>Frisottis / discipline</strong><span>Volume difficile, besoin de lissage ou de souplesse.</span></button>
+              <button class="choice" type="button" data-value="hair scalp sensitive irritation" data-areas="hair not-sure"><b>S</b><strong>Cuir chevelu sensible</strong><span>Inconfort ou sensibilité avant une technique.</span></button>
+              <button class="choice" type="button" data-value="nails brittle broken splitting growth" data-areas="nails not-sure"><b>O</b><strong>Ongles cassants</strong><span>Casse, dédoublement, pousse difficile.</span></button>
+              <button class="choice" type="button" data-value="nails shape length extension natural" data-areas="nails not-sure"><b>L</b><strong>Longueur / forme</strong><span>Besoin de structurer, allonger ou harmoniser.</span></button>
+              <button class="choice" type="button" data-value="nails polish hold semi permanent chipping" data-areas="nails not-sure"><b>V</b><strong>Tenue du vernis</strong><span>Vernis qui s’écaille ou finition peu durable.</span></button>
+              <button class="choice" type="button" data-value="nails cuticles dry hands feet care" data-areas="nails not-sure"><b>M</b><strong>Contours / cuticules</strong><span>Mains, pieds ou contours secs à soigner.</span></button>
+              <button class="choice" type="button" data-value="eyes lashes brows density sparse" data-areas="eyes not-sure"><b>D</b><strong>Densité</strong><span>Cils ou sourcils clairsemés, manque de présence.</span></button>
+              <button class="choice" type="button" data-value="eyes brows line shape asymmetry" data-areas="eyes not-sure"><b>L</b><strong>Ligne / forme</strong><span>Sourcils à structurer, regard à équilibrer.</span></button>
+              <button class="choice" type="button" data-value="eyes tired dull natural intensity" data-areas="eyes not-sure"><b>R</b><strong>Regard fatigué</strong><span>Besoin d’ouvrir ou d’intensifier naturellement.</span></button>
+              <button class="choice" type="button" data-value="stress tension relaxation fatigue body" data-areas="relaxation not-sure"><b>T</b><strong>Tensions / fatigue</strong><span>Besoin de relâcher, récupérer ou se détendre.</span></button>
+            </div>
+          </div>
+
+          <div class="step" data-step="3">
+            <div class="question">
+              <h3>Les détails visibles.</h3>
+              <p>Ces indices rendent l’analyse plus précise.</p>
+              <span class="validation-text">Sélectionnez au moins un détail visible.</span>
+            </div>
+            <div class="choice-grid" data-key="details" data-mode="multi" data-required="true">
+              <button class="choice" type="button" data-value="texture irregular grain surface" data-areas="skin nails not-sure"><b>T</b><strong>Texture irrégulière</strong><span>Grain de peau, surface de l’ongle, relief.</span></button>
+              <button class="choice" type="button" data-value="hydration tight dry fragile" data-areas="skin hair nails not-sure"><b>S</b><strong>Manque de confort</strong><span>Sensation sèche, fragile ou sensibilisée.</span></button>
+              <button class="choice" type="button" data-value="color dull uneven tone stains" data-areas="skin hair nails not-sure"><b>C</b><strong>Couleur inégale</strong><span>Teint, reflets, taches ou ternissement.</span></button>
+              <button class="choice" type="button" data-value="shape line symmetry structure" data-areas="nails eyes not-sure"><b>L</b><strong>Ligne / forme</strong><span>Structure, contour, équilibre, forme.</span></button>
+              <button class="choice" type="button" data-value="density volume length sparse" data-areas="hair eyes nails not-sure"><b>D</b><strong>Densité / longueur</strong><span>Volume, masse, allongement ou manque de présence.</span></button>
+              <button class="choice" type="button" data-value="sensitive reactive recent fragile" data-areas="skin hair nails eyes not-sure"><b>R</b><strong>Réactivité</strong><span>Zone sensible ou récemment fragilisée.</span></button>
+              <button class="choice" type="button" data-value="body tension heavy legs back shoulders" data-areas="relaxation not-sure"><b>M</b><strong>Zone de tension</strong><span>Dos, épaules, jambes ou fatigue globale.</span></button>
+            </div>
+          </div>
+
+          <div class="step" data-step="4">
+            <div class="question">
+              <h3>Vos habitudes.</h3>
+              <p>Le conseil dépend aussi de l’entretien possible.</p>
+              <span class="validation-text">Complétez les questions marquées en rouge.</span>
+            </div>
+            <div class="smart-grid">
+              <div class="mini-question" data-required="true" data-key="routine">
+                <span>Routine actuelle</span>
+                <div class="option-grid" data-key="routine" data-mode="single">
+                  <button class="option-choice" type="button" data-value="Très simple">Très simple</button>
+                  <button class="option-choice" type="button" data-value="Régulière">Régulière</button>
+                  <button class="option-choice" type="button" data-value="Déjà avancée">Déjà avancée</button>
+                  <button class="option-choice" type="button" data-value="Je ne sais pas">Je ne sais pas</button>
+                </div>
+              </div>
+              <div class="mini-question" data-required="true" data-key="maintenance">
+                <span>Entretien souhaité</span>
+                <div class="option-grid" data-key="maintenance" data-mode="single">
+                  <button class="option-choice" type="button" data-value="Très naturel">Très naturel</button>
+                  <button class="option-choice" type="button" data-value="Facile à entretenir">Facile à entretenir</button>
+                  <button class="option-choice" type="button" data-value="Résultat visible">Résultat visible</button>
+                  <button class="option-choice" type="button" data-value="Transformation plus marquée">Plus marqué</button>
+                </div>
+              </div>
+              <div class="mini-question" data-key="recentTreatment">
+                <span>Soin récent</span>
+                <div class="option-grid" data-key="recentTreatment" data-mode="single">
+                  <button class="option-choice" type="button" data-value="Aucun récent">Aucun récent</button>
+                  <button class="option-choice" type="button" data-value="Soin visage actif récent" data-areas="skin not-sure">Soin visage actif</button>
+                  <button class="option-choice" type="button" data-value="Peeling ou exfoliation récente" data-areas="skin not-sure">Peeling récent</button>
+                  <button class="option-choice" type="button" data-value="Coloration ou technique cheveux récente" data-areas="hair not-sure">Technique cheveux</button>
+                  <button class="option-choice" type="button" data-value="Lissage ou soin profond récent" data-areas="hair not-sure">Lissage / soin</button>
+                  <button class="option-choice" type="button" data-value="Pose ou dépose ongles récente" data-areas="nails not-sure">Pose ou dépose</button>
+                  <button class="option-choice" type="button" data-value="Semi-permanent ou gel récent" data-areas="nails not-sure">Semi / gel récent</button>
+                  <button class="option-choice" type="button" data-value="Épilation cils ou sourcils récente" data-areas="eyes not-sure">Cils / sourcils</button>
+                  <button class="option-choice" type="button" data-value="Massage ou soin corps récent" data-areas="relaxation not-sure">Soin corps récent</button>
+                  <button class="option-choice" type="button" data-value="Je ne sais pas">Je ne sais pas</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step" data-step="5">
+            <div class="question">
+              <h3>Objectif final.</h3>
+              <p>Pour choisir entre douceur, éclat, correction ou tenue.</p>
+              <span class="validation-text">Complétez les questions marquées en rouge.</span>
+            </div>
+            <div class="smart-grid">
+              <div class="mini-question" data-required="true" data-key="goal">
+                <span>Objectif</span>
+                <div class="option-grid" data-key="goal" data-mode="single">
+                  <button class="option-choice" type="button" data-value="Résultat rapide avant un événement">Avant un événement</button>
+                  <button class="option-choice" type="button" data-value="Amélioration progressive">Amélioration progressive</button>
+                  <button class="option-choice" type="button" data-value="Soin profond ciblé">Soin profond ciblé</button>
+                  <button class="option-choice" type="button" data-value="Première fois, je veux quelque chose de doux">Première fois / doux</button>
+                  <button class="option-choice" type="button" data-value="Moment détente et confort" data-areas="relaxation not-sure">Détente et confort</button>
+                </div>
+              </div>
+              <div class="mini-question" data-required="true" data-key="duration">
+                <span>Depuis quand ?</span>
+                <div class="option-grid" data-key="duration" data-mode="single">
+                  <button class="option-choice" type="button" data-value="Quelques jours">Quelques jours</button>
+                  <button class="option-choice" type="button" data-value="Quelques semaines">Quelques semaines</button>
+                  <button class="option-choice" type="button" data-value="Plusieurs mois">Plusieurs mois</button>
+                  <button class="option-choice" type="button" data-value="Longtemps">Longtemps</button>
+                  <button class="option-choice" type="button" data-value="Je ne sais pas">Je ne sais pas</button>
+                </div>
+              </div>
+              <div class="mini-question" data-key="caution">
+                <span>Précaution importante</span>
+                <div class="option-grid" data-key="caution" data-mode="single">
+                  <button class="option-choice" type="button" data-value="Aucune connue">Aucune connue</button>
+                  <button class="option-choice" type="button" data-value="Peau très sensible / réactive" data-areas="skin not-sure">Peau réactive</button>
+                  <button class="option-choice" type="button" data-value="Cuir chevelu sensible" data-areas="hair not-sure">Cuir chevelu sensible</button>
+                  <button class="option-choice" type="button" data-value="Ongles fragilisés ou douloureux" data-areas="nails not-sure">Ongles fragilisés</button>
+                  <button class="option-choice" type="button" data-value="Yeux ou paupières sensibles" data-areas="eyes not-sure">Yeux sensibles</button>
+                  <button class="option-choice" type="button" data-value="Grossesse">Grossesse</button>
+                  <button class="option-choice" type="button" data-value="Traitement récent">Traitement récent</button>
+                  <button class="option-choice" type="button" data-value="Allergies ou doute">Allergies ou doute</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="step" data-step="6">
+            <div class="question">
+              <h3>Photo et message.</h3>
+              <p>Montrez la zone exacte, puis ajoutez ce que la photo ne dit pas.</p>
+              <span class="validation-text">Vous pouvez lancer le diagnostic avec vos réponses seules.</span>
+            </div>
+            <div class="photo-grid">
+              <div class="photo-box">
+                <label class="button primary" for="photoInput">
+                  Ajouter la photo
+                  <input class="photo-input" id="photoInput" type="file" accept="image/*" capture="environment">
+                </label>
+                <img class="photo-preview" id="photoPreview" alt="Zone ajoutée au diagnostic">
+                <p class="photo-help">Photo nette, lumière naturelle si possible. Évitez les filtres.</p>
+              </div>
+              <label class="field">
+                <span>Écrivez plus sur votre challenge</span>
+                <textarea id="note" placeholder="Exemple : mes ongles cassent sur les côtés depuis plusieurs semaines, je veux quelque chose de naturel et solide."></textarea>
+              </label>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button class="button ghost" type="button" id="backButton">Retour</button>
+            <button class="button primary" type="button" id="nextButton" disabled>Continuer</button>
+          </div>
+          <p class="ai-status" id="aiStatus" aria-live="polite"></p>
+        </section>
+
+        <section class="result-panel" id="result">
+          <div class="results-grid">
+            <aside class="profile-card">
+              <span id="profileBadge">Diagnostic IA</span>
+              <strong id="profileTitle">Analyse en cours</strong>
+              <p class="result-text" id="profileText">Votre résultat apparaîtra ici.</p>
+            </aside>
+            <div>
+              <div class="service-list" id="services"></div>
+              <div class="result-actions">
+                <a class="button primary" href="../reservation/">Réserver maintenant</a>
+                <button class="button ghost" type="button" id="specialistButton">Parler à une spécialiste</button>
+                <button class="button ghost" type="button" id="restartButton">Recommencer</button>
+                <div class="specialist-actions" id="specialistActions" aria-label="Options pour parler à une spécialiste">
+                  <a class="button ghost" href="tel:+33956673009">Appeler</a>
+                  <a class="button ghost" href="https://wa.me/33956673009" target="_blank" rel="noreferrer">WhatsApp</a>
+                </div>
+              </div>
+              <p class="disclaimer">Ce diagnostic est indicatif et esthétique. Il ne remplace pas un avis médical. L’équipe Lazoya confirme toujours le choix final selon vos attentes, votre peau, vos cheveux, vos ongles et les contre-indications éventuelles.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-brand">
+        <img class="footer-logo" src="../assets/lazoya-logo.png" alt="Lazoya">
+        <p>Institut de beauté à La Rochelle, pensé pour le soin, la confiance et l’élégance naturelle.</p>
+      </div>
+      <div class="footer-columns">
+        <nav class="footer-links" aria-label="Navigation du pied de page">
+          <strong>Navigation</strong>
+          <a href="../#services">Prestations</a>
+          <a href="../#about">À propos</a>
+          <a href="../#products">Produits</a>
+          <a href="../#models">Modèles</a>
+          <a href="../#careers">Carrières</a>
+        </nav>
+        <div class="footer-links">
+          <strong>Réservation</strong>
+          <a href="https://www.planity.com/lazoya-17000-la-rochelle" target="_blank" rel="noreferrer">Planity</a>
+          <a href="https://wa.me/33956673009" target="_blank" rel="noreferrer">WhatsApp</a>
+          <a href="tel:+33956673009">09 56 67 30 09</a>
+          <span class="footer-note">En personne</span>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Lazoya%2037%20Bis%20Av.%20Jean%20Guiton%2017000%20La%20Rochelle" target="_blank" rel="noreferrer">37 Bis Av. Jean Guiton</a>
+        </div>
+        <div class="footer-links">
+          <strong>Informations</strong>
+          <a href="../#privacy">Politique de confidentialité</a>
+          <a href="../#legal">Mentions légales</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const STORAGE_KEY = "lazoya.diagnostic.consultation.v1";
+      if (new URLSearchParams(window.location.search).has("reset")) sessionStorage.removeItem(STORAGE_KEY);
+
+      const serviceCatalog = [
+        { id: "refresh", name: "Refresh Summer", category: "skin", duration: "35 min", price: "65 €", keywords: "skin glow dullness quick event dryness sensitive gentle", benefits: ["Glow rapide", "Hydratation", "Fraîcheur"], why: "Soin esthétique utile pour réveiller un teint fatigué, hydrater légèrement et apporter de l’éclat sans protocole trop intense." },
+        { id: "hydra", name: "Hydra Touch Coréen", category: "skin", duration: "45 min", price: "150 €", keywords: "skin hydration dryness pores glow deep targeted first", benefits: ["Nettoyage profond", "Hydratation", "Éclat"], why: "Soin complet intéressant quand la peau montre un besoin de nettoyage, d’hydratation et de clarté." },
+        { id: "mixte", name: "Soin Peau Mixte à Grasse", category: "skin", duration: "40 min", price: "85 €", keywords: "skin pores acne oily imperfections pure targeted deep", benefits: ["Purifiant", "Équilibre", "Peau nette"], why: "Soin esthétique adapté aux brillances, pores visibles et imperfections non médicales." },
+        { id: "anti-acne", name: "Soin Visage Anti-Acné Intensif", category: "skin", duration: "40 min", price: "85 €", keywords: "skin acne imperfections pores oily targeted", benefits: ["Imperfections", "Clarté", "Soin ciblé"], why: "Soin à envisager pour accompagner une peau sujette aux imperfections, sous réserve de confirmer l’état de la peau sur place." },
+        { id: "peeling", name: "Peeling aux Acides de Fruits", category: "skin", duration: "1h", price: "110 €", keywords: "skin glow dullness texture progressive targeted pores", benefits: ["Grain affiné", "Teint uniforme", "Éclat"], why: "Soin utile pour le teint terne, le grain irrégulier et l’éclat, avec précautions selon sensibilité et exposition solaire." },
+        { id: "lifting", name: "Lifting Coréen", category: "skin", duration: "1h", price: "110 €", keywords: "skin firmness wrinkles event glow expert", benefits: ["Effet liftant", "Traits reposés", "Tonus"], why: "Soin esthétique à envisager si l’objectif est un visage plus tonique et des traits visuellement reposés." },
+        { id: "radio", name: "Contour Collagen Boost", category: "skin", duration: "30-50 min", price: "Dès 95 €", keywords: "skin firmness wrinkles progressive expert deep targeted", benefits: ["Fermeté", "Collagène", "Contours"], why: "Soin technique à envisager pour un objectif fermeté et contours, après vérification des contre-indications." },
+        { id: "micro", name: "Micro-needling Visage Classique + LED", category: "skin", duration: "45 min", price: "90 €", keywords: "skin texture pores firmness progressive targeted", benefits: ["Texture", "Régénération", "LED"], why: "Soin progressif à envisager pour texture, pores et qualité de peau, avec précautions importantes selon sensibilité." },
+        { id: "blowtox", name: "Soin Blowtox express MYRIAM K", category: "hair", duration: "20 min", price: "Sur consultation", keywords: "hair dry brittle shine quick frizz damaged dullness event", benefits: ["Brillance", "Souplesse", "Discipline"], why: "Soin capillaire à envisager pour cheveux secs, ternes, sensibilisés ou difficiles à discipliner." },
+        { id: "bot-capillaire", name: "Soin bot capillaire", category: "hair", duration: "3h", price: "Sur consultation", keywords: "hair dry brittle damaged deep progressive texture frizz", benefits: ["Réparation", "Souplesse", "Soin profond"], why: "Protocole à envisager quand la fibre paraît fragilisée, cassante ou en besoin de soin profond." },
+        { id: "lissage", name: "Lissage bresilien sans formol", category: "hair", duration: "3h", price: "à partir de 100 €", keywords: "hair frizz lissage smoothing discipline volume progressive", benefits: ["Discipline", "Lissage", "Confort coiffage"], why: "Service technique à envisager si le besoin principal est de réduire les frisottis, discipliner la fibre et faciliter le coiffage." },
+        { id: "couleur-patine", name: "Couleur & patine", category: "hair", duration: "Sur diagnostic", price: "Sur consultation", keywords: "hair color patine dullness glow event tone balayage", benefits: ["Reflet", "Uniformité", "Éclat cheveux"], why: "Prestation à envisager si la demande concerne l’éclat de la couleur, les reflets, la patine ou une transformation à confirmer par diagnostic." },
+        { id: "lashes", name: "Réhaussement de cils enrichie à la Kératine avec teinture", category: "eyes", duration: "1h", price: "80 €", keywords: "eyes lashes quick event tired natural density keratin", benefits: ["Regard ouvert", "Effet mascara", "Kératine"], why: "Service utile pour ouvrir le regard et intensifier les cils de façon naturelle." },
+        { id: "brow", name: "Browlift simple", category: "eyes", duration: "45 min", price: "55 €", keywords: "eyes brows density line natural tired structure", benefits: ["Sourcils structurés", "Regard ouvert", "Naturel"], why: "Service à envisager si la demande concerne la ligne, la densité ou la structure des sourcils." },
+        { id: "restructuration", name: "Restructuration Sourcils + Teinture", category: "eyes", duration: "30 min", price: "35 €", keywords: "eyes brows line density sparse teinture structure", benefits: ["Ligne nette", "Intensité", "Précision"], why: "Service à envisager quand les sourcils manquent de définition, d’intensité ou d’équilibre visuel." },
+        { id: "extensions-cils", name: "cil a cil", category: "eyes", duration: "2h 30min", price: "68 €", keywords: "eyes lashes density length event tired volume", benefits: ["Longueur", "Densité", "Regard intensifié"], why: "Service à envisager si l’objectif est d’ajouter longueur ou densité aux cils, avec un rendu plus présent qu’un rehaussement." },
+        { id: "semi-mains", name: "Vernis semi-permanent mains", category: "nails", duration: "45 min", price: "35 €", keywords: "nails vernis color hold event hands natural finition", benefits: ["Tenue", "Couleur", "Finition nette"], why: "Service à envisager pour une finition propre et durable lorsque la forme naturelle de l’ongle est suffisante." },
+        { id: "manucure-express", name: "Manucure express mains ou pieds", category: "nails", duration: "30 min", price: "25 €", keywords: "nails cuticles shape natural quick hands feet first", benefits: ["Mise en forme", "Cuticules", "Naturel"], why: "Service à envisager pour nettoyer la forme, les contours et l’aspect général sans transformation forte." },
+        { id: "soin-mains", name: "Soin des Mains + Vernis base", category: "nails", duration: "1h", price: "56 €", keywords: "nails hands dryness brittle care natural gentle hydration", benefits: ["Soin mains", "Base protectrice", "Confort"], why: "Soin à envisager si les mains ou les ongles paraissent secs, fragiles ou en besoin d’un entretien doux." },
+        { id: "soin-pieds", name: "Soin beauté des Pieds avec Soin Hydratant + Sel Marin", category: "nails", duration: "1h", price: "57 €", keywords: "nails feet dryness callosities tired hydration care relaxation", benefits: ["Hydratation", "Pieds doux", "Confort"], why: "Soin à envisager pour pieds secs, fatigués ou en besoin d’une remise en beauté plus complète." },
+        { id: "gelx", name: "Pose Gel-X", category: "nails", duration: "1h30", price: "Dès 60 €", keywords: "nails brittle broken shape length event extension gelx", benefits: ["Longueur", "Forme", "Finition nette"], why: "Service à envisager pour améliorer la forme, la longueur et l’aspect esthétique des ongles." },
+        { id: "vernis-classique", name: "Manucure + vernis classique", category: "nails", duration: "35 min", price: "37 €", keywords: "nails vernis classic quick event natural color", benefits: ["Couleur ponctuelle", "Mise en beauté", "Finition simple"], why: "Service à envisager pour une mise en beauté ponctuelle, simple et naturelle." },
+        { id: "massage", name: "Massage Signature sur mesure", category: "relaxation", duration: "50 min", price: "75 €", keywords: "relaxation stress tension fatigue comfort", benefits: ["Détente", "Tensions", "Sur mesure"], why: "Service à envisager quand le besoin principal est la détente, les tensions ou le confort global." }
+      ];
+
+      const state = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '{"started":false,"step":0,"answers":{},"note":"","image":""}');
+      const $ = (selector) => document.querySelector(selector);
+      const introPanel = $("#introPanel");
+      const diagnosticPanel = $("#diagnostic");
+      const startButton = $("#startButton");
+      const steps = [...document.querySelectorAll(".step")];
+      const stepTitle = $("#stepTitle");
+      const stepHint = $("#stepHint");
+      const progressLabel = $("#progressLabel");
+      const progressBar = $("#progressBar");
+      const backButton = $("#backButton");
+      const nextButton = $("#nextButton");
+      const aiStatus = $("#aiStatus");
+      const result = $("#result");
+      const services = $("#services");
+      const profileBadge = $("#profileBadge");
+      const profileTitle = $("#profileTitle");
+      const profileText = $("#profileText");
+      const restartButton = $("#restartButton");
+      const specialistButton = $("#specialistButton");
+      const specialistActions = $("#specialistActions");
+      const photoInput = $("#photoInput");
+      const photoPreview = $("#photoPreview");
+      const note = $("#note");
+      const fields = {};
+
+      const copy = [
+        ["Profil", "Pour ajuster le niveau de soin."],
+        ["Zone", "Une demande principale, puis une photo ciblée."],
+        ["Signes", "Les indices les plus visibles."],
+        ["Détails", "La précision qui change le conseil."],
+        ["Habitudes", "Pour orienter le conseil."],
+        ["Objectif", "Résultat, rythme et précautions."],
+        ["Photo", "La zone exacte et votre message."]
+      ];
+
+      function save() {
+        state.note = note.value.trim();
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function requiredForStep(step) {
+        if (step === 0) return Boolean(state.answers.ageRange);
+        if (step === 1) return Boolean(state.answers.area);
+        if (step === 2) return Array.isArray(state.answers.concerns) && state.answers.concerns.length > 0;
+        if (step === 3) return Array.isArray(state.answers.details) && state.answers.details.length > 0;
+        if (step === 4) return Boolean(state.answers.routine && state.answers.maintenance);
+        if (step === 5) return Boolean(state.answers.goal && state.answers.duration);
+        if (step === 6) return true;
+        return true;
+      }
+
+      function currentArea() {
+        return state.answers.area || "not-sure";
+      }
+
+      function optionMatchesArea(option) {
+        const areas = option.dataset.areas;
+        if (!areas) return true;
+        return areas.split(/\s+/).includes(currentArea());
+      }
+
+      function clearHiddenAnswers() {
+        document.querySelectorAll(".choice-grid, .option-grid").forEach((group) => {
+          const key = group.dataset.key;
+          if (!key || !state.answers[key]) return;
+          if (Array.isArray(state.answers[key])) {
+            state.answers[key] = state.answers[key].filter((value) => {
+              const selected = group.querySelector(`[data-value="${CSS.escape(value)}"]`);
+              return selected && optionMatchesArea(selected);
+            });
+            if (!state.answers[key].length) delete state.answers[key];
+            return;
+          }
+          const selected = group.querySelector(`[data-value="${CSS.escape(state.answers[key])}"]`);
+          if (selected && !optionMatchesArea(selected)) delete state.answers[key];
+        });
+      }
+
+      function tokens() {
+        return [
+          ...Object.values(state.answers).flatMap((value) => Array.isArray(value) ? value : [value]),
+          state.note
+        ].join(" ").toLowerCase().split(/\s+/).filter(Boolean);
+      }
+
+      function inferCategory() {
+        const text = tokens().join(" ");
+        if (state.answers.area && state.answers.area !== "not-sure") return state.answers.area;
+        if (/(cheveux|hair|frizz|cuir|brillance)/.test(text)) return "hair";
+        if (/(ongle|ongles|nails|vernis|cassants)/.test(text)) return "nails";
+        if (/(cils|sourcils|regard|brows|lashes)/.test(text)) return "eyes";
+        if (/(massage|stress|tension|fatigue|détente|detente)/.test(text)) return "relaxation";
+        return "skin";
+      }
+
+      function localRecommendations() {
+        const selected = inferCategory();
+        const allTokens = tokens();
+        const pool = serviceCatalog.filter((service) => service.category === selected);
+        const candidates = pool.length ? pool : serviceCatalog;
+        return candidates.map((service) => {
+          const keywords = new Set(service.keywords.split(/\s+/));
+          let score = service.category === selected ? 25 : 0;
+          score += allTokens.reduce((sum, token) => sum + (keywords.has(token) ? 7 : 0), 0);
+          return { ...service, score };
+        }).sort((a, b) => b.score - a.score || a.name.localeCompare(b.name)).slice(0, 3);
+      }
+
+      function profileFallback(list) {
+        const selected = inferCategory();
+        const labels = {
+          skin: ["Lecture peau", "Les réponses et la photo orientent vers une analyse esthétique de l’éclat, de la texture, du confort et des besoins de soin."],
+          hair: ["Lecture cheveux", "Les réponses et la photo orientent vers une analyse esthétique de la fibre, de la brillance, de la casse ou du cuir chevelu."],
+          nails: ["Lecture ongles", "Les réponses et la photo orientent vers une analyse esthétique de la forme, de la fragilité, de la surface et de la finition."],
+          eyes: ["Lecture regard", "Les réponses et la photo orientent vers une analyse esthétique de la ligne, de la densité et de l’intensité du regard."],
+          relaxation: ["Lecture confort", "Les réponses orientent vers des soins de détente, de récupération et de confort global."]
+        };
+        return labels[selected] || ["Diagnostic beauté", list[0]?.why || "Voici une première lecture esthétique à confirmer avec Lazoya."];
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      async function aiRecommend() {
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), 18000);
+        const response = await fetch("/api/beauty-advisor", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            answers: state.answers,
+            note: state.note,
+            imageDataUrl: state.image,
+            services: serviceCatalog
+          }),
+          signal: controller.signal
+        });
+        window.clearTimeout(timeout);
+        if (!response.ok) throw new Error("AI endpoint unavailable");
+        return response.json();
+      }
+
+      function normalize(data) {
+        const fallback = localRecommendations();
+        if (!data || !Array.isArray(data.recommendations)) return fallback;
+        const byId = new Map(serviceCatalog.map((service) => [service.id, service]));
+        const list = data.recommendations
+          .map((item) => {
+            const service = byId.get(item.id);
+            return service ? { ...service, why: item.why || service.why } : null;
+          })
+          .filter(Boolean)
+          .slice(0, 3);
+        return list.length ? list : fallback;
+      }
+
+      function renderResult(data, source) {
+        const list = normalize(data);
+        const fallbackProfile = profileFallback(list);
+        profileBadge.textContent = source === "ai" ? "Diagnostic beauté" : "Aperçu diagnostic";
+        profileTitle.textContent = data?.profileTitle || fallbackProfile[0];
+        profileText.textContent = data?.profileSummary || fallbackProfile[1];
+        services.innerHTML = list.map((service) => `
+          <article class="service-result">
+            <div class="service-top">
+              <strong>${escapeHtml(service.name)}</strong>
+              <em>${escapeHtml([service.duration, service.price].filter(Boolean).join(" · "))}</em>
+            </div>
+            <p class="result-text">${escapeHtml(service.why)}</p>
+            <div class="chips">${(service.benefits || []).map((benefit) => `<span>${escapeHtml(benefit)}</span>`).join("")}</div>
+          </article>
+        `).join("");
+        aiStatus.textContent = source === "ai"
+          ? "Diagnostic terminé."
+          : "Aperçu diagnostic affiché.";
+        result.classList.add("visible");
+        result.scrollIntoView({ block: "start", behavior: "smooth" });
+      }
+
+      function render() {
+        save();
+        clearHiddenAnswers();
+        introPanel.classList.toggle("hidden", state.started);
+        diagnosticPanel.classList.toggle("hidden", !state.started);
+        document.querySelector(".diagnostic-main").classList.toggle("intro-backdrop", !state.started);
+        steps.forEach((step, index) => {
+          step.classList.toggle("active", index === state.step);
+          step.classList.toggle("needs-answer", state.validationStep === index && !requiredForStep(index));
+        });
+        stepTitle.textContent = copy[state.step][0];
+        stepHint.textContent = copy[state.step][1];
+        progressLabel.textContent = `Étape ${state.step + 1} / ${steps.length}`;
+        progressBar.style.width = `${((state.step + 1) / steps.length) * 100}%`;
+        backButton.disabled = state.step === 0;
+        nextButton.textContent = state.step === steps.length - 1 ? "Obtenir mon diagnostic" : "Continuer";
+        nextButton.disabled = false;
+        result.classList.remove("visible");
+
+        document.querySelectorAll(".choice-grid").forEach((group) => {
+          const answer = state.answers[group.dataset.key];
+          const answered = Array.isArray(answer) ? answer.length > 0 : Boolean(answer);
+          group.classList.toggle("answered", answered);
+          group.querySelectorAll(".choice").forEach((choice) => {
+            const visible = optionMatchesArea(choice);
+            choice.classList.toggle("hidden-option", !visible);
+            const selected = Array.isArray(answer) ? answer.includes(choice.dataset.value) : answer === choice.dataset.value;
+            choice.setAttribute("aria-pressed", String(selected));
+          });
+        });
+
+        document.querySelectorAll(".option-grid").forEach((group) => {
+          const key = group.dataset.key;
+          const answer = state.answers[key];
+          const answered = Boolean(answer);
+          group.closest(".mini-question")?.classList.toggle("answered", answered);
+          group.querySelectorAll(".option-choice").forEach((choice) => {
+            const visible = optionMatchesArea(choice);
+            choice.classList.toggle("hidden-option", !visible);
+            choice.setAttribute("aria-pressed", String(answer === choice.dataset.value));
+          });
+        });
+      }
+
+      startButton.addEventListener("click", () => {
+        state.started = true;
+        render();
+        diagnosticPanel.scrollIntoView({ block: "start", behavior: "smooth" });
+      });
+
+      document.addEventListener("click", (event) => {
+        const choice = event.target.closest(".choice, .option-choice");
+        if (!choice) return;
+        const group = choice.closest(".choice-grid, .option-grid");
+        if (choice.classList.contains("hidden-option")) return;
+        const key = group.dataset.key;
+        if (group.dataset.mode === "multi") {
+          const current = Array.isArray(state.answers[key]) ? [...state.answers[key]] : [];
+          state.answers[key] = current.includes(choice.dataset.value)
+            ? current.filter((item) => item !== choice.dataset.value)
+            : [...current, choice.dataset.value];
+        } else {
+          state.answers[key] = choice.dataset.value;
+        }
+        if (key === "area") {
+          delete state.answers.recentTreatment;
+          delete state.answers.caution;
+          delete state.answers.goal;
+        }
+        state.validationStep = null;
+        render();
+      });
+
+      note.addEventListener("input", () => {
+        state.validationStep = null;
+        render();
+      });
+
+      photoInput.addEventListener("change", () => {
+        const file = photoInput.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          state.image = reader.result;
+          photoPreview.src = state.image;
+          photoPreview.classList.add("visible");
+          render();
+        };
+        reader.readAsDataURL(file);
+      });
+
+      backButton.addEventListener("click", () => {
+        if (state.step === 0) return;
+        state.step -= 1;
+        state.validationStep = null;
+        render();
+      });
+
+      nextButton.addEventListener("click", async () => {
+        if (!requiredForStep(state.step)) {
+          state.validationStep = state.step;
+          render();
+          return;
+        }
+
+        if (state.step < steps.length - 1) {
+          state.step += 1;
+          state.validationStep = null;
+          render();
+          return;
+        }
+
+        save();
+        nextButton.disabled = true;
+        aiStatus.textContent = "Analyse en cours à partir de vos réponses et de la photo...";
+        try {
+          const data = await aiRecommend();
+          renderResult(data, "ai");
+        } catch {
+          renderResult(null, "local");
+        } finally {
+          nextButton.disabled = false;
+        }
+      });
+
+      restartButton.addEventListener("click", () => {
+        sessionStorage.removeItem(STORAGE_KEY);
+        state.started = false;
+        state.step = 0;
+        state.answers = {};
+        state.validationStep = null;
+        state.note = "";
+        state.image = "";
+        note.value = "";
+        photoInput.value = "";
+        photoPreview.removeAttribute("src");
+        photoPreview.classList.remove("visible");
+        render();
+        document.querySelector("#diagnostic").scrollIntoView({ block: "start", behavior: "smooth" });
+      });
+
+      specialistButton.addEventListener("click", () => {
+        const open = !specialistActions.classList.contains("visible");
+        specialistActions.classList.toggle("visible", open);
+        specialistButton.setAttribute("aria-expanded", String(open));
+      });
+
+      const menuButton = document.querySelector(".menu-button");
+      const topbar = document.querySelector(".topbar");
+      menuButton.addEventListener("click", () => {
+        const open = !topbar.classList.contains("menu-active");
+        topbar.classList.toggle("menu-active", open);
+        document.body.classList.toggle("menu-open", open);
+        menuButton.setAttribute("aria-expanded", String(open));
+      });
+
+      note.value = state.note || "";
+      if (state.image) {
+        photoPreview.src = state.image;
+        photoPreview.classList.add("visible");
+      }
+      render();
+    </script>
+  </body>
+</html>
