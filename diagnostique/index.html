@@ -1232,7 +1232,7 @@
       function normalize(data) {
         const fallback = localRecommendations();
         if (!data || !Array.isArray(data.recommendations)) return fallback;
-        if (["medical_referral", "photo_analysis_unavailable"].includes(data.imageUse)) return [];
+        if (data.imageUse === "photo_analysis_unavailable") return [];
         const byId = new Map(serviceCatalog.map((service) => [service.id, service]));
         const list = data.recommendations
           .map((item) => {
@@ -1262,11 +1262,11 @@
         `).join("") : `
           <article class="service-result">
             <div class="service-top">
-              <strong>${data?.imageUse === "photo_analysis_unavailable" ? "Analyse photo à relancer" : "Aucun soin Lazoya recommandé automatiquement"}</strong>
+              <strong>${data?.imageUse === "photo_analysis_unavailable" ? "Analyse photo à relancer" : "Aucun soin Lazoya adapté automatiquement"}</strong>
             </div>
             <p class="result-text">${escapeHtml(data?.imageUse === "photo_analysis_unavailable"
               ? "La photo n’a pas pu être analysée par l’IA. Relancez le diagnostic ou demandez une confirmation directe à l’équipe Lazoya."
-              : "Lorsque le besoin semble médical ou hors soin esthétique, Lazoya ne propose pas de prescription médicale. Un avis médical peut être plus adapté avant de choisir un soin.")}</p>
+              : (data?.noServiceReason || "Lorsque le besoin semble médical ou hors soin esthétique, Lazoya ne propose pas de prescription médicale. Un avis médical peut être plus adapté avant de choisir un soin."))}</p>
           </article>
         `;
         aiStatus.textContent = source === "ai"

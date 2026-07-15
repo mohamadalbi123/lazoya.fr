@@ -158,16 +158,16 @@ module.exports = async function handler(request, response) {
       type: "input_text",
       text: JSON.stringify({
         task: imageDataUrl
-          ? "Assess whether the user's photo is relevant to the selected beauty zone, then use the photo only if it is relevant and useful. Propose the service or protocol types that fit the concern."
+          ? "Read the user's photo and questionnaire together. Explain what the photo suggests at a cosmetic level, explain what the answers suggest, then propose Lazoya services that fit. If the photo appears medical or outside beauty care, say that clearly and still suggest Lazoya services only when they are appropriate based on the answers and only after medical clearance or team confirmation."
           : "Propose the service or protocol types that fit the user's beauty concern.",
         strictRules: [
           "Only propose services from serviceCatalog, by exact id and exact name.",
           "Write as an advisory beauty diagnostic, not as advertising and not as a booking push.",
           "Before using a photo, check whether it visibly shows the selected zone: skin on face/body/hands, hair/scalp, nails/cuticles/hands/feet, cils/sourcils, or body/relaxation context. If the image is irrelevant, unclear, filtered, too dark, not a body/beauty image, or shows a clearly different zone than answers.area, do not use it for visual conclusions.",
-          "If the photo is not relevant or not readable, say this gently in profileSummary and base the diagnostic only on the questionnaire answers and note.",
+          "If the photo is not relevant or not readable, say this gently in profileSummary, summarize the answer-based need, and recommend based only on the questionnaire answers and note.",
           "If no photo is provided, do not mention image, photo, upload, relevance, or readability. Simply base the result on answers and note.",
           "If a photo is relevant, use visible cosmetic cues plus the questionnaire answers to orient the recommendation. Read the image carefully before choosing services.",
-          "Do not diagnose medical conditions, prescribe medication, or claim certainty. If the image suggests a medical concern or a condition outside Lazoya beauty services, return no service recommendations and gently say Lazoya does not offer medical prescriptions; in this case it may be better to schedule an appointment with a doctor, dermatologist, or pharmacist depending on severity.",
+          "Do not diagnose medical conditions, prescribe medication, or claim certainty. If the image suggests a medical concern or a condition outside Lazoya beauty services, say Lazoya does not offer medical prescriptions and that it may be better to schedule an appointment with a doctor, dermatologist, or pharmacist depending on severity. You may still recommend Lazoya services from the answer-based concern if they are relevant and clearly framed as after medical clearance/team confirmation.",
           "Prioritize the user's selected category first. Do not recommend a different category unless the selected category is not-sure, missing, or no service fits.",
           "Use serviceCatalog as your Lazoya service knowledge base. It contains the service names, categories, benefits, durations, prices, and matching keywords available at Lazoya.",
           "Never recommend services outside the selected category when answers.area is skin, hair, nails, eyes, or relaxation. Only cross-category recommendations are allowed when answers.area is not-sure.",
@@ -175,7 +175,7 @@ module.exports = async function handler(request, response) {
           "If answers.area is nails, focus only on nail, hand, foot, cuticle, polish, Gel-X, semi-permanent, manicure, and pedicure logic. Do not discuss hair color, skin glow, lashes, brows, or massage unless the user selected not-sure.",
           "If answers.area is hair, focus only on hair fiber, scalp comfort, shine, frizz, lissage, care, color/patine, and styling logic.",
           "If answers.area is skin, use relevant visible skin close-ups, including face, neck, hands, or body skin. Focus only on cosmetic texture, hydration, visible dryness, redness, acne-like imperfections, glow, firmness, and precautions.",
-          "If the photo suggests sunburn, peeling skin, strong redness, heat, irritation, open lesions, blistering, or compromised skin barrier, do not recommend peeling, microneedling, radiofrequency, firming/lifting protocols, exfoliation, or other active treatments. If a gentle Lazoya service fits after the area has calmed, recommend it cautiously. If the signs look severe, painful, blistered, infected, spreading, or medical, return no service recommendations and advise doctor/pharmacist guidance.",
+          "If the photo suggests sunburn, peeling skin, strong redness, heat, irritation, open lesions, blistering, or compromised skin barrier, do not recommend peeling, microneedling, radiofrequency, firming/lifting protocols, exfoliation, or other active treatments for the visible issue. If the answers suggest a gentle Lazoya service that fits after the area has calmed or after professional confirmation, recommend it cautiously. If no beauty service is appropriate, return an empty recommendations array.",
           "If answers.area is eyes, focus only on lashes, brows, eye-area beauty, density, line, structure, tint, browlift, and extensions.",
           "If answers.area is relaxation, focus only on tension, fatigue, comfort, body massage, and relaxation needs.",
           "Always write profileSummary and why texts in French.",
@@ -190,8 +190,10 @@ module.exports = async function handler(request, response) {
         ],
         outputShape: {
           profileTitle: "short beauty profile title",
-          profileSummary: "one or two sentences in French. Mention photo relevance only if an uploaded photo exists and was not relevant or not readable.",
+          profileSummary: "two or three short sentences in French: first summarize what the image appears to show or whether it is irrelevant/unreadable; then summarize what the questionnaire answers suggest; then mention if medical confirmation is recommended.",
           imageUse: "one of: relevant_photo_used, photo_ignored_irrelevant, photo_ignored_unclear, medical_referral, no_photo",
+          imageSummary: "short French sentence about what the photo appears to show, or why it was not used",
+          answerSummary: "short French sentence about what the user's answers and note suggest",
           beautyScore: "integer between 78 and 96, purely playful",
           recommendations: [
             {
@@ -276,7 +278,7 @@ module.exports = async function handler(request, response) {
       }));
 
     const imageUse = parsed.imageUse || (imageDataUrl ? "relevant_photo_used" : "no_photo");
-    const noServiceNeeded = imageUse === "medical_referral" || parsed.noServiceReason;
+    const noServiceNeeded = Boolean(parsed.noServiceReason) && safeRecommendations.length === 0;
     const fallbackData = fallbackRecommendation(allowedServices, body.answers, body.note, {
       hasImage: Boolean(imageDataUrl)
     });
@@ -290,8 +292,11 @@ module.exports = async function handler(request, response) {
 
     sendJson(response, 200, {
       profileTitle: parsed.profileTitle || "Services adaptés à vos réponses",
-      profileSummary: parsed.noServiceReason || parsed.profileSummary || fallbackData.profileSummary,
+      profileSummary: parsed.profileSummary || parsed.noServiceReason || fallbackData.profileSummary,
       imageUse,
+      imageSummary: parsed.imageSummary || "",
+      answerSummary: parsed.answerSummary || "",
+      noServiceReason: parsed.noServiceReason || "",
       beautyScore: Number(parsed.beautyScore) || 86,
       recommendations: noServiceNeeded ? completedRecommendations : (completedRecommendations.length ? completedRecommendations : fallbackList)
     });
