@@ -1,4 +1,6 @@
 const OPENAI_API_URL = "https://api.openai.com/v1/responses";
+const DEFAULT_OPENAI_MODEL = "gpt-5-mini";
+const OPENAI_MODEL_FALLBACKS = ["gpt-4o-mini", "gpt-4.1-mini"];
 
 function sendJson(response, statusCode, payload) {
   response.statusCode = statusCode;
@@ -115,11 +117,66 @@ function extractJson(text) {
   }
 }
 
+function uniqueModels(preferredModel) {
+  return [preferredModel || DEFAULT_OPENAI_MODEL, ...OPENAI_MODEL_FALLBACKS]
+    .filter(Boolean)
+    .filter((model, index, models) => models.indexOf(model) === index);
+}
+
+function parseJsonSafely(text) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+}
+
+function isModelAccessError(status, data) {
+  const message = String(data?.error?.message || "").toLowerCase();
+  return (status === 400 || status === 404) && (
+    data?.error?.code === "model_not_found" ||
+    message.includes("must be verified") ||
+    message.includes("does not exist") ||
+    message.includes("model")
+  );
+}
+
+async function callOpenAI(apiKey, preferredModel, payload) {
+  const models = uniqueModels(preferredModel);
+  let lastResult = null;
+
+  for (const model of models) {
+    const upstream = await fetch(OPENAI_API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ ...payload, model })
+    });
+    const raw = await upstream.text();
+    const data = parseJsonSafely(raw);
+    const result = {
+      ok: upstream.ok,
+      status: upstream.status,
+      model,
+      raw,
+      data,
+      errorMessage: data?.error?.message || ""
+    };
+    lastResult = result;
+    if (upstream.ok) return result;
+    if (!isModelAccessError(upstream.status, data)) return result;
+  }
+
+  return lastResult;
+}
+
 module.exports = async function handler(request, response) {
   if (request.method === "GET") {
     const url = new URL(request.url || "/", "https://www.lazoya.fr");
     const apiKey = process.env.OPENAI_API_KEY;
-    const model = process.env.OPENAI_MODEL || "gpt-5-mini";
+    const model = process.env.OPENAI_MODEL || DEFAULT_OPENAI_MODEL;
     if (url.searchParams.get("probe") === "openai") {
       if (!apiKey) {
         sendJson(response, 200, {
@@ -133,38 +190,25 @@ module.exports = async function handler(request, response) {
       }
 
       try {
-        const upstream = await fetch(OPENAI_API_URL, {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${apiKey}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            model,
-            input: "Return only JSON: {\"ok\":true}",
-            text: {
-              format: {
-                type: "json_object"
-              }
+        const result = await callOpenAI(apiKey, model, {
+          input: "Return only JSON: {\"ok\":true}",
+          text: {
+            format: {
+              type: "json_object"
             }
-          })
+          }
         });
-        const raw = await upstream.text();
-        let parsed = null;
-        try {
-          parsed = JSON.parse(raw);
-        } catch {
-          parsed = null;
-        }
         sendJson(response, 200, {
           ok: true,
           openaiConfigured: true,
           model,
-          probeOk: upstream.ok,
-          upstreamStatus: upstream.status,
-          upstreamError: parsed?.error?.message || "",
-          upstreamErrorType: parsed?.error?.type || "",
-          upstreamErrorCode: parsed?.error?.code || ""
+          activeModel: result?.model || model,
+          fallbackUsed: Boolean(result?.model && result.model !== model),
+          probeOk: Boolean(result?.ok),
+          upstreamStatus: result?.status || 0,
+          upstreamError: result?.data?.error?.message || "",
+          upstreamErrorType: result?.data?.error?.type || "",
+          upstreamErrorCode: result?.data?.error?.code || ""
         });
       } catch (error) {
         sendJson(response, 200, {
@@ -194,7 +238,7 @@ module.exports = async function handler(request, response) {
   }
 
   const apiKey = process.env.OPENAI_API_KEY;
-  const model = process.env.OPENAI_MODEL || "gpt-5-mini";
+  const model = process.env.OPENAI_MODEL || DEFAULT_OPENAI_MODEL;
   const body = request.body || null;
 
   if (!body || !Array.isArray(body.services)) {
@@ -299,38 +343,30 @@ module.exports = async function handler(request, response) {
   };
 
   try {
-    const upstream = await fetch(OPENAI_API_URL, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model,
-        input: [
-          {
-            role: "system",
-            content: "You are Lazoya Beauty Advisor. You are warm, concise, careful, and advisory. You propose fitting service or protocol types from the provided catalog by exact name. You do not write sales copy, do not push booking, and do not give medical diagnosis."
-          },
-          prompt
-        ],
-        text: {
-          format: {
-            type: "json_object"
-          }
+    const result = await callOpenAI(apiKey, model, {
+      input: [
+        {
+          role: "system",
+          content: "You are Lazoya Beauty Advisor. You are warm, concise, careful, and advisory. You propose fitting service or protocol types from the provided catalog by exact name. You do not write sales copy, do not push booking, and do not give medical diagnosis."
+        },
+        prompt
+      ],
+      text: {
+        format: {
+          type: "json_object"
         }
-      })
+      }
     });
 
-    if (!upstream.ok) {
-      console.warn("Beauty advisor fallback: OpenAI request failed", upstream.status, await upstream.text().catch(() => ""));
+    if (!result?.ok) {
+      console.warn("Beauty advisor fallback: OpenAI request failed", result?.status || 0, result?.errorMessage || result?.raw || "");
       sendJson(response, 200, imageDataUrl
         ? photoAnalysisUnavailable()
         : fallbackRecommendation(services, body.answers, body.note, { hasImage: false }));
       return;
     }
 
-    const data = await upstream.json();
+    const data = result.data;
     const outputText = data.output_text || data.output?.flatMap((item) => item.content || []).map((item) => item.text || "").join("");
     const parsed = extractJson(outputText);
 
