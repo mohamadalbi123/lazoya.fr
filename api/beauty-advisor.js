@@ -66,6 +66,10 @@ function fallbackRecommendation(services, answers = {}, note = "", options = {})
     const gentlePool = pool.filter((service) => !activeSkinServiceIds.has(service.id));
     if (gentlePool.length) pool = gentlePool;
   }
+  if (selectedArea === "hair" && hasPregnancyPrecaution(answers, note)) {
+    const pregnancySafePool = pool.filter((service) => !["couleur-patine", "lissage"].includes(service.id));
+    if (pregnancySafePool.length) pool = pregnancySafePool;
+  }
 
   const ranked = pool
     .map((service) => {
@@ -115,6 +119,14 @@ function extractJson(text) {
     if (!match) throw new Error("No JSON object in model response");
     return JSON.parse(match[0]);
   }
+}
+
+function diagnosticText(answers = {}, note = "") {
+  return `${Object.values(answers).flat().filter(Boolean).join(" ")} ${String(note || "")}`.toLowerCase();
+}
+
+function hasPregnancyPrecaution(answers = {}, note = "") {
+  return /\b(grossesse|enceinte|pregnan|pregnancy|allaitement|breastfeeding)\b/.test(diagnosticText(answers, note));
 }
 
 function uniqueModels(preferredModel) {
@@ -290,6 +302,7 @@ module.exports = async function handler(request, response) {
           "Rank by actual fit with age range, selected zone, concerns, visible details, current routine, maintenance preference, recent treatment, objective, duration, precautions, user message, and photo if present. Do not optimize for selling.",
           "If answers.area is nails, focus only on nail, hand, foot, cuticle, polish, Gel-X, semi-permanent, manicure, and pedicure logic. Do not discuss hair color, skin glow, lashes, brows, or massage unless the user selected not-sure.",
           "If answers.area is hair, focus only on hair fiber, scalp comfort, shine, frizz, lissage, care, color/patine, and styling logic.",
+          "If pregnancy or breastfeeding is mentioned, do not automatically recommend color/patine, lissage, or chemical/technical hair transformations. Prefer softer care-oriented recommendations when available, and clearly say Lazoya should confirm product suitability before any service.",
           "If answers.area is skin, use relevant visible skin close-ups, including face, neck, hands, or body skin. Focus only on cosmetic texture, hydration, visible dryness, redness, acne-like imperfections, glow, firmness, and precautions.",
           "If the photo suggests sunburn, peeling skin, strong redness, heat, irritation, open lesions, blistering, or compromised skin barrier, do not recommend peeling, microneedling, radiofrequency, firming/lifting protocols, exfoliation, or other active treatments for the visible issue. If the answers suggest a gentle Lazoya service that fits after the area has calmed or after professional confirmation, recommend it cautiously. If no beauty service is appropriate, return an empty recommendations array.",
           "If answers.area is eyes, focus only on lashes, brows, eye-area beauty, density, line, structure, tint, browlift, and extensions.",
@@ -301,7 +314,7 @@ module.exports = async function handler(request, response) {
           "Never invent service names, durations, prices, benefits, or booking claims.",
           "Do not mention prices or push booking in the recommendation text.",
           "Do not give medical advice.",
-          "Mention doctor, dermatologist, pharmacist, medical confirmation, or medical clearance only when the image or answers suggest a medical concern, pain, infection, swelling, lesion, injury, active irritation, pregnancy/medication/allergy precaution, or another contraindication. Do not add medical confirmation language to ordinary beauty concerns such as dry hair, frizz, dullness, broken hair, nail shape, lash/brow style, or relaxation needs.",
+          "Mention doctor, dermatologist, pharmacist, medical confirmation, or medical clearance only when the image or answers suggest a medical concern, pain, infection, swelling, lesion, injury, active irritation, medication/allergy precaution, or another contraindication. For pregnancy or breastfeeding, say Lazoya should confirm product/service suitability; do not imply the beauty concern itself needs medical confirmation unless a medical-looking sign is present.",
           "If the user mentions or the image suggests irritation, active lesions, peeling, sunburn, pregnancy, medication, allergies, or uncertainty, include a gentle note to confirm with the Lazoya team before any treatment.",
           "Return JSON only, with no markdown."
         ],
@@ -373,9 +386,14 @@ module.exports = async function handler(request, response) {
 
     const selectedArea = body.answers?.area;
     const areaLocked = ["skin", "hair", "nails", "eyes", "relaxation"].includes(selectedArea);
-    const allowedServices = areaLocked
+    let allowedServices = areaLocked
       ? services.filter((service) => service.category === selectedArea)
       : services;
+    const pregnancyPrecaution = hasPregnancyPrecaution(body.answers, body.note);
+    const pregnancyBlockedHairServices = new Set(["couleur-patine", "lissage"]);
+    if (pregnancyPrecaution && selectedArea === "hair") {
+      allowedServices = allowedServices.filter((service) => !pregnancyBlockedHairServices.has(service.id));
+    }
     const byId = new Map(allowedServices.map((service) => [service.id, service]));
     const safeRecommendations = (parsed.recommendations || [])
       .map((recommendation) => byId.get(recommendation.id))
@@ -383,7 +401,9 @@ module.exports = async function handler(request, response) {
       .slice(0, 3)
       .map((service) => ({
         ...service,
-        why: parsed.recommendations.find((item) => item.id === service.id)?.why || service.why
+        why: pregnancyPrecaution && service.category === "hair"
+          ? `${parsed.recommendations.find((item) => item.id === service.id)?.why || service.why} À confirmer avec Lazoya pour vérifier que les produits utilisés conviennent pendant la grossesse ou l’allaitement.`
+          : parsed.recommendations.find((item) => item.id === service.id)?.why || service.why
       }));
 
     const imageUse = parsed.imageUse || (imageDataUrl ? "relevant_photo_used" : "no_photo");
