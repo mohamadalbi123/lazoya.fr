@@ -27,9 +27,16 @@
       }
 
       .diagnostic-main.intro-backdrop {
+        display: grid;
+        align-items: center;
+        min-height: 100svh;
         background:
           linear-gradient(90deg, rgba(45, 7, 16, 0.72), rgba(156, 18, 49, 0.24)),
           url("../assets/diagnostique/red-satin-bg.png") center / cover no-repeat;
+      }
+
+      .diagnostic-main.intro-backdrop .diagnostic-shell {
+        width: 100%;
       }
 
       .diagnostic-shell {
@@ -446,6 +453,12 @@
         background: var(--milk);
       }
 
+      .photo-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
       .photo-input {
         position: absolute;
         width: 1px;
@@ -601,15 +614,49 @@
         margin-top: 18px;
       }
 
-      .specialist-actions {
+      .specialist-modal {
+        position: fixed;
+        inset: 0;
         display: none;
-        flex-wrap: wrap;
-        gap: 10px;
-        width: 100%;
+        place-items: center;
+        padding: 18px;
+        background: rgba(29, 26, 26, 0.48);
+        z-index: 90;
       }
 
-      .specialist-actions.visible {
-        display: flex;
+      .specialist-modal.visible {
+        display: grid;
+      }
+
+      .specialist-dialog {
+        width: min(100%, 420px);
+        border: 1px solid rgba(156, 18, 49, 0.18);
+        border-radius: var(--radius);
+        padding: 22px;
+        background: #fff;
+        box-shadow: 0 28px 70px rgba(29, 26, 26, 0.24);
+      }
+
+      .specialist-dialog h3 {
+        margin: 0 0 8px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 2rem;
+        line-height: 1;
+      }
+
+      .specialist-dialog p {
+        margin: 0 0 18px;
+        color: var(--soft-ink);
+        line-height: 1.55;
+      }
+
+      .specialist-dialog-actions {
+        display: grid;
+        gap: 10px;
+      }
+
+      .specialist-dialog-actions .button {
+        justify-content: center;
       }
 
       .disclaimer {
@@ -880,10 +927,16 @@
             </div>
             <div class="photo-grid">
               <div class="photo-box">
-                <label class="button primary" for="photoInput">
-                  Ajouter la photo
-                  <input class="photo-input" id="photoInput" type="file" accept="image/*" capture="environment">
-                </label>
+                <div class="photo-actions">
+                  <label class="button primary" for="cameraInput">
+                    Prendre une photo
+                    <input class="photo-input" id="cameraInput" type="file" accept="image/*" capture="environment">
+                  </label>
+                  <label class="button ghost" for="galleryInput">
+                    Importer depuis la galerie
+                    <input class="photo-input" id="galleryInput" type="file" accept="image/*">
+                  </label>
+                </div>
                 <img class="photo-preview" id="photoPreview" alt="Zone ajoutée au diagnostic">
                 <p class="photo-help">Photo nette, lumière naturelle si possible. Évitez les filtres.</p>
               </div>
@@ -914,10 +967,6 @@
                 <a class="button primary" href="../reservation/">Réserver maintenant</a>
                 <button class="button ghost" type="button" id="specialistButton">Parler à une spécialiste</button>
                 <button class="button ghost" type="button" id="restartButton">Recommencer</button>
-                <div class="specialist-actions" id="specialistActions" aria-label="Options pour parler à une spécialiste">
-                  <a class="button ghost" href="tel:+33956673009">Appeler</a>
-                  <a class="button ghost" href="https://wa.me/33956673009" target="_blank" rel="noreferrer">WhatsApp</a>
-                </div>
               </div>
               <p class="disclaimer">Ce diagnostic est indicatif et esthétique. Il ne remplace pas un avis médical. L’équipe Lazoya confirme toujours le choix final selon vos attentes, votre peau, vos cheveux, vos ongles et les contre-indications éventuelles.</p>
             </div>
@@ -955,6 +1004,18 @@
         </div>
       </div>
     </footer>
+
+    <div class="specialist-modal" id="specialistModal" role="dialog" aria-modal="true" aria-labelledby="specialistTitle">
+      <div class="specialist-dialog">
+        <h3 id="specialistTitle">Parler à une spécialiste</h3>
+        <p>Choisissez le contact qui vous convient.</p>
+        <div class="specialist-dialog-actions">
+          <a class="button primary" href="tel:+33956673009">Appeler</a>
+          <a class="button ghost" href="https://wa.me/33956673009" target="_blank" rel="noreferrer">WhatsApp</a>
+          <button class="button ghost" type="button" id="specialistClose">Fermer</button>
+        </div>
+      </div>
+    </div>
 
     <script>
       const STORAGE_KEY = "lazoya.diagnostic.consultation.v1";
@@ -1006,8 +1067,9 @@
       const profileText = $("#profileText");
       const restartButton = $("#restartButton");
       const specialistButton = $("#specialistButton");
-      const specialistActions = $("#specialistActions");
-      const photoInput = $("#photoInput");
+      const specialistModal = $("#specialistModal");
+      const specialistClose = $("#specialistClose");
+      const photoInputs = [$("#cameraInput"), $("#galleryInput")].filter(Boolean);
       const photoPreview = $("#photoPreview");
       const note = $("#note");
       const fields = {};
@@ -1174,7 +1236,7 @@
 
       function scrollToQuestionTop() {
         window.setTimeout(() => {
-          diagnosticPanel.scrollIntoView({ block: "start", behavior: "smooth" });
+          window.scrollTo({ top: 0, behavior: "smooth" });
         }, 40);
       }
 
@@ -1256,8 +1318,8 @@
         render();
       });
 
-      photoInput.addEventListener("change", () => {
-        const file = photoInput.files?.[0];
+      function handlePhotoChange(event) {
+        const file = event.currentTarget.files?.[0];
         if (!file) return;
         const reader = new FileReader();
         reader.onload = () => {
@@ -1267,7 +1329,9 @@
           render();
         };
         reader.readAsDataURL(file);
-      });
+      }
+
+      photoInputs.forEach((input) => input.addEventListener("change", handlePhotoChange));
 
       backButton.addEventListener("click", () => {
         if (state.step === 0) return;
@@ -1313,7 +1377,9 @@
         state.note = "";
         state.image = "";
         note.value = "";
-        photoInput.value = "";
+        photoInputs.forEach((input) => {
+          input.value = "";
+        });
         photoPreview.removeAttribute("src");
         photoPreview.classList.remove("visible");
         render();
@@ -1321,9 +1387,19 @@
       });
 
       specialistButton.addEventListener("click", () => {
-        const open = !specialistActions.classList.contains("visible");
-        specialistActions.classList.toggle("visible", open);
-        specialistButton.setAttribute("aria-expanded", String(open));
+        specialistModal.classList.add("visible");
+        specialistButton.setAttribute("aria-expanded", "true");
+      });
+
+      specialistClose.addEventListener("click", () => {
+        specialistModal.classList.remove("visible");
+        specialistButton.setAttribute("aria-expanded", "false");
+      });
+
+      specialistModal.addEventListener("click", (event) => {
+        if (event.target !== specialistModal) return;
+        specialistModal.classList.remove("visible");
+        specialistButton.setAttribute("aria-expanded", "false");
       });
 
       const menuButton = document.querySelector(".menu-button");
