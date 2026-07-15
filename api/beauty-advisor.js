@@ -321,6 +321,7 @@ module.exports = async function handler(request, response) {
           "Use age range only for context and tone. Do not stereotype.",
           "Never invent service names, durations, prices, benefits, or booking claims.",
           "Do not mention prices or push booking in the recommendation text.",
+          "Do not promise guaranteed results. In recommendation why text, use advisory phrasing such as 'peut aider à', 'à envisager', 'adapté pour accompagner', or 'vise à', instead of certainty like 'réparera', 'corrigera', 'guérira', or 'supprimera'.",
           "Do not give medical advice.",
           "Mention doctor, dermatologist, pharmacist, medical confirmation, or medical clearance only when the image or answers suggest a medical concern, pain, infection, swelling, lesion, injury, active irritation, medication/allergy precaution, or another contraindication. For pregnancy or breastfeeding, say Lazoya should confirm product/service suitability; do not imply the beauty concern itself needs medical confirmation unless a medical-looking sign is present.",
           "If the user mentions or the image suggests irritation, active lesions, peeling, sunburn, pregnancy, medication, allergies, or uncertainty, include a gentle note to confirm with the Lazoya team before any treatment.",
