@@ -117,10 +117,72 @@ function extractJson(text) {
 
 module.exports = async function handler(request, response) {
   if (request.method === "GET") {
+    const url = new URL(request.url || "/", "https://www.lazoya.fr");
+    const apiKey = process.env.OPENAI_API_KEY;
+    const model = process.env.OPENAI_MODEL || "gpt-5-mini";
+    if (url.searchParams.get("probe") === "openai") {
+      if (!apiKey) {
+        sendJson(response, 200, {
+          ok: true,
+          openaiConfigured: false,
+          model,
+          probeOk: false,
+          error: "OPENAI_API_KEY is missing"
+        });
+        return;
+      }
+
+      try {
+        const upstream = await fetch(OPENAI_API_URL, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${apiKey}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model,
+            input: "Return only JSON: {\"ok\":true}",
+            text: {
+              format: {
+                type: "json_object"
+              }
+            }
+          })
+        });
+        const raw = await upstream.text();
+        let parsed = null;
+        try {
+          parsed = JSON.parse(raw);
+        } catch {
+          parsed = null;
+        }
+        sendJson(response, 200, {
+          ok: true,
+          openaiConfigured: true,
+          model,
+          probeOk: upstream.ok,
+          upstreamStatus: upstream.status,
+          upstreamError: parsed?.error?.message || "",
+          upstreamErrorType: parsed?.error?.type || "",
+          upstreamErrorCode: parsed?.error?.code || ""
+        });
+      } catch (error) {
+        sendJson(response, 200, {
+          ok: true,
+          openaiConfigured: true,
+          model,
+          probeOk: false,
+          upstreamStatus: 0,
+          upstreamError: error?.message || "OpenAI probe failed"
+        });
+      }
+      return;
+    }
+
     sendJson(response, 200, {
       ok: true,
-      openaiConfigured: Boolean(process.env.OPENAI_API_KEY),
-      model: process.env.OPENAI_MODEL || "gpt-5-mini",
+      openaiConfigured: Boolean(apiKey),
+      model,
       visionDiagnostics: "POST this endpoint with imageDataUrl to test live photo analysis."
     });
     return;
