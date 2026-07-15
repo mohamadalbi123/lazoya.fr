@@ -129,6 +129,14 @@ function hasPregnancyPrecaution(answers = {}, note = "") {
   return /\b(grossesse|enceinte|pregnan|pregnancy|allaitement|breastfeeding)\b/.test(diagnosticText(answers, note));
 }
 
+function hasActiveSunburnBarrierConcern(text = "") {
+  const value = String(text || "").toLowerCase();
+  return (
+    /\b(sunburn|coup de soleil|brulure solaire|brûlure solaire|soleil)\b/.test(value) &&
+    /\b(peeling|p[eè]le|peler|desquamation|rouge|rougeur|redness|irritation|brulure|brûlure|cloque|blister)\b/.test(value)
+  ) || /\b(peau rouge qui p[eè]le|red peeling skin)\b/.test(value);
+}
+
 function uniqueModels(preferredModel) {
   return [preferredModel || DEFAULT_OPENAI_MODEL, ...OPENAI_MODEL_FALLBACKS]
     .filter(Boolean)
@@ -304,7 +312,7 @@ module.exports = async function handler(request, response) {
           "If answers.area is hair, focus only on hair fiber, scalp comfort, shine, frizz, lissage, care, color/patine, and styling logic.",
           "If pregnancy or breastfeeding is mentioned, do not automatically recommend color/patine, lissage, or chemical/technical hair transformations. Prefer softer care-oriented recommendations when available, and clearly say Lazoya should confirm product suitability before any service.",
           "If answers.area is skin, use relevant visible skin close-ups, including face, neck, hands, or body skin. Focus only on cosmetic texture, hydration, visible dryness, redness, acne-like imperfections, glow, firmness, and precautions.",
-          "If the photo suggests sunburn, peeling skin, strong redness, heat, irritation, open lesions, blistering, or compromised skin barrier, do not recommend peeling, microneedling, radiofrequency, firming/lifting protocols, exfoliation, or other active treatments for the visible issue. If the answers suggest a gentle Lazoya service that fits after the area has calmed or after professional confirmation, recommend it cautiously. If no beauty service is appropriate, return an empty recommendations array.",
+          "If the photo suggests active sunburn, red peeling skin after sun, heat, blistering, open lesions, or a compromised skin barrier, return an empty recommendations array for the visible issue. Explain that Lazoya does not provide medical prescriptions or treatment for this situation, and that pharmacy/doctor/dermatologist advice is more appropriate if painful, blistered, spreading, severe, or uncertain. Only mention Lazoya skin services as something to reconsider later after the skin has fully calmed and the Lazoya team confirms suitability.",
           "If answers.area is eyes, focus only on lashes, brows, eye-area beauty, density, line, structure, tint, browlift, and extensions.",
           "If answers.area is relaxation, focus only on tension, fatigue, comfort, body massage, and relaxation needs.",
           "Always write profileSummary and why texts in French.",
@@ -385,6 +393,20 @@ module.exports = async function handler(request, response) {
     const parsed = extractJson(outputText);
 
     const selectedArea = body.answers?.area;
+    const imageUse = parsed.imageUse || (imageDataUrl ? "relevant_photo_used" : "no_photo");
+    const parsedDiagnosticText = [
+      parsed.profileSummary,
+      parsed.imageSummary,
+      parsed.answerSummary,
+      parsed.noServiceReason,
+      body.note,
+      diagnosticText(body.answers)
+    ].filter(Boolean).join(" ");
+    const sunburnBarrierConcern = selectedArea === "skin" && imageUse === "relevant_photo_used" && hasActiveSunburnBarrierConcern(parsedDiagnosticText);
+    if (sunburnBarrierConcern) {
+      parsed.noServiceReason = "La photo semble montrer une peau rouge qui pèle après une exposition au soleil. Lazoya ne propose pas de prescription ou de traitement médical pour ce type de situation: demandez conseil à une pharmacie, un médecin ou un dermatologue si la zone est douloureuse, cloquée, étendue, très inflammatoire ou si vous avez un doute. Les soins esthétiques Lazoya seront à reconsidérer uniquement quand la peau sera calmée et après confirmation de l’équipe.";
+      parsed.recommendations = [];
+    }
     const areaLocked = ["skin", "hair", "nails", "eyes", "relaxation"].includes(selectedArea);
     let allowedServices = areaLocked
       ? services.filter((service) => service.category === selectedArea)
@@ -406,7 +428,6 @@ module.exports = async function handler(request, response) {
           : parsed.recommendations.find((item) => item.id === service.id)?.why || service.why
       }));
 
-    const imageUse = parsed.imageUse || (imageDataUrl ? "relevant_photo_used" : "no_photo");
     const noServiceNeeded = Boolean(parsed.noServiceReason) && safeRecommendations.length === 0;
     const fallbackData = fallbackRecommendation(allowedServices, body.answers, body.note, {
       hasImage: Boolean(imageDataUrl)
