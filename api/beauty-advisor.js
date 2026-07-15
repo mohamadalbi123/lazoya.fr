@@ -7,6 +7,16 @@ function sendJson(response, statusCode, payload) {
   response.end(JSON.stringify(payload));
 }
 
+function photoAnalysisUnavailable() {
+  return {
+    profileTitle: "Analyse photo indisponible",
+    profileSummary: "La photo n’a pas pu être analysée par l’IA pour le moment. Relancez le diagnostic dans quelques instants ou demandez à l’équipe Lazoya de confirmer directement.",
+    imageUse: "photo_analysis_unavailable",
+    beautyScore: 0,
+    recommendations: []
+  };
+}
+
 function fallbackRecommendation(services, answers = {}, note = "", options = {}) {
   const categoryLabels = {
     skin: ["skin", "Peau"],
@@ -124,9 +134,9 @@ module.exports = async function handler(request, response) {
 
   if (!apiKey) {
     console.warn("Beauty advisor fallback: OPENAI_API_KEY is missing");
-    sendJson(response, 200, fallbackRecommendation(services, body.answers, body.note, {
-      hasImage: Boolean(body.imageDataUrl)
-    }));
+    sendJson(response, 200, body.imageDataUrl
+      ? photoAnalysisUnavailable()
+      : fallbackRecommendation(services, body.answers, body.note, { hasImage: false }));
     return;
   }
 
@@ -156,7 +166,8 @@ module.exports = async function handler(request, response) {
           "Before using a photo, check whether it visibly shows the selected zone: skin on face/body/hands, hair/scalp, nails/cuticles/hands/feet, cils/sourcils, or body/relaxation context. If the image is irrelevant, unclear, filtered, too dark, not a body/beauty image, or shows a clearly different zone than answers.area, do not use it for visual conclusions.",
           "If the photo is not relevant or not readable, say this gently in profileSummary and base the diagnostic only on the questionnaire answers and note.",
           "If no photo is provided, do not mention image, photo, upload, relevance, or readability. Simply base the result on answers and note.",
-          "If a photo is relevant, use only visible cosmetic cues to orient the recommendation. Do not diagnose medical conditions.",
+          "If a photo is relevant, use visible cosmetic cues plus the questionnaire answers to orient the recommendation. Read the image carefully before choosing services.",
+          "Do not diagnose medical conditions, prescribe medication, or claim certainty. If the image suggests a medical concern or a condition outside Lazoya beauty services, return no service recommendations and gently say Lazoya does not offer medical prescriptions; in this case it may be better to schedule an appointment with a doctor, dermatologist, or pharmacist depending on severity.",
           "Prioritize the user's selected category first. Do not recommend a different category unless the selected category is not-sure, missing, or no service fits.",
           "Use serviceCatalog as your Lazoya service knowledge base. It contains the service names, categories, benefits, durations, prices, and matching keywords available at Lazoya.",
           "Never recommend services outside the selected category when answers.area is skin, hair, nails, eyes, or relaxation. Only cross-category recommendations are allowed when answers.area is not-sure.",
@@ -164,7 +175,7 @@ module.exports = async function handler(request, response) {
           "If answers.area is nails, focus only on nail, hand, foot, cuticle, polish, Gel-X, semi-permanent, manicure, and pedicure logic. Do not discuss hair color, skin glow, lashes, brows, or massage unless the user selected not-sure.",
           "If answers.area is hair, focus only on hair fiber, scalp comfort, shine, frizz, lissage, care, color/patine, and styling logic.",
           "If answers.area is skin, use relevant visible skin close-ups, including face, neck, hands, or body skin. Focus only on cosmetic texture, hydration, visible dryness, redness, acne-like imperfections, glow, firmness, and precautions.",
-          "If the photo suggests sunburn, peeling skin, strong redness, heat, irritation, open lesions, blistering, or compromised skin barrier, do not recommend peeling, microneedling, radiofrequency, firming/lifting protocols, exfoliation, or other active treatments. Recommend a cautious soothing/hydration direction only after the area has calmed, and advise confirmation with Lazoya. If the signs look severe, painful, blistered, or medical, advise pharmacy/medical guidance.",
+          "If the photo suggests sunburn, peeling skin, strong redness, heat, irritation, open lesions, blistering, or compromised skin barrier, do not recommend peeling, microneedling, radiofrequency, firming/lifting protocols, exfoliation, or other active treatments. If a gentle Lazoya service fits after the area has calmed, recommend it cautiously. If the signs look severe, painful, blistered, infected, spreading, or medical, return no service recommendations and advise doctor/pharmacist guidance.",
           "If answers.area is eyes, focus only on lashes, brows, eye-area beauty, density, line, structure, tint, browlift, and extensions.",
           "If answers.area is relaxation, focus only on tension, fatigue, comfort, body massage, and relaxation needs.",
           "Always write profileSummary and why texts in French.",
@@ -180,7 +191,7 @@ module.exports = async function handler(request, response) {
         outputShape: {
           profileTitle: "short beauty profile title",
           profileSummary: "one or two sentences in French. Mention photo relevance only if an uploaded photo exists and was not relevant or not readable.",
-          imageUse: "one of: relevant_photo_used, photo_ignored_irrelevant, photo_ignored_unclear, no_photo",
+          imageUse: "one of: relevant_photo_used, photo_ignored_irrelevant, photo_ignored_unclear, medical_referral, no_photo",
           beautyScore: "integer between 78 and 96, purely playful",
           recommendations: [
             {
@@ -190,6 +201,7 @@ module.exports = async function handler(request, response) {
               why: "short, non-commercial explanation in French, based on the user's answers and image if provided"
             }
           ],
+          noServiceReason: "French sentence only when no Lazoya service should be recommended because the concern appears medical or outside beauty care.",
           recommendationCount: "return 3 recommendations when 3 fitting services exist; otherwise return 2"
         },
         answers: body.answers || {},
@@ -238,9 +250,9 @@ module.exports = async function handler(request, response) {
 
     if (!upstream.ok) {
       console.warn("Beauty advisor fallback: OpenAI request failed", upstream.status, await upstream.text().catch(() => ""));
-      sendJson(response, 200, fallbackRecommendation(services, body.answers, body.note, {
-        hasImage: Boolean(imageDataUrl)
-      }));
+      sendJson(response, 200, imageDataUrl
+        ? photoAnalysisUnavailable()
+        : fallbackRecommendation(services, body.answers, body.note, { hasImage: false }));
       return;
     }
 
@@ -263,25 +275,30 @@ module.exports = async function handler(request, response) {
         why: parsed.recommendations.find((item) => item.id === service.id)?.why || service.why
       }));
 
+    const imageUse = parsed.imageUse || (imageDataUrl ? "relevant_photo_used" : "no_photo");
+    const noServiceNeeded = imageUse === "medical_referral" || parsed.noServiceReason;
     const fallbackData = fallbackRecommendation(allowedServices, body.answers, body.note, {
       hasImage: Boolean(imageDataUrl)
     });
     const fallbackList = fallbackData.recommendations;
-    const completedRecommendations = [
-      ...safeRecommendations,
-      ...fallbackList.filter((service) => !safeRecommendations.some((item) => item.id === service.id))
-    ].slice(0, 3);
+    const completedRecommendations = noServiceNeeded
+      ? safeRecommendations
+      : [
+        ...safeRecommendations,
+        ...fallbackList.filter((service) => !safeRecommendations.some((item) => item.id === service.id))
+      ].slice(0, 3);
 
     sendJson(response, 200, {
       profileTitle: parsed.profileTitle || "Services adaptés à vos réponses",
-      profileSummary: parsed.profileSummary || fallbackData.profileSummary,
+      profileSummary: parsed.noServiceReason || parsed.profileSummary || fallbackData.profileSummary,
+      imageUse,
       beautyScore: Number(parsed.beautyScore) || 86,
-      recommendations: completedRecommendations.length ? completedRecommendations : fallbackList
+      recommendations: noServiceNeeded ? completedRecommendations : (completedRecommendations.length ? completedRecommendations : fallbackList)
     });
   } catch (error) {
     console.warn("Beauty advisor fallback: unexpected error", error?.message || error);
-    sendJson(response, 200, fallbackRecommendation(services, body.answers, body.note, {
-      hasImage: Boolean(imageDataUrl)
-    }));
+    sendJson(response, 200, imageDataUrl
+      ? photoAnalysisUnavailable()
+      : fallbackRecommendation(services, body.answers, body.note, { hasImage: false }));
   }
 };

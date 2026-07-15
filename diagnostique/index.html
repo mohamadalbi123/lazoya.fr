@@ -1232,6 +1232,7 @@
       function normalize(data) {
         const fallback = localRecommendations();
         if (!data || !Array.isArray(data.recommendations)) return fallback;
+        if (["medical_referral", "photo_analysis_unavailable"].includes(data.imageUse)) return [];
         const byId = new Map(serviceCatalog.map((service) => [service.id, service]));
         const list = data.recommendations
           .map((item) => {
@@ -1249,7 +1250,7 @@
         profileBadge.textContent = source === "ai" ? "Diagnostic beauté" : "Aperçu diagnostic";
         profileTitle.textContent = data?.profileTitle || fallbackProfile[0];
         profileText.textContent = data?.profileSummary || fallbackProfile[1];
-        services.innerHTML = list.map((service) => `
+        services.innerHTML = list.length ? list.map((service) => `
           <article class="service-result">
             <div class="service-top">
               <strong>${escapeHtml(service.name)}</strong>
@@ -1258,7 +1259,16 @@
             <p class="result-text">${escapeHtml(service.why)}</p>
             <div class="chips">${(service.benefits || []).map((benefit) => `<span>${escapeHtml(benefit)}</span>`).join("")}</div>
           </article>
-        `).join("");
+        `).join("") : `
+          <article class="service-result">
+            <div class="service-top">
+              <strong>${data?.imageUse === "photo_analysis_unavailable" ? "Analyse photo à relancer" : "Aucun soin Lazoya recommandé automatiquement"}</strong>
+            </div>
+            <p class="result-text">${escapeHtml(data?.imageUse === "photo_analysis_unavailable"
+              ? "La photo n’a pas pu être analysée par l’IA. Relancez le diagnostic ou demandez une confirmation directe à l’équipe Lazoya."
+              : "Lorsque le besoin semble médical ou hors soin esthétique, Lazoya ne propose pas de prescription médicale. Un avis médical peut être plus adapté avant de choisir un soin.")}</p>
+          </article>
+        `;
         aiStatus.textContent = source === "ai"
           ? "Diagnostic terminé."
           : "Aperçu diagnostic affiché.";
