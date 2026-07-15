@@ -9,6 +9,16 @@
       "source": "/accueil/",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/dashhome",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/dashhome/",
+      "destination": "/",
+      "permanent": true
     }
   ]
 }
