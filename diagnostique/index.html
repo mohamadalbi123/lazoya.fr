@@ -142,6 +142,7 @@
 
       .consultation-panel {
         overflow: hidden;
+        scroll-margin-top: 92px;
       }
 
       .consultation-head {
@@ -1171,6 +1172,12 @@
         result.scrollIntoView({ block: "start", behavior: "smooth" });
       }
 
+      function scrollToQuestionTop() {
+        window.setTimeout(() => {
+          diagnosticPanel.scrollIntoView({ block: "start", behavior: "smooth" });
+        }, 40);
+      }
+
       function render() {
         save();
         clearHiddenAnswers();
@@ -1280,6 +1287,7 @@
           state.step += 1;
           state.validationStep = null;
           render();
+          scrollToQuestionTop();
           return;
         }
 
