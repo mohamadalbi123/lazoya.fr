@@ -25,6 +25,15 @@ function fallbackRecommendation(services, answers = {}, note = "", options = {})
     return "";
   }
   const selectedCategory = categoryLabels[answers.area] || categoryLabels[answers.category] || inferCategoryFromText(note) || (answers.method === "photo" ? ["skin", "Peau"] : "");
+  const selectedArea = selectedCategory?.[0] || "";
+  const answerText = Object.values(answers)
+    .flat()
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  const concernText = `${answerText} ${String(note || "").toLowerCase()}`;
+  const barrierConcern = /\b(rougeur|rougeurs|redness|irritation|irritated|sensible|sensitive|reactive|réactive|brulure|brûlure|burn|sunburn|soleil|peeling|p[eè]le|peel|cloque|blister|plaie|lesion|lésion|douleur|pain|inflammation)\b/.test(concernText);
+  const activeSkinServiceIds = new Set(["peeling", "micro", "radio", "lifting", "anti-acne"]);
   const answerTokens = Object.values(answers)
     .flat()
     .filter(Boolean)
@@ -39,7 +48,12 @@ function fallbackRecommendation(services, answers = {}, note = "", options = {})
   const preferredServices = selectedCategory
     ? services.filter((service) => selectedCategory.includes(service.category))
     : services;
-  const pool = preferredServices.length ? preferredServices : services;
+  let pool = preferredServices.length ? preferredServices : services;
+
+  if (options.hasImage && selectedArea === "skin") {
+    const gentlePool = pool.filter((service) => !activeSkinServiceIds.has(service.id));
+    if (gentlePool.length) pool = gentlePool;
+  }
 
   const ranked = pool
     .map((service) => {
@@ -53,12 +67,27 @@ function fallbackRecommendation(services, answers = {}, note = "", options = {})
       return { ...service, score };
     })
     .sort((a, b) => b.score - a.score || String(a.name).localeCompare(String(b.name)))
-    .slice(0, 3);
+    .slice(0, options.hasImage && selectedArea === "skin" && barrierConcern ? 2 : 3)
+    .map((service) => {
+      if (!(options.hasImage && selectedArea === "skin")) return service;
+      if (barrierConcern) {
+        return {
+          ...service,
+          why: "Lecture prudente: si la peau est rouge, irritée, échauffée ou en train de peler, il faut d’abord apaiser et confirmer avec Lazoya avant tout soin actif."
+        };
+      }
+      return {
+        ...service,
+        why: "La photo n’a pas pu être analysée par l’IA sur ce test. Ce choix reste donc volontairement doux et doit être confirmé par l’équipe Lazoya."
+      };
+    });
 
   return {
-    profileTitle: "Services adaptés à vos réponses",
+    profileTitle: options.hasImage && selectedArea === "skin"
+      ? "Lecture prudente de la peau"
+      : "Services adaptés à vos réponses",
     profileSummary: options.hasImage
-      ? "La photo n’a pas pu être exploitée clairement. Cette lecture se base donc sur vos réponses et votre message."
+      ? "La photo n’a pas pu être analysée par l’IA sur ce test. Par prudence, cette lecture évite les soins actifs et doit être confirmée avec Lazoya."
       : "Voici une lecture indicative basée sur vos réponses, pour mieux orienter la suite selon votre besoin.",
     beautyScore: 86,
     recommendations: ranked
@@ -94,6 +123,7 @@ module.exports = async function handler(request, response) {
   const services = body.services.slice(0, 80);
 
   if (!apiKey) {
+    console.warn("Beauty advisor fallback: OPENAI_API_KEY is missing");
     sendJson(response, 200, fallbackRecommendation(services, body.answers, body.note, {
       hasImage: Boolean(body.imageDataUrl)
     }));
@@ -134,6 +164,7 @@ module.exports = async function handler(request, response) {
           "If answers.area is nails, focus only on nail, hand, foot, cuticle, polish, Gel-X, semi-permanent, manicure, and pedicure logic. Do not discuss hair color, skin glow, lashes, brows, or massage unless the user selected not-sure.",
           "If answers.area is hair, focus only on hair fiber, scalp comfort, shine, frizz, lissage, care, color/patine, and styling logic.",
           "If answers.area is skin, use relevant visible skin close-ups, including face, neck, hands, or body skin. Focus only on cosmetic texture, hydration, visible dryness, redness, acne-like imperfections, glow, firmness, and precautions.",
+          "If the photo suggests sunburn, peeling skin, strong redness, heat, irritation, open lesions, blistering, or compromised skin barrier, do not recommend peeling, microneedling, radiofrequency, firming/lifting protocols, exfoliation, or other active treatments. Recommend a cautious soothing/hydration direction only after the area has calmed, and advise confirmation with Lazoya. If the signs look severe, painful, blistered, or medical, advise pharmacy/medical guidance.",
           "If answers.area is eyes, focus only on lashes, brows, eye-area beauty, density, line, structure, tint, browlift, and extensions.",
           "If answers.area is relaxation, focus only on tension, fatigue, comfort, body massage, and relaxation needs.",
           "Always write profileSummary and why texts in French.",
@@ -143,7 +174,7 @@ module.exports = async function handler(request, response) {
           "Never invent service names, durations, prices, benefits, or booking claims.",
           "Do not mention prices or push booking in the recommendation text.",
           "Do not give medical advice.",
-          "If the user mentions or the image suggests irritation, active lesions, pregnancy, medication, allergies, or uncertainty, include a gentle note to confirm with the Lazoya team before any treatment.",
+          "If the user mentions or the image suggests irritation, active lesions, peeling, sunburn, pregnancy, medication, allergies, or uncertainty, include a gentle note to confirm with the Lazoya team before any treatment.",
           "Return JSON only, with no markdown."
         ],
         outputShape: {
@@ -206,6 +237,7 @@ module.exports = async function handler(request, response) {
     });
 
     if (!upstream.ok) {
+      console.warn("Beauty advisor fallback: OpenAI request failed", upstream.status, await upstream.text().catch(() => ""));
       sendJson(response, 200, fallbackRecommendation(services, body.answers, body.note, {
         hasImage: Boolean(imageDataUrl)
       }));
@@ -246,7 +278,8 @@ module.exports = async function handler(request, response) {
       beautyScore: Number(parsed.beautyScore) || 86,
       recommendations: completedRecommendations.length ? completedRecommendations : fallbackList
     });
-  } catch {
+  } catch (error) {
+    console.warn("Beauty advisor fallback: unexpected error", error?.message || error);
     sendJson(response, 200, fallbackRecommendation(services, body.answers, body.note, {
       hasImage: Boolean(imageDataUrl)
     }));
