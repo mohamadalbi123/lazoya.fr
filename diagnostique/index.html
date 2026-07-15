@@ -1452,11 +1452,24 @@
 
       const menuButton = document.querySelector(".menu-button");
       const topbar = document.querySelector(".topbar");
+      function closeMenu() {
+        topbar.classList.remove("menu-active");
+        document.body.classList.remove("menu-open");
+        menuButton.setAttribute("aria-expanded", "false");
+      }
       menuButton.addEventListener("click", () => {
         const open = !topbar.classList.contains("menu-active");
         topbar.classList.toggle("menu-active", open);
         document.body.classList.toggle("menu-open", open);
         menuButton.setAttribute("aria-expanded", String(open));
+      });
+      document.querySelectorAll(".nav-links a, .nav-actions a").forEach((link) => {
+        link.addEventListener("click", closeMenu);
+      });
+      document.addEventListener("click", (event) => {
+        if (!topbar.classList.contains("menu-active")) return;
+        if (topbar.contains(event.target)) return;
+        closeMenu();
       });
 
       note.value = state.note || "";

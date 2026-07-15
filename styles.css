@@ -220,6 +220,8 @@ textarea {
 
 .menu-button {
   display: none;
+  position: relative;
+  z-index: 26;
   width: 42px;
   height: 42px;
   padding: 10px;
@@ -232,6 +234,19 @@ textarea {
   height: 2px;
   margin: 5px 0;
   background: var(--ink);
+  transition: transform 180ms ease, opacity 160ms ease;
+}
+
+.menu-button[aria-expanded="true"] span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.menu-button[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-button[aria-expanded="true"] span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 .hero {
@@ -2703,7 +2718,7 @@ label {
 @media (max-width: 1040px) {
   .nav-links,
   .nav-actions {
-    display: none;
+    display: flex;
   }
 
   .topbar {
@@ -2715,59 +2730,78 @@ label {
     justify-self: end;
   }
 
-  .topbar.menu-active .nav-links,
-  .topbar.menu-active .nav-actions {
+  .nav-links {
     position: fixed;
-    left: 18px;
-    right: 18px;
+    top: 0;
+    right: 0;
+    bottom: 0;
     z-index: 24;
-    display: flex;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(251, 250, 247, 0.98));
-    border: 1px solid rgba(156, 18, 49, 0.14);
+    width: min(82vw, 360px);
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 2px;
+    padding: 92px 22px 118px;
+    border: 0;
+    border-left: 1px solid rgba(156, 18, 49, 0.12);
+    border-radius: 0;
     color: var(--ink);
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(18px);
+    background: rgba(251, 250, 247, 0.98);
+    box-shadow: -22px 0 60px rgba(29, 26, 26, 0.16);
+    transform: translateX(104%);
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 220ms ease, visibility 220ms ease;
+    backdrop-filter: blur(22px);
   }
 
   .topbar.menu-active .nav-links {
-    top: 86px;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    padding: 14px;
-    border-radius: var(--radius);
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
   }
 
-  .topbar.menu-active .nav-links a {
-    min-height: 46px;
+  .nav-links a {
+    min-height: 54px;
     display: flex;
     align-items: center;
-    padding: 0 14px;
+    border-bottom: 1px solid rgba(29, 26, 26, 0.08);
+    border-radius: 0;
+    padding: 0 4px;
     color: var(--ink);
-    background: rgba(156, 18, 49, 0.05);
-    border: 1px solid rgba(156, 18, 49, 0.08);
-    border-radius: var(--radius);
-    font-weight: 800;
+    background: transparent;
+    font-size: 1.12rem;
+    font-weight: 850;
   }
 
-  .topbar.menu-active .nav-links a:hover,
-  .topbar.menu-active .nav-links a.active {
-    color: var(--milk);
-    background: var(--wine);
-    border-color: var(--wine);
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--wine);
+    background: transparent;
+  }
+
+  .nav-actions {
+    position: fixed;
+    right: 22px;
+    bottom: 28px;
+    z-index: 25;
+    display: flex;
+    width: min(calc(82vw - 44px), 316px);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(104%);
+    transition: transform 220ms ease, opacity 180ms ease;
   }
 
   .topbar.menu-active .nav-actions {
-    top: auto;
-    bottom: 22px;
-    justify-content: stretch;
-    padding: 12px;
-    border-radius: var(--radius);
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
   }
 
-  .topbar.menu-active .nav-actions .button {
-    flex: 1;
+  .nav-actions .button {
+    width: 100%;
+    min-height: 50px;
   }
 
   body.menu-open::before {
@@ -2775,8 +2809,8 @@ label {
     position: fixed;
     inset: 0;
     z-index: 19;
-    background: rgba(29, 26, 26, 0.42);
-    backdrop-filter: blur(4px);
+    background: rgba(29, 26, 26, 0.34);
+    backdrop-filter: blur(2px);
   }
 
   .catalog-grid,
@@ -2949,17 +2983,6 @@ label {
   .reservation-options .button,
   .modal-actions .button {
     width: 100%;
-  }
-
-  .topbar.menu-active .nav-links {
-    top: 74px;
-    max-height: calc(100vh - 160px);
-    overflow: auto;
-  }
-
-  .topbar.menu-active .nav-actions {
-    top: auto;
-    bottom: 18px;
   }
 
   .cookie-banner {

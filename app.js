@@ -1649,12 +1649,20 @@ function wireNavigation() {
     document.body.classList.toggle("menu-open", !open);
   });
 
+  const closeMenu = () => {
+    menuButton.setAttribute("aria-expanded", "false");
+    topbar.classList.remove("menu-active");
+    document.body.classList.remove("menu-open");
+  };
+
   document.querySelectorAll(".nav-links a, .nav-actions a").forEach((link) => {
-    link.addEventListener("click", () => {
-      menuButton.setAttribute("aria-expanded", "false");
-      topbar.classList.remove("menu-active");
-      document.body.classList.remove("menu-open");
-    });
+    link.addEventListener("click", closeMenu);
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!topbar.classList.contains("menu-active")) return;
+    if (topbar.contains(event.target)) return;
+    closeMenu();
   });
 
   document.addEventListener("click", (event) => {
