@@ -10,7 +10,7 @@ function sendJson(response, statusCode, payload) {
 function photoAnalysisUnavailable() {
   return {
     profileTitle: "Analyse photo indisponible",
-    profileSummary: "La photo n’a pas pu être analysée par l’IA pour le moment. Relancez le diagnostic dans quelques instants ou demandez à l’équipe Lazoya de confirmer directement.",
+    profileSummary: "L’analyse photo par IA est momentanément indisponible. Votre photo n’est pas forcément en cause: relancez le diagnostic dans quelques instants ou demandez une confirmation directe à l’équipe Lazoya.",
     imageUse: "photo_analysis_unavailable",
     beautyScore: 0,
     recommendations: []
@@ -116,6 +116,16 @@ function extractJson(text) {
 }
 
 module.exports = async function handler(request, response) {
+  if (request.method === "GET") {
+    sendJson(response, 200, {
+      ok: true,
+      openaiConfigured: Boolean(process.env.OPENAI_API_KEY),
+      model: process.env.OPENAI_MODEL || "gpt-5-mini",
+      visionDiagnostics: "POST this endpoint with imageDataUrl to test live photo analysis."
+    });
+    return;
+  }
+
   if (request.method !== "POST") {
     sendJson(response, 405, { error: "Method not allowed" });
     return;

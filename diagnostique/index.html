@@ -1265,7 +1265,7 @@
               <strong>${data?.imageUse === "photo_analysis_unavailable" ? "Analyse photo à relancer" : "Aucun soin Lazoya adapté automatiquement"}</strong>
             </div>
             <p class="result-text">${escapeHtml(data?.imageUse === "photo_analysis_unavailable"
-              ? "La photo n’a pas pu être analysée par l’IA. Relancez le diagnostic ou demandez une confirmation directe à l’équipe Lazoya."
+              ? "L’analyse photo par IA est momentanément indisponible. La photo n’est pas forcément en cause: relancez le diagnostic ou demandez une confirmation directe à l’équipe Lazoya."
               : (data?.noServiceReason || "Lorsque le besoin semble médical ou hors soin esthétique, Lazoya ne propose pas de prescription médicale. Un avis médical peut être plus adapté avant de choisir un soin."))}</p>
           </article>
         `;
