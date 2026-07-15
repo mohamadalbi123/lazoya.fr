@@ -123,7 +123,7 @@ module.exports = async function handler(request, response) {
         strictRules: [
           "Only propose services from serviceCatalog, by exact id and exact name.",
           "Write as an advisory beauty diagnostic, not as advertising and not as a booking push.",
-          "Before using a photo, check whether it visibly shows the selected zone: skin/face, hair, nails, cils/sourcils, or body/relaxation context. If the image is irrelevant, unclear, filtered, too dark, not a body/beauty image, or shows a different zone than answers.area, do not use it for visual conclusions.",
+          "Before using a photo, check whether it visibly shows the selected zone: skin on face/body/hands, hair/scalp, nails/cuticles/hands/feet, cils/sourcils, or body/relaxation context. If the image is irrelevant, unclear, filtered, too dark, not a body/beauty image, or shows a clearly different zone than answers.area, do not use it for visual conclusions.",
           "If the photo is not relevant or not readable, say this gently in profileSummary and base the diagnostic only on the questionnaire answers and note.",
           "If no photo is provided, do not mention image, photo, upload, relevance, or readability. Simply base the result on answers and note.",
           "If a photo is relevant, use only visible cosmetic cues to orient the recommendation. Do not diagnose medical conditions.",
@@ -133,7 +133,7 @@ module.exports = async function handler(request, response) {
           "Rank by actual fit with age range, selected zone, concerns, visible details, current routine, maintenance preference, recent treatment, objective, duration, precautions, user message, and photo if present. Do not optimize for selling.",
           "If answers.area is nails, focus only on nail, hand, foot, cuticle, polish, Gel-X, semi-permanent, manicure, and pedicure logic. Do not discuss hair color, skin glow, lashes, brows, or massage unless the user selected not-sure.",
           "If answers.area is hair, focus only on hair fiber, scalp comfort, shine, frizz, lissage, care, color/patine, and styling logic.",
-          "If answers.area is skin, focus only on facial skin, texture, hydration, pores, redness, acne-like imperfections, glow, firmness, and precautions.",
+          "If answers.area is skin, use relevant visible skin close-ups, including face, neck, hands, or body skin. Focus only on cosmetic texture, hydration, visible dryness, redness, acne-like imperfections, glow, firmness, and precautions.",
           "If answers.area is eyes, focus only on lashes, brows, eye-area beauty, density, line, structure, tint, browlift, and extensions.",
           "If answers.area is relaxation, focus only on tension, fatigue, comfort, body massage, and relaxation needs.",
           "Always write profileSummary and why texts in French.",
@@ -171,7 +171,8 @@ module.exports = async function handler(request, response) {
   if (imageDataUrl) {
     userContent.push({
       type: "input_image",
-      image_url: imageDataUrl
+      image_url: imageDataUrl,
+      detail: "high"
     });
   }
 
