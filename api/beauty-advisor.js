@@ -301,12 +301,13 @@ module.exports = async function handler(request, response) {
           "Never invent service names, durations, prices, benefits, or booking claims.",
           "Do not mention prices or push booking in the recommendation text.",
           "Do not give medical advice.",
+          "Mention doctor, dermatologist, pharmacist, medical confirmation, or medical clearance only when the image or answers suggest a medical concern, pain, infection, swelling, lesion, injury, active irritation, pregnancy/medication/allergy precaution, or another contraindication. Do not add medical confirmation language to ordinary beauty concerns such as dry hair, frizz, dullness, broken hair, nail shape, lash/brow style, or relaxation needs.",
           "If the user mentions or the image suggests irritation, active lesions, peeling, sunburn, pregnancy, medication, allergies, or uncertainty, include a gentle note to confirm with the Lazoya team before any treatment.",
           "Return JSON only, with no markdown."
         ],
         outputShape: {
           profileTitle: "short beauty profile title",
-          profileSummary: "two or three short sentences in French: first summarize what the image appears to show or whether it is irrelevant/unreadable; then summarize what the questionnaire answers suggest; then mention if medical confirmation is recommended.",
+          profileSummary: "two or three short sentences in French: first summarize what the image appears to show or whether it is irrelevant/unreadable; then summarize what the questionnaire answers suggest; then mention medical confirmation only if a medical-looking concern or contraindication is present.",
           imageUse: "one of: relevant_photo_used, photo_ignored_irrelevant, photo_ignored_unclear, medical_referral, no_photo",
           imageSummary: "short French sentence about what the photo appears to show, or why it was not used",
           answerSummary: "short French sentence about what the user's answers and note suggest",
