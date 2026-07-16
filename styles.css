@@ -2715,6 +2715,254 @@ label {
   opacity: 1;
 }
 
+.diagnostic-guide {
+  position: fixed;
+  right: max(20px, env(safe-area-inset-right, 0px));
+  bottom: max(22px, env(safe-area-inset-bottom, 0px));
+  z-index: 28;
+  display: inline-flex;
+  align-items: end;
+  gap: 10px;
+  color: var(--ink);
+  filter: drop-shadow(0 18px 34px rgba(29, 26, 26, 0.18));
+}
+
+.diagnostic-guide__message {
+  position: relative;
+  display: grid;
+  gap: 3px;
+  max-width: 210px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(156, 18, 49, 0.18);
+  border-radius: 18px 18px 4px 18px;
+  box-shadow: 0 12px 34px rgba(156, 18, 49, 0.12);
+  transform-origin: right bottom;
+  animation: diagnosticBubble 5.2s ease-in-out infinite;
+}
+
+.diagnostic-guide__message::after {
+  content: "";
+  position: absolute;
+  right: -7px;
+  bottom: 16px;
+  width: 14px;
+  height: 14px;
+  background: inherit;
+  border-right: 1px solid rgba(156, 18, 49, 0.18);
+  border-bottom: 1px solid rgba(156, 18, 49, 0.18);
+  transform: rotate(-45deg);
+}
+
+.diagnostic-guide__message strong {
+  color: var(--wine);
+  font-size: 0.86rem;
+  line-height: 1.1;
+}
+
+.diagnostic-guide__message span {
+  color: var(--soft-ink);
+  font-size: 0.78rem;
+  font-weight: 760;
+  line-height: 1.25;
+}
+
+.diagnostic-guide__figure {
+  position: relative;
+  width: 76px;
+  height: 98px;
+  flex: 0 0 auto;
+  transform-origin: 50% 100%;
+  animation: diagnosticFloat 4.6s ease-in-out infinite;
+}
+
+.diagnostic-guide__hair,
+.diagnostic-guide__head,
+.diagnostic-guide__face,
+.diagnostic-guide__arm,
+.diagnostic-guide__body,
+.diagnostic-guide__sparkle {
+  position: absolute;
+  display: block;
+}
+
+.diagnostic-guide__hair {
+  left: 12px;
+  top: 3px;
+  width: 52px;
+  height: 61px;
+  background:
+    radial-gradient(circle at 68% 23%, rgba(244, 217, 223, 0.9), transparent 16%),
+    linear-gradient(145deg, #3a0b16 0%, var(--wine) 100%);
+  border-radius: 30px 30px 25px 25px;
+}
+
+.diagnostic-guide__head {
+  left: 20px;
+  top: 16px;
+  width: 38px;
+  height: 43px;
+  background: linear-gradient(180deg, #f5d3bd, #d39276);
+  border: 2px solid rgba(255, 255, 255, 0.78);
+  border-radius: 46% 46% 48% 48%;
+  box-shadow: inset 0 -5px 10px rgba(156, 18, 49, 0.12);
+}
+
+.diagnostic-guide__face {
+  left: 8px;
+  top: 17px;
+  width: 22px;
+  height: 9px;
+  border-bottom: 2px solid rgba(58, 11, 22, 0.62);
+  border-radius: 0 0 999px 999px;
+}
+
+.diagnostic-guide__face::before,
+.diagnostic-guide__face::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  width: 4px;
+  height: 4px;
+  background: #3a0b16;
+  border-radius: 50%;
+}
+
+.diagnostic-guide__face::before {
+  left: 2px;
+}
+
+.diagnostic-guide__face::after {
+  right: 2px;
+}
+
+.diagnostic-guide__body {
+  left: 14px;
+  bottom: 0;
+  width: 50px;
+  height: 47px;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.9), transparent 14%),
+    linear-gradient(145deg, var(--wine), var(--wine-dark));
+  border: 2px solid rgba(255, 255, 255, 0.84);
+  border-radius: 24px 24px 18px 18px;
+}
+
+.diagnostic-guide__body::before {
+  content: "";
+  position: absolute;
+  left: -11px;
+  top: 15px;
+  width: 13px;
+  height: 29px;
+  background: linear-gradient(180deg, #d39276, #b57260);
+  border-radius: 999px;
+  transform: rotate(14deg);
+}
+
+.diagnostic-guide__arm {
+  right: 6px;
+  top: 52px;
+  z-index: 2;
+  width: 14px;
+  height: 34px;
+  background: linear-gradient(180deg, #d39276, #b57260);
+  border-radius: 999px;
+  transform-origin: 50% 5px;
+  animation: diagnosticWave 1.8s ease-in-out infinite;
+}
+
+.diagnostic-guide__arm::after {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: -6px;
+  width: 15px;
+  height: 12px;
+  background: #d39276;
+  border-radius: 999px 999px 8px 8px;
+}
+
+.diagnostic-guide__sparkle {
+  right: 2px;
+  top: 1px;
+  width: 13px;
+  height: 13px;
+  color: var(--gold);
+  animation: diagnosticSparkle 2.4s ease-in-out infinite;
+}
+
+.diagnostic-guide__sparkle::before,
+.diagnostic-guide__sparkle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  background: currentColor;
+  border-radius: 999px;
+}
+
+.diagnostic-guide__sparkle::before {
+  width: 3px;
+  height: 13px;
+}
+
+.diagnostic-guide__sparkle::after {
+  width: 13px;
+  height: 3px;
+}
+
+.diagnostic-guide:hover .diagnostic-guide__message {
+  border-color: rgba(156, 18, 49, 0.34);
+  box-shadow: 0 16px 40px rgba(156, 18, 49, 0.18);
+}
+
+.diagnostic-guide:hover .diagnostic-guide__figure {
+  transform: translateY(-2px);
+}
+
+body.menu-open .diagnostic-guide {
+  display: none;
+}
+
+@keyframes diagnosticFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-7px) rotate(1deg);
+  }
+}
+
+@keyframes diagnosticBubble {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.02);
+  }
+}
+
+@keyframes diagnosticWave {
+  0%, 100% {
+    transform: rotate(-18deg);
+  }
+  50% {
+    transform: rotate(16deg);
+  }
+}
+
+@keyframes diagnosticSparkle {
+  0%, 100% {
+    opacity: 0.58;
+    transform: scale(0.86) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08) rotate(45deg);
+  }
+}
+
 @media (max-width: 1040px) {
   .nav-links,
   .nav-actions {
@@ -2821,6 +3069,10 @@ label {
 
   body.menu-open .cookie-banner {
     display: none !important;
+  }
+
+  body.menu-open .diagnostic-guide {
+    display: none;
   }
 
   .catalog-grid,
@@ -3002,6 +3254,66 @@ label {
     width: auto;
   }
 
+  body:has(.cookie-banner:not([hidden])) .diagnostic-guide {
+    display: none;
+  }
+
+  .diagnostic-guide {
+    right: 12px;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    gap: 8px;
+  }
+
+  .diagnostic-guide__message {
+    max-width: 152px;
+    padding: 10px 11px;
+  }
+
+  .diagnostic-guide__message strong {
+    font-size: 0.78rem;
+  }
+
+  .diagnostic-guide__message span {
+    font-size: 0.72rem;
+  }
+
+  .diagnostic-guide__figure {
+    width: 58px;
+    height: 78px;
+  }
+
+  .diagnostic-guide__hair {
+    left: 9px;
+    width: 41px;
+    height: 49px;
+  }
+
+  .diagnostic-guide__head {
+    left: 15px;
+    top: 13px;
+    width: 31px;
+    height: 35px;
+  }
+
+  .diagnostic-guide__face {
+    left: 6px;
+    top: 14px;
+    width: 18px;
+  }
+
+  .diagnostic-guide__body {
+    left: 10px;
+    width: 40px;
+    height: 38px;
+  }
+
+  .diagnostic-guide__arm {
+    right: 4px;
+    top: 41px;
+    width: 11px;
+    height: 28px;
+  }
+
   .modal-backdrop {
     align-items: end;
     padding: 12px;
@@ -3026,6 +3338,14 @@ label {
 }
 
 @media (max-width: 420px) {
+  .diagnostic-guide {
+    right: 10px;
+  }
+
+  .diagnostic-guide__message {
+    max-width: 132px;
+  }
+
   .hero-brand-script {
     font-size: clamp(3.7rem, 24vw, 5.4rem);
   }
@@ -3045,5 +3365,14 @@ label {
   .service-rail button {
     min-height: 40px;
     padding-inline: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .diagnostic-guide__message,
+  .diagnostic-guide__figure,
+  .diagnostic-guide__arm,
+  .diagnostic-guide__sparkle {
+    animation: none;
   }
 }
