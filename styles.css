@@ -2537,6 +2537,43 @@ label {
   line-height: 1.65;
 }
 
+.social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.social-link {
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  color: var(--wine-dark);
+  border: 1px solid rgba(94, 36, 46, 0.22);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.42);
+  transition: border-color 180ms ease, color 180ms ease, transform 180ms ease, background 180ms ease;
+}
+
+.social-link svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.social-link:hover {
+  color: var(--wine);
+  border-color: rgba(126, 48, 62, 0.44);
+  background: rgba(255, 255, 255, 0.72);
+  transform: translateY(-2px);
+}
+
 .footer-columns {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
