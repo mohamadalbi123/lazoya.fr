@@ -1,0 +1,392 @@
+:root {
+  --ink: #1d1a1a;
+  --soft-ink: #665d5c;
+  --paper: #fbfaf7;
+  --milk: #ffffff;
+  --line: #eadfdb;
+  --wine: #9c1231;
+  --wine-dark: #6e0e24;
+  --rose: #f4d9df;
+  --blush: #fff3f4;
+  --gold: #b89155;
+  --shadow: 0 20px 58px rgba(29, 26, 26, 0.13);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--milk);
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: var(--milk);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.defi-card {
+  width: min(100%, 760px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 14px 12px 28px;
+  background: var(--milk);
+}
+
+.defi-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 8px 2px 16px;
+  color: var(--ink);
+  background: var(--milk);
+  border-bottom: 1px solid var(--line);
+}
+
+.defi-hero::after {
+  content: none;
+}
+
+.brand {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  width: 128px;
+  height: 48px;
+}
+
+.brand img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.kicker,
+.winner {
+  position: relative;
+  z-index: 1;
+  margin: 14px 0 8px;
+  color: var(--wine);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.defi-hero h1 {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  max-width: 15ch;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 10vw, 4.1rem);
+  line-height: 0.95;
+  letter-spacing: 0;
+  color: var(--wine-dark);
+}
+
+.promise {
+  position: relative;
+  z-index: 1;
+  max-width: 28rem;
+  margin: 14px 0 0;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 680;
+  line-height: 1.35;
+}
+
+.winner {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  margin: 14px 0 0;
+  padding: 0 12px;
+  color: var(--wine-dark);
+  background: var(--blush);
+  border: 1px solid #f4d7dc;
+  border-radius: 999px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.steps,
+.inspiration,
+.final-cta,
+.conditions {
+  margin-top: 14px;
+}
+
+.steps h2,
+.inspiration h2,
+.final-cta h2 {
+  margin: 0 0 10px;
+  font-size: 0.86rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.step-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.step-card {
+  position: relative;
+  min-height: 116px;
+  padding: 13px 13px 13px 56px;
+  background: var(--milk);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(29, 26, 26, 0.06);
+}
+
+.step-number {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--milk);
+  background: var(--wine);
+  border-radius: 50%;
+  font-weight: 900;
+}
+
+.step-card h3 {
+  margin: 0 0 6px;
+  color: var(--wine-dark);
+  font-size: 1rem;
+  line-height: 1.16;
+  text-transform: uppercase;
+}
+
+.step-card p,
+.step-card strong,
+.step-card small {
+  display: block;
+  margin: 0;
+  color: var(--soft-ink);
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.step-card strong {
+  margin-top: 5px;
+  color: var(--ink);
+  font-weight: 850;
+}
+
+.inline-link {
+  color: var(--wine);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.step-card small {
+  margin-top: 7px;
+  color: var(--wine-dark);
+  font-size: 0.78rem;
+  font-weight: 720;
+}
+
+.exemples-carousel {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(230px, 78%);
+  gap: 10px;
+  overflow-x: auto;
+  padding: 2px 2px 10px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  scrollbar-width: none;
+}
+
+.exemples-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.exemples-carousel figure {
+  position: relative;
+  height: clamp(188px, 54vw, 230px);
+  margin: 0;
+  overflow: hidden;
+  background: var(--rose);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  scroll-snap-align: start;
+  box-shadow: 0 12px 30px rgba(29, 26, 26, 0.08);
+}
+
+.exemples-carousel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.exemples-carousel figcaption {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  min-height: 28px;
+  padding: 6px 10px;
+  color: var(--milk);
+  background: rgba(29, 26, 26, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  backdrop-filter: blur(10px);
+}
+
+.exemples-points {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 2px;
+  padding-bottom: 2px;
+}
+
+.exemples-points button {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  cursor: pointer;
+  background: #ead1d6;
+  border: 0;
+  border-radius: 999px;
+  transition: width 160ms ease, background 160ms ease;
+}
+
+.exemples-points button[aria-current] {
+  width: 22px;
+  background: var(--wine);
+}
+
+.final-cta {
+  padding: 16px 14px;
+  text-align: center;
+  background: #fffafa;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 12px 34px rgba(29, 26, 26, 0.07);
+}
+
+.final-cta h2 {
+  margin-bottom: 12px;
+  color: var(--wine-dark);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.instagram-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  color: var(--wine-dark);
+  background: var(--blush);
+  border: 1px solid #f4d7dc;
+  border-radius: 999px;
+  font-weight: 850;
+}
+
+.conditions {
+  color: var(--soft-ink);
+  text-align: center;
+}
+
+.conditions summary {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  cursor: pointer;
+  color: var(--soft-ink);
+  font-size: 0.82rem;
+  font-weight: 760;
+}
+
+.conditions div {
+  margin-top: 8px;
+  padding: 14px;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.conditions p {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.conditions p + p {
+  margin-top: 10px;
+}
+
+@media (min-width: 680px) {
+  .defi-card {
+    padding-top: 32px;
+  }
+
+  .defi-hero {
+    padding: 14px 8px 22px;
+  }
+
+  .step-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .step-card {
+    min-height: 230px;
+    padding: 56px 16px 16px;
+  }
+
+  .step-number {
+    width: 36px;
+    height: 36px;
+  }
+
+  .exemples-carousel {
+    grid-auto-columns: 36%;
+  }
+}
+
+@media (max-width: 380px) {
+  .defi-card {
+    padding-inline: 10px;
+  }
+
+  .defi-hero h1 {
+    font-size: 1.86rem;
+  }
+
+  .step-card h3 {
+    font-size: 0.94rem;
+  }
+
+  .step-card p,
+  .step-card strong,
+  .step-card small {
+    font-size: 0.84rem;
+  }
+}
