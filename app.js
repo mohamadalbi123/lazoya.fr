@@ -1385,7 +1385,7 @@ const defaults = {
 };
 
 const keys = {
-  services: "lazoya.v7.prestations",
+  services: "lazoya.v8.prestations",
   products: "lazoya.v9.herbsom-selection",
   cookies: "lazoya.cookies"
 };
@@ -1446,13 +1446,31 @@ function getCategoryMeta(category) {
   };
 }
 
+function normalizeSearch(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
 function renderServices() {
   const categories = [...new Set(state.services.map((service) => service.category))];
-  const query = state.serviceQuery.trim().toLowerCase();
+  const query = normalizeSearch(state.serviceQuery);
+  const queryTokens = query ? query.split(/\s+/).filter(Boolean) : [];
   const filtered = state.services.filter((service) => {
     const inCategory = state.serviceFilter === "all" || service.category === state.serviceFilter;
-    const haystack = `${service.name} ${service.category} ${service.description}`.toLowerCase();
-    return inCategory && haystack.includes(query);
+    const meta = getCategoryMeta(service.category);
+    const haystack = normalizeSearch([
+      service.name,
+      service.category,
+      meta.shortTitle,
+      service.description,
+      service.duration,
+      service.price
+    ].join(" "));
+    return inCategory && queryTokens.every((token) => haystack.includes(token));
   });
 
   serviceFilters.innerHTML = [
@@ -1686,16 +1704,26 @@ function wireForms() {
 }
 
 function wireNavigation() {
-  const setRoute = () => {
-    const rawRoute = window.location.hash.replace("#", "") || "home";
+  const routeFromLocation = () => {
+    if (window.history.state?.view) return window.history.state.view;
+    return window.location.hash.replace("#", "") || "home";
+  };
+
+  const setRoute = (rawRoute = routeFromLocation(), options = {}) => {
     const route = routeAliases[rawRoute] || rawRoute;
     const view = views.has(route) ? route : "home";
 
     document.body.dataset.view = view;
     topbar.dataset.elevated = String(view !== "home" || window.scrollY > 20);
     document.querySelectorAll(".nav-links a").forEach((link) => {
-      link.classList.toggle("active", link.getAttribute("href") === `#${view}`);
+      link.classList.toggle("active", (link.dataset.route || "home") === view);
     });
+
+    if (window.location.hash) {
+      window.history.replaceState({ view }, "", "/");
+    } else if (options.updateHistory) {
+      window.history.pushState({ view }, "", "/");
+    }
 
     if (rawRoute === "careerForm") {
       window.setTimeout(() => document.querySelector("#careerForm").scrollIntoView({ block: "start" }), 0);
@@ -1705,8 +1733,8 @@ function wireNavigation() {
     }
   };
 
-  setRoute();
-  window.addEventListener("hashchange", setRoute);
+  setRoute(routeFromLocation(), { replace: true });
+  window.addEventListener("popstate", () => setRoute(routeFromLocation()));
 
   window.addEventListener("scroll", () => {
     topbar.dataset.elevated = String(document.body.dataset.view !== "home" || window.scrollY > 20);
@@ -1747,12 +1775,18 @@ function wireNavigation() {
       searchInput.value = "";
     }
     renderServices();
+    setRoute("services", { updateHistory: true });
+  });
 
-    if (window.location.hash === "#services") {
-      setRoute();
-    } else {
-      window.location.hash = "services";
-    }
+  document.addEventListener("click", (event) => {
+    const routeLink = event.target.closest("[data-route]");
+    if (!routeLink || routeLink.dataset.serviceCategory) return;
+    if (routeLink.dataset.route === "booking") return;
+    if (!views.has(routeLink.dataset.route)) return;
+
+    event.preventDefault();
+    setRoute(routeLink.dataset.route, { updateHistory: true });
+    closeMenu();
   });
 
   document.addEventListener("keydown", (event) => {
@@ -1917,6 +1951,7 @@ function wireBookingNotice() {
   const continueButton = document.querySelector("#continueBooking");
   let pendingHref = "";
   let pendingTarget = "";
+  let pendingRoute = "";
 
   if (!modal || !close || !continueButton) return;
 
@@ -1929,12 +1964,13 @@ function wireBookingNotice() {
     if (!link) return;
 
     const href = link.getAttribute("href") || "";
-    const isBookingLink = href === "#booking" || href === "/reservation/" || href.includes("planity.com/lazoya-17000-la-rochelle");
+    const isBookingLink = link.dataset.route === "booking" || href === "/reservation/" || href.includes("planity.com/lazoya-17000-la-rochelle");
     if (!isBookingLink || link.dataset.bookingNoticeSeen === "true") return;
 
     event.preventDefault();
     pendingHref = href;
     pendingTarget = link.getAttribute("target") || "";
+    pendingRoute = link.dataset.route || "";
     modal.hidden = false;
   });
 
@@ -1948,8 +1984,8 @@ function wireBookingNotice() {
     hide();
     if (!pendingHref) return;
 
-    if (pendingHref.startsWith("#")) {
-      window.location.hash = pendingHref.slice(1);
+    if (pendingRoute) {
+      setRoute(pendingRoute, { updateHistory: true });
       return;
     }
 

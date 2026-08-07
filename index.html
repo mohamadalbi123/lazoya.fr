@@ -30,7 +30,7 @@
       {
         "@context": "https://schema.org",
         "@type": "BeautySalon",
-        "@id": "https://www.lazoya.fr/#beautysalon",
+        "@id": "https://www.lazoya.fr/",
         "name": "Lazoya",
         "description": "Institut de beauté à La Rochelle proposant soins visage, coiffure, cils et sourcils, ongles, massages, épilation, maquillage et conseils produits.",
         "url": "https://www.lazoya.fr/",
@@ -96,21 +96,22 @@
       gtag('js', new Date());
 
       gtag('config', 'AW-18308603892');
+      gtag('config', 'G-3E9C5ZGQRW');
     </script>
   </head>
   <body>
     <header class="topbar" data-elevated="false">
-      <a class="brand" href="#home" aria-label="Accueil Lazoya">
+      <a class="brand" href="/" data-route="home" aria-label="Accueil Lazoya">
         <img class="brand-logo" src="assets/lazoya-logo.png" alt="Lazoya">
       </a>
       <nav class="nav-links" aria-label="Navigation principale">
-        <a href="#home">Accueil</a>
-        <a href="#services">Prestations</a>
+        <a href="/" data-route="home">Accueil</a>
+        <a href="/" data-route="services">Prestations</a>
         <a href="/diagnostique/">Diagnostic</a>
-        <a href="#products">Produits</a>
-        <a href="#models">Modèles</a>
-        <a href="#about">À propos</a>
-        <a href="#careers">Carrières</a>
+        <a href="/" data-route="products">Produits</a>
+        <a href="/" data-route="models">Modèles</a>
+        <a href="/" data-route="about">À propos</a>
+        <a href="/" data-route="careers">Carrières</a>
       </nav>
       <div class="nav-actions">
         <a class="button primary" href="/reservation/">Réserver</a>
@@ -131,20 +132,20 @@
           </p>
           <div class="hero-actions">
             <a class="button primary large" href="https://www.planity.com/lazoya-17000-la-rochelle" target="_blank" rel="noreferrer">Réserver maintenant</a>
-            <a class="button light large" href="#services">Voir les prestations</a>
+            <a class="button light large" href="/" data-route="services">Voir les prestations</a>
           </div>
         </div>
       </section>
 
       <section class="ticker app-view view-home" aria-label="Prestations par zone">
-        <a href="#services" data-service-category="Soins visage">Visage</a>
-        <a href="#services" data-service-category="Atelier Cils & Sourcils">Cils & sourcils</a>
-        <a href="#services" data-service-category="Coiffure">Cheveux</a>
-        <a href="#services" data-service-category="Beauté des mains et des pieds">Mains</a>
-        <a href="#services" data-service-category="Beauté des mains et des pieds">Pieds</a>
-        <a href="#services" data-service-category="Massages corps">Corps</a>
-        <a href="#services" data-service-category="Épilation à la cire">Épilation</a>
-        <a href="#services" data-service-category="Maquillage">Maquillage</a>
+        <a href="/" data-route="services" data-service-category="Soins visage">Visage</a>
+        <a href="/" data-route="services" data-service-category="Atelier Cils & Sourcils">Cils & sourcils</a>
+        <a href="/" data-route="services" data-service-category="Coiffure">Cheveux</a>
+        <a href="/" data-route="services" data-service-category="Beauté des mains et des pieds">Mains</a>
+        <a href="/" data-route="services" data-service-category="Beauté des mains et des pieds">Pieds</a>
+        <a href="/" data-route="services" data-service-category="Massages corps">Corps</a>
+        <a href="/" data-route="services" data-service-category="Épilation à la cire">Épilation</a>
+        <a href="/" data-route="services" data-service-category="Maquillage">Maquillage</a>
       </section>
 
       <section class="home-intro app-view view-home">
@@ -180,7 +181,7 @@
               <li>Hydra Touch Coréen</li>
               <li>Micro-needling</li>
             </ul>
-            <a href="#services" data-service-category="Soins visage">Voir les soins visage</a>
+            <a href="/" data-route="services" data-service-category="Soins visage">Voir les soins visage</a>
           </article>
           <article data-service-category="Coiffure" role="link" tabindex="0">
             <div class="service-card-top">
@@ -193,7 +194,7 @@
               <li>Soins capillaires</li>
               <li>Lissage</li>
             </ul>
-            <a href="#services" data-service-category="Coiffure">Voir la coiffure</a>
+            <a href="/" data-route="services" data-service-category="Coiffure">Voir la coiffure</a>
           </article>
           <article data-service-category="Atelier Cils & Sourcils" role="link" tabindex="0">
             <div class="service-card-top">
@@ -206,7 +207,7 @@
               <li>Teinture</li>
               <li>Extensions</li>
             </ul>
-            <a href="#services" data-service-category="Atelier Cils & Sourcils">Voir cils & sourcils</a>
+            <a href="/" data-route="services" data-service-category="Atelier Cils & Sourcils">Voir cils & sourcils</a>
           </article>
           <article data-service-category="Beauté des mains et des pieds" role="link" tabindex="0">
             <div class="service-card-top">
@@ -219,7 +220,7 @@
               <li>Beauté des pieds</li>
               <li>Pose Gel-X</li>
             </ul>
-            <a href="#services" data-service-category="Beauté des mains et des pieds">Voir mains & pieds</a>
+            <a href="/" data-route="services" data-service-category="Beauté des mains et des pieds">Voir mains & pieds</a>
           </article>
           <article data-service-category="Massages corps" role="link" tabindex="0">
             <div class="service-card-top">
@@ -232,7 +233,7 @@
               <li>Dos & jambes</li>
               <li>Relaxation</li>
             </ul>
-            <a href="#services" data-service-category="Massages corps">Voir les soins corps</a>
+            <a href="/" data-route="services" data-service-category="Massages corps">Voir les soins corps</a>
           </article>
           <article data-service-category="Épilation à la cire" role="link" tabindex="0">
             <div class="service-card-top">
@@ -245,7 +246,7 @@
               <li>Fil</li>
               <li>Forfaits</li>
             </ul>
-            <a href="#services" data-service-category="Épilation à la cire">Voir l’épilation</a>
+            <a href="/" data-route="services" data-service-category="Épilation à la cire">Voir l’épilation</a>
           </article>
         </div>
       </section>
@@ -1180,12 +1181,12 @@
       <div class="footer-columns">
         <nav class="footer-links" aria-label="Navigation du pied de page">
           <strong>Navigation</strong>
-          <a href="#services">Prestations</a>
+          <a href="/" data-route="services">Prestations</a>
           <a href="/diagnostique/">Diagnostic</a>
-          <a href="#about">À propos</a>
-          <a href="#products">Produits</a>
-          <a href="#models">Modèles</a>
-          <a href="#careers">Carrières</a>
+          <a href="/" data-route="about">À propos</a>
+          <a href="/" data-route="products">Produits</a>
+          <a href="/" data-route="models">Modèles</a>
+          <a href="/" data-route="careers">Carrières</a>
         </nav>
         <div class="footer-links">
           <strong>Réservation</strong>
@@ -1198,8 +1199,8 @@
         <div class="footer-links">
           <strong>Informations</strong>
           <button type="button" data-open-cookies>Gestion des cookies</button>
-          <a href="#privacy">Politique de confidentialité</a>
-          <a href="#legal">Mentions légales</a>
+          <a href="/" data-route="privacy">Politique de confidentialité</a>
+          <a href="/" data-route="legal">Mentions légales</a>
         </div>
       </div>
     </footer>
@@ -1312,7 +1313,7 @@
         </div>
       </section>
     </div>
-    <script src="app.js?v=20260713-1"></script>
+    <script src="app.js?v=20260807-1"></script>
     <script src="assets/conversions.js?v=20260713-2"></script>
   </body>
 </html>

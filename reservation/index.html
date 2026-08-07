@@ -38,8 +38,8 @@
         "@type": "WebPage",
         "name": "Réserver chez Lazoya",
         "url": "https://www.lazoya.fr/reservation/",
-        "isPartOf": { "@id": "https://www.lazoya.fr/#beautysalon" },
-        "about": { "@id": "https://www.lazoya.fr/#beautysalon" },
+        "isPartOf": { "@id": "https://www.lazoya.fr/" },
+        "about": { "@id": "https://www.lazoya.fr/" },
         "potentialAction": {
           "@type": "ReserveAction",
           "target": "https://www.planity.com/lazoya-17000-la-rochelle"
@@ -54,6 +54,7 @@
       gtag('js', new Date());
 
       gtag('config', 'AW-18308603892');
+      gtag('config', 'G-3E9C5ZGQRW');
     </script>
   </head>
   <body data-view="booking">
@@ -63,12 +64,12 @@
       </a>
       <nav class="nav-links" aria-label="Navigation principale">
         <a href="/">Accueil</a>
-        <a href="/#services">Prestations</a>
+        <a href="/" data-route="services">Prestations</a>
         <a href="/diagnostique/">Diagnostic</a>
-        <a href="/#products">Produits</a>
-        <a href="/#models">Modèles</a>
-        <a href="/#about">À propos</a>
-        <a href="/#careers">Carrières</a>
+        <a href="/" data-route="products">Produits</a>
+        <a href="/" data-route="models">Modèles</a>
+        <a href="/" data-route="about">À propos</a>
+        <a href="/" data-route="careers">Carrières</a>
       </nav>
       <div class="nav-actions">
         <a class="button primary" href="/reservation/">Réserver</a>
