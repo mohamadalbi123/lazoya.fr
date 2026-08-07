@@ -332,6 +332,20 @@ const planityPrestationsData = [
         "price": "14 €",
         "bookable": true,
         "description": ""
+      },
+      {
+        "name": "Nail art French",
+        "duration": "30min",
+        "price": "20 €",
+        "bookable": true,
+        "description": ""
+      },
+      {
+        "name": "Nail Art personnalisé créatif pour chaque doigts",
+        "duration": "7min",
+        "price": "7 €",
+        "bookable": true,
+        "description": ""
       }
     ]
   },
@@ -385,6 +399,48 @@ const planityPrestationsData = [
     ]
   },
   {
+    "category": "Gainage sur ongles naturels et Renfort",
+    "shortTitle": "Gainage & renfort",
+    "description": "",
+    "services": [
+      {
+        "name": "Gainage gel sur ongles naturels longs avec couleur",
+        "duration": "1h",
+        "price": "66 €",
+        "bookable": true,
+        "description": ""
+      },
+      {
+        "name": "Renfort gel sur ongles naturels avec couleur",
+        "duration": "1h",
+        "price": "60 €",
+        "bookable": true,
+        "description": ""
+      },
+      {
+        "name": "Dépose sans suivie d'un gainage ou renfort",
+        "duration": "15min",
+        "price": "16 €",
+        "bookable": true,
+        "description": ""
+      },
+      {
+        "name": "Remplissage avec gainage + Depose incluse",
+        "duration": "1h 15min",
+        "price": "61 €",
+        "bookable": true,
+        "description": ""
+      },
+      {
+        "name": "Remplissage avec renfort + Depose incluse",
+        "duration": "1h 15min",
+        "price": "55 €",
+        "bookable": true,
+        "description": ""
+      }
+    ]
+  },
+  {
     "category": "Pose Gel-X (Capsule Américane)",
     "shortTitle": "Pose Gel-X",
     "description": "",
@@ -407,6 +463,20 @@ const planityPrestationsData = [
         "name": "Pose Gel-X ( S/M )",
         "duration": "1h 30min",
         "price": "60 €",
+        "bookable": true,
+        "description": ""
+      },
+      {
+        "name": "Nail Art personnalisé créatif pour chaque doigts",
+        "duration": "30min",
+        "price": "7 €",
+        "bookable": true,
+        "description": ""
+      },
+      {
+        "name": "Nail Art personnalisé simple ( par ongle )",
+        "duration": "5min",
+        "price": "2 €",
         "bookable": true,
         "description": ""
       },
