@@ -348,6 +348,15 @@ h3 {
   font-weight: 760;
 }
 
+.hero-copy span {
+  display: block;
+}
+
+.hero-location {
+  margin-top: 3px;
+  white-space: nowrap;
+}
+
 .hero-actions {
   display: flex;
   justify-content: center;
