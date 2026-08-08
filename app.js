@@ -1403,6 +1403,8 @@ const menuButton = document.querySelector(".menu-button");
 const serviceGrid = document.querySelector("#serviceGrid");
 const serviceRail = document.querySelector("#serviceRail");
 const serviceFilters = document.querySelector("#serviceFilters");
+const serviceSearch = document.querySelector("#serviceSearch");
+const serviceSuggestions = document.querySelector("#serviceSuggestions");
 const productGrid = document.querySelector("#productGrid");
 const bookingService = document.querySelector("#bookingService");
 const toast = document.querySelector("#toast");
@@ -1455,42 +1457,130 @@ function normalizeSearch(value) {
     .trim();
 }
 
-function renderServices() {
-  const categories = [...new Set(state.services.map((service) => service.category))];
+function getServiceSearchText(service) {
+  const meta = getCategoryMeta(service.category);
+  return normalizeSearch([
+    service.name,
+    service.category,
+    meta.shortTitle,
+    service.description,
+    service.duration,
+    service.price
+  ].join(" "));
+}
+
+function getServiceSearchScore(service, queryTokens) {
+  if (!queryTokens.length) return 1;
+
+  const name = normalizeSearch(service.name);
+  const category = normalizeSearch(`${service.category} ${service.categoryShortTitle || ""}`);
+  const haystack = getServiceSearchText(service);
+  const words = haystack.split(/\s+/).filter(Boolean);
+  let score = 0;
+
+  for (const token of queryTokens) {
+    if (name.startsWith(token)) {
+      score += 100;
+      continue;
+    }
+
+    if (words.some((word) => word.startsWith(token))) {
+      score += 70;
+      continue;
+    }
+
+    if (name.includes(token)) {
+      score += 45;
+      continue;
+    }
+
+    if (category.includes(token)) {
+      score += 30;
+      continue;
+    }
+
+    if (haystack.includes(token)) {
+      score += 15;
+      continue;
+    }
+
+    return 0;
+  }
+
+  return score;
+}
+
+function getVisibleServices() {
+  return state.serviceFilter === "all"
+    ? state.services
+    : state.services.filter((service) => service.category === state.serviceFilter);
+}
+
+function getServiceMatches() {
   const query = normalizeSearch(state.serviceQuery);
   const queryTokens = query ? query.split(/\s+/).filter(Boolean) : [];
-  const filtered = state.services.filter((service) => {
-    const inCategory = state.serviceFilter === "all" || service.category === state.serviceFilter;
+  const visibleServices = getVisibleServices();
+
+  if (!queryTokens.length) {
+    return visibleServices.map((service) => ({ service, score: 1 }));
+  }
+
+  return visibleServices
+    .map((service) => ({
+      service,
+      score: getServiceSearchScore(service, queryTokens)
+    }))
+    .filter((match) => match.score > 0)
+    .sort((a, b) => b.score - a.score || a.service.name.localeCompare(b.service.name, "fr"));
+}
+
+function renderServiceSuggestions() {
+  if (!serviceSuggestions || !serviceSearch) return;
+
+  const query = normalizeSearch(state.serviceQuery);
+  const matches = query ? getServiceMatches().slice(0, 6) : [];
+
+  serviceSearch.setAttribute("aria-expanded", matches.length ? "true" : "false");
+  serviceSuggestions.hidden = !matches.length;
+  serviceSuggestions.innerHTML = matches.map(({ service }, index) => {
     const meta = getCategoryMeta(service.category);
-    const haystack = normalizeSearch([
-      service.name,
-      service.category,
-      meta.shortTitle,
-      service.description,
-      service.duration,
-      service.price
-    ].join(" "));
-    return inCategory && queryTokens.every((token) => haystack.includes(token));
-  });
-
-  serviceFilters.innerHTML = [
-    `<button class="chip ${state.serviceFilter === "all" ? "active" : ""}" type="button" data-filter="all">Toutes</button>`,
-    ...categories.map((category) => {
-      const meta = getCategoryMeta(category);
-      return `
-        <button class="chip ${state.serviceFilter === category ? "active" : ""}" type="button" data-filter="${escapeHtml(category)}">${escapeHtml(meta.shortTitle)}</button>
-      `;
-    })
-  ].join("");
-
-  serviceRail.innerHTML = categories.map((category) => {
-    const meta = getCategoryMeta(category);
+    const detail = [meta.shortTitle, service.duration, service.price].filter(Boolean).join(" · ");
     return `
-      <button class="${state.serviceFilter === category ? "active" : ""}" type="button" data-filter="${escapeHtml(category)}">
-        <span>${escapeHtml(meta.shortTitle)}</span>
+      <button type="button" role="option" data-service-suggestion="${escapeHtml(service.name)}" aria-selected="${index === 0 ? "true" : "false"}">
+        <strong>${escapeHtml(service.name)}</strong>
+        <span>${escapeHtml(detail)}</span>
       </button>
     `;
   }).join("");
+}
+
+function renderServices() {
+  const categories = [...new Set(state.services.map((service) => service.category))];
+  const filtered = getServiceMatches().map((match) => match.service);
+
+  if (serviceFilters) {
+    serviceFilters.innerHTML = [
+      `<button class="chip ${state.serviceFilter === "all" ? "active" : ""}" type="button" data-filter="all">Toutes</button>`,
+      ...categories.map((category) => {
+        const meta = getCategoryMeta(category);
+        return `
+          <button class="chip ${state.serviceFilter === category ? "active" : ""}" type="button" data-filter="${escapeHtml(category)}">${escapeHtml(meta.shortTitle)}</button>
+        `;
+      })
+    ].join("");
+  }
+
+  serviceRail.innerHTML = [
+    `<button class="${state.serviceFilter === "all" ? "active" : ""}" type="button" data-filter="all"><span>Toutes</span></button>`,
+    ...categories.map((category) => {
+      const meta = getCategoryMeta(category);
+      return `
+        <button class="${state.serviceFilter === category ? "active" : ""}" type="button" data-filter="${escapeHtml(category)}">
+          <span>${escapeHtml(meta.shortTitle)}</span>
+        </button>
+      `;
+    })
+  ].join("");
 
   const grouped = categories
     .map((category) => ({
@@ -1534,6 +1624,8 @@ function renderServices() {
       <option>${escapeHtml(service.name)}</option>
     `).join("");
   }
+
+  renderServiceSuggestions();
 }
 
 function renderProducts() {
@@ -1770,9 +1862,8 @@ function wireNavigation() {
     event.preventDefault();
     state.serviceFilter = serviceLink.dataset.serviceCategory;
     state.serviceQuery = "";
-    const searchInput = document.querySelector("#serviceSearch");
-    if (searchInput) {
-      searchInput.value = "";
+    if (serviceSearch) {
+      serviceSearch.value = "";
     }
     renderServices();
     setRoute("services", { updateHistory: true });
@@ -1862,9 +1953,46 @@ function wireFilters() {
     renderServices();
   });
 
-  document.querySelector("#serviceSearch").addEventListener("input", (event) => {
+  serviceSearch?.addEventListener("input", (event) => {
     state.serviceQuery = event.target.value;
-      renderServices();
+    renderServices();
+  });
+
+  serviceSearch?.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" || !serviceSuggestions || serviceSuggestions.hidden) return;
+    const firstSuggestion = serviceSuggestions.querySelector("[data-service-suggestion]");
+    if (!firstSuggestion) return;
+
+    event.preventDefault();
+    state.serviceQuery = firstSuggestion.dataset.serviceSuggestion;
+    serviceSearch.value = state.serviceQuery;
+    renderServices();
+  });
+
+  serviceSearch?.addEventListener("focus", () => {
+    renderServiceSuggestions();
+  });
+
+  serviceSearch?.addEventListener("blur", () => {
+    window.setTimeout(() => {
+      if (!serviceSuggestions) return;
+      serviceSuggestions.hidden = true;
+      serviceSearch.setAttribute("aria-expanded", "false");
+    }, 120);
+  });
+
+  serviceSuggestions?.addEventListener("mousedown", (event) => {
+    event.preventDefault();
+  });
+
+  serviceSuggestions?.addEventListener("click", (event) => {
+    const suggestion = event.target.closest("[data-service-suggestion]");
+    if (!suggestion) return;
+
+    state.serviceQuery = suggestion.dataset.serviceSuggestion;
+    serviceSearch.value = state.serviceQuery;
+    renderServices();
+    serviceSearch.focus();
   });
 
   const productSearch = document.querySelector("#productSearch");
@@ -2023,7 +2151,7 @@ document.querySelector("#resetDemo").addEventListener("click", () => {
   state.serviceFilter = "all";
   state.serviceQuery = "";
   state.productQuery = "";
-  document.querySelector("#serviceSearch").value = "";
+  if (serviceSearch) serviceSearch.value = "";
   const productSearch = document.querySelector("#productSearch");
   if (productSearch) productSearch.value = "";
   renderServices();
