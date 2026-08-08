@@ -1950,6 +1950,8 @@ function wireFilters() {
     if (!button) return;
 
     state.serviceFilter = button.dataset.filter;
+    state.serviceQuery = "";
+    if (serviceSearch) serviceSearch.value = "";
     renderServices();
   });
 
