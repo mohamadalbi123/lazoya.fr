@@ -2197,6 +2197,8 @@ label textarea:focus,
   right: 0;
   display: grid;
   gap: 4px;
+  max-height: min(360px, 60vh);
+  overflow-y: auto;
   padding: 8px;
   background: var(--milk);
   border: 1px solid var(--line);
@@ -3154,6 +3156,10 @@ body.menu-open .diagnostic-guide {
 
   .search-box {
     min-width: 0;
+  }
+
+  .search-suggestions {
+    max-height: min(260px, 44vh);
   }
 
   .product-media {
