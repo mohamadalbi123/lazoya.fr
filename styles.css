@@ -2889,6 +2889,47 @@ body.menu-open .diagnostic-guide {
   display: none;
 }
 
+.site-credit {
+  position: fixed;
+  left: max(20px, env(safe-area-inset-left, 0px));
+  bottom: max(22px, env(safe-area-inset-bottom, 0px));
+  z-index: 27;
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 14px;
+  color: var(--wine-dark);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(156, 18, 49, 0.18);
+  border-radius: 999px;
+  box-shadow: 0 12px 30px rgba(29, 26, 26, 0.12);
+  font-size: 0.78rem;
+  font-weight: 720;
+  line-height: 1;
+  backdrop-filter: blur(12px);
+  transition: color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.site-credit strong {
+  margin-left: 4px;
+  font-weight: 880;
+}
+
+.site-credit:hover {
+  color: var(--wine);
+  border-color: rgba(156, 18, 49, 0.34);
+  box-shadow: 0 16px 38px rgba(156, 18, 49, 0.16);
+  transform: translateY(-2px);
+}
+
+body.menu-open .site-credit {
+  display: none;
+}
+
+body:has(.cookie-banner:not([hidden])) .site-credit {
+  bottom: calc(178px + env(safe-area-inset-bottom, 0px));
+}
+
 @keyframes diagnosticFloat {
   0%, 100% {
     transform: translateY(0) rotate(-1deg);
@@ -3016,6 +3057,10 @@ body.menu-open .diagnostic-guide {
   }
 
   body.menu-open .diagnostic-guide {
+    display: none;
+  }
+
+  body.menu-open .site-credit {
     display: none;
   }
 
@@ -3209,6 +3254,18 @@ body.menu-open .diagnostic-guide {
     display: none;
   }
 
+  .site-credit {
+    left: 12px;
+    bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+    min-height: 34px;
+    padding-inline: 12px;
+    font-size: 0.72rem;
+  }
+
+  body:has(.cookie-banner:not([hidden])) .site-credit {
+    bottom: calc(230px + env(safe-area-inset-bottom, 0px));
+  }
+
   .diagnostic-guide {
     right: 12px;
     bottom: calc(18px + env(safe-area-inset-bottom, 0px));
@@ -3256,6 +3313,12 @@ body.menu-open .diagnostic-guide {
 }
 
 @media (max-width: 420px) {
+  .site-credit {
+    left: 10px;
+    max-width: calc(100vw - 20px);
+    white-space: nowrap;
+  }
+
   .diagnostic-guide {
     right: 10px;
   }
