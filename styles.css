@@ -2600,6 +2600,34 @@ label {
   line-height: 1.65;
 }
 
+.site-credit {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  margin-top: 18px;
+  padding: 0 14px;
+  color: #ffffff;
+  background: #000000;
+  border: 1px solid #000000;
+  border-radius: 999px;
+  box-shadow: 0 12px 26px rgba(29, 26, 26, 0.1);
+  font-size: 0.78rem;
+  font-weight: 720;
+  line-height: 1;
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+.site-credit strong {
+  margin-left: 4px;
+  font-weight: 880;
+}
+
+.site-credit:hover {
+  color: #ffffff;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.16);
+  transform: translateY(-2px);
+}
+
 .social-links {
   display: flex;
   flex-wrap: wrap;
@@ -2889,47 +2917,6 @@ body.menu-open .diagnostic-guide {
   display: none;
 }
 
-.site-credit {
-  position: fixed;
-  left: max(20px, env(safe-area-inset-left, 0px));
-  bottom: max(22px, env(safe-area-inset-bottom, 0px));
-  z-index: 27;
-  display: inline-flex;
-  align-items: center;
-  min-height: 38px;
-  padding: 0 14px;
-  color: #ffffff;
-  background: rgba(0, 0, 0, 0.88);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 999px;
-  box-shadow: 0 12px 30px rgba(29, 26, 26, 0.12);
-  font-size: 0.78rem;
-  font-weight: 720;
-  line-height: 1;
-  backdrop-filter: blur(12px);
-  transition: color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
-}
-
-.site-credit strong {
-  margin-left: 4px;
-  font-weight: 880;
-}
-
-.site-credit:hover {
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.42);
-  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.18);
-  transform: translateY(-2px);
-}
-
-body.menu-open .site-credit {
-  display: none;
-}
-
-body:has(.cookie-banner:not([hidden])) .site-credit {
-  bottom: calc(178px + env(safe-area-inset-bottom, 0px));
-}
-
 @keyframes diagnosticFloat {
   0%, 100% {
     transform: translateY(0) rotate(-1deg);
@@ -3057,10 +3044,6 @@ body:has(.cookie-banner:not([hidden])) .site-credit {
   }
 
   body.menu-open .diagnostic-guide {
-    display: none;
-  }
-
-  body.menu-open .site-credit {
     display: none;
   }
 
@@ -3255,15 +3238,9 @@ body:has(.cookie-banner:not([hidden])) .site-credit {
   }
 
   .site-credit {
-    left: 12px;
-    bottom: calc(96px + env(safe-area-inset-bottom, 0px));
     min-height: 34px;
     padding-inline: 12px;
     font-size: 0.72rem;
-  }
-
-  body:has(.cookie-banner:not([hidden])) .site-credit {
-    bottom: calc(230px + env(safe-area-inset-bottom, 0px));
   }
 
   .diagnostic-guide {
@@ -3314,8 +3291,6 @@ body:has(.cookie-banner:not([hidden])) .site-credit {
 
 @media (max-width: 420px) {
   .site-credit {
-    left: 10px;
-    max-width: calc(100vw - 20px);
     white-space: nowrap;
   }
 
