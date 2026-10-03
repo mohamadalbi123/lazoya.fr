@@ -2898,9 +2898,9 @@ body.menu-open .diagnostic-guide {
   align-items: center;
   min-height: 38px;
   padding: 0 14px;
-  color: var(--wine-dark);
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(156, 18, 49, 0.18);
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 999px;
   box-shadow: 0 12px 30px rgba(29, 26, 26, 0.12);
   font-size: 0.78rem;
@@ -2916,9 +2916,9 @@ body.menu-open .diagnostic-guide {
 }
 
 .site-credit:hover {
-  color: var(--wine);
-  border-color: rgba(156, 18, 49, 0.34);
-  box-shadow: 0 16px 38px rgba(156, 18, 49, 0.16);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.42);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.18);
   transform: translateY(-2px);
 }
 
