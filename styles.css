@@ -2608,17 +2608,19 @@ label {
 }
 
 .site-credit {
+  grid-column: 1 / -1;
+  justify-self: start;
   display: inline-flex;
   align-items: center;
-  min-height: 42px;
-  margin-top: 0;
-  padding: 0 18px;
+  min-height: 28px;
+  margin-top: 4px;
+  padding: 0 10px;
   color: #ffffff;
   background: #000000;
   border: 1px solid #000000;
   border-radius: 6px;
   box-shadow: none;
-  font-size: 1rem;
+  font-size: 0.76rem;
   font-weight: 820;
   line-height: 1;
   transition: opacity 180ms ease, transform 180ms ease;
@@ -3245,9 +3247,10 @@ body.menu-open .diagnostic-guide {
   }
 
   .site-credit {
-    min-height: 40px;
-    padding-inline: 16px;
-    font-size: 0.95rem;
+    min-height: 27px;
+    margin-top: 0;
+    padding-inline: 10px;
+    font-size: 0.72rem;
   }
 
   .diagnostic-guide {
