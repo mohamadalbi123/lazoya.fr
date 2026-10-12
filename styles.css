@@ -2579,9 +2579,16 @@ label {
   display: grid;
   grid-template-columns: minmax(240px, 0.8fr) minmax(0, 1.2fr);
   gap: clamp(28px, 6vw, 86px);
-  align-items: start;
+  align-items: stretch;
   border-top: 1px solid var(--line);
   background: #f2ebe4;
+}
+
+.footer-brand {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .footer-logo {
@@ -2603,18 +2610,18 @@ label {
 .site-credit {
   display: inline-flex;
   align-items: center;
-  min-height: 36px;
-  margin-top: 18px;
-  padding: 0 14px;
+  min-height: 26px;
+  margin-top: auto;
+  padding: 0 9px;
   color: #ffffff;
   background: #000000;
   border: 1px solid #000000;
-  border-radius: 999px;
-  box-shadow: 0 12px 26px rgba(29, 26, 26, 0.1);
-  font-size: 0.78rem;
+  border-radius: 4px;
+  box-shadow: none;
+  font-size: 0.68rem;
   font-weight: 720;
   line-height: 1;
-  transition: box-shadow 180ms ease, transform 180ms ease;
+  transition: opacity 180ms ease, transform 180ms ease;
 }
 
 .site-credit strong {
@@ -2624,7 +2631,7 @@ label {
 
 .site-credit:hover {
   color: #ffffff;
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.16);
+  opacity: 0.82;
   transform: translateY(-2px);
 }
 
@@ -3238,9 +3245,7 @@ body.menu-open .diagnostic-guide {
   }
 
   .site-credit {
-    min-height: 34px;
-    padding-inline: 12px;
-    font-size: 0.72rem;
+    margin-top: 22px;
   }
 
   .diagnostic-guide {
