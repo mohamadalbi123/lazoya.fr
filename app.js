@@ -2008,6 +2008,9 @@ function wireFilters() {
 
 function cookieState(value) {
   localStorage.setItem(keys.cookies, JSON.stringify(value));
+  if (typeof window.lazoyaApplyCookieConsent === "function") {
+    window.lazoyaApplyCookieConsent(value);
+  }
   document.querySelector("#cookieBanner").hidden = true;
   document.querySelector("#cookieModal").hidden = true;
   showToast("Préférences cookies enregistrées.");
@@ -2053,16 +2056,16 @@ function wireCookies() {
   });
 
   document.querySelector("#acceptCookies").addEventListener("click", () => {
-    cookieState({ necessary: true, analytics: true, personalization: true, marketing: true });
+    cookieState({ necessary: true, analytics: true, marketing: true });
   });
 
   document.querySelector("#rejectCookies").addEventListener("click", () => {
-    cookieState({ necessary: true, analytics: false, personalization: false, marketing: false });
+    cookieState({ necessary: true, analytics: false, marketing: false });
   });
 
   document.querySelector("#saveReject").addEventListener("click", () => {
     setCookieToggles({});
-    cookieState({ necessary: true, analytics: false, personalization: false, marketing: false });
+    cookieState({ necessary: true, analytics: false, marketing: false });
   });
 
   document.querySelector("#saveSelection").addEventListener("click", () => {
@@ -2070,8 +2073,8 @@ function wireCookies() {
   });
 
   document.querySelector("#saveAll").addEventListener("click", () => {
-    setCookieToggles({ analytics: true, personalization: true, marketing: true });
-    cookieState({ necessary: true, analytics: true, personalization: true, marketing: true });
+    setCookieToggles({ analytics: true, marketing: true });
+    cookieState({ necessary: true, analytics: true, marketing: true });
   });
 }
 

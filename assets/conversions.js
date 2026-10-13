@@ -55,8 +55,17 @@
 
   function trackConversion(match, options = {}) {
     const done = once(options.callback);
+    let consent = window.lazoyaCookieConsent || null;
 
-    if (typeof window.gtag !== "function") {
+    if (!consent) {
+      try {
+        consent = JSON.parse(window.localStorage.getItem("lazoya.cookies") || "null");
+      } catch {
+        consent = null;
+      }
+    }
+
+    if (!consent?.marketing || typeof window.gtag !== "function") {
       done();
       return false;
     }
