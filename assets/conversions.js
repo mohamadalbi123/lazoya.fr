@@ -65,6 +65,16 @@
       }
     }
 
+    if (consent?.analytics && typeof window.gtag === "function") {
+      // An outbound action expresses intent; it never confirms a reservation.
+      window.gtag("event", "booking_intent", {
+        send_to: "G-3E9C5ZGQRW",
+        booking_channel: match.name,
+        page_path: window.location.pathname,
+        transport_type: "beacon"
+      });
+    }
+
     if (!consent?.marketing || typeof window.gtag !== "function") {
       done();
       return false;

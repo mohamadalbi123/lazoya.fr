@@ -1325,7 +1325,7 @@ const defaults = {
       description: "Crème Herbsom personnalisable pour accompagner les besoins d’éclat, d’uniformité du teint et de confort cutané. La formule est choisie selon les besoins de la peau.",
       source: "Herbsom",
       url: "https://herbsom.de/products/erstelle-deine-creme",
-      image: "assets/products/herbsom-cream-choice.jpg"
+      image: "assets/products/herbsom-cream-choice.optimized.webp"
     },
     {
       name: "Crème personnalisée · Imperfections",
@@ -1334,7 +1334,7 @@ const defaults = {
       description: "Crème Herbsom personnalisable pour les peaux sujettes aux imperfections, brillances ou pores visibles. Les actifs sont sélectionnés selon le profil de peau.",
       source: "Herbsom",
       url: "https://herbsom.de/products/erstelle-deine-creme",
-      image: "assets/products/herbsom-cream-choice.jpg"
+      image: "assets/products/herbsom-cream-choice.optimized.webp"
     },
     {
       name: "Crème personnalisée · Anti-âge & fermeté",
@@ -1343,7 +1343,7 @@ const defaults = {
       description: "Crème Herbsom personnalisable pour accompagner les signes de l’âge, la fermeté et l’apparence des rides. Une formule adaptée aux besoins de la cliente.",
       source: "Herbsom",
       url: "https://herbsom.de/products/erstelle-deine-creme",
-      image: "assets/products/herbsom-cream-choice.jpg"
+      image: "assets/products/herbsom-cream-choice.optimized.webp"
     },
     {
       name: "Sérum personnalisé · Éclat & uniformité",
@@ -1352,7 +1352,7 @@ const defaults = {
       description: "Sérum Herbsom personnalisé avec des actifs choisis pour travailler l’éclat, l’uniformité du teint et la qualité de peau.",
       source: "Herbsom",
       url: "https://herbsom.de/products/individuelle-serum-creme",
-      image: "assets/products/herbsom-serum-choice.jpg"
+      image: "assets/products/herbsom-serum-choice.optimized.webp"
     },
     {
       name: "Sérum personnalisé · Imperfections",
@@ -1361,7 +1361,7 @@ const defaults = {
       description: "Sérum Herbsom personnalisé pour accompagner les peaux sujettes aux imperfections, brillances et irrégularités visibles.",
       source: "Herbsom",
       url: "https://herbsom.de/products/individuelle-serum-creme",
-      image: "assets/products/herbsom-serum-choice.jpg"
+      image: "assets/products/herbsom-serum-choice.optimized.webp"
     },
     {
       name: "Sérum personnalisé · Anti-âge & fermeté",
@@ -1370,7 +1370,7 @@ const defaults = {
       description: "Sérum Herbsom personnalisé pour soutenir les besoins anti-âge, lisser l’apparence de la peau et renforcer la sensation de fermeté.",
       source: "Herbsom",
       url: "https://herbsom.de/products/individuelle-serum-creme",
-      image: "assets/products/herbsom-serum-choice.jpg"
+      image: "assets/products/herbsom-serum-choice.optimized.webp"
     },
     {
       name: "Fluide solaire SPF 50+",
@@ -1812,9 +1812,9 @@ function wireNavigation() {
     });
 
     if (window.location.hash) {
-      window.history.replaceState({ view }, "", "/");
+      window.history.replaceState({ view }, "", "/" + window.location.search);
     } else if (options.updateHistory) {
-      window.history.pushState({ view }, "", "/");
+      window.history.pushState({ view }, "", "/" + window.location.search);
     }
 
     if (rawRoute === "careerForm") {
@@ -1856,8 +1856,12 @@ function wireNavigation() {
   });
 
   document.addEventListener("click", (event) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     const serviceLink = event.target.closest("[data-service-category]");
     if (!serviceLink) return;
+    // Respect links that explicitly request a new tab.
+    const anchor = event.target.closest("a");
+    if (anchor && anchor.target === "_blank") return;
 
     event.preventDefault();
     state.serviceFilter = serviceLink.dataset.serviceCategory;
@@ -1870,6 +1874,7 @@ function wireNavigation() {
   });
 
   document.addEventListener("click", (event) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     const routeLink = event.target.closest("[data-route]");
     if (!routeLink || routeLink.dataset.serviceCategory) return;
     if (routeLink.dataset.route === "booking") return;

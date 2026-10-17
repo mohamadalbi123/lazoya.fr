@@ -32,6 +32,31 @@ a {
   min-height: 100vh;
 }
 
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 18px clamp(18px, 4vw, 54px);
+  color: var(--soft-ink);
+  font-size: 0.875rem;
+}
+
+.breadcrumbs a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.service-guide {
+  max-width: 900px;
+  margin: 48px auto;
+  line-height: 1.8;
+}
+
+.service-guide h2 { margin: 32px 0 14px; }
+.service-guide a { color: var(--wine-dark); text-decoration: underline; text-underline-offset: 3px; }
+.service-faq details { padding: 16px 0; border-bottom: 1px solid var(--line); }
+.service-faq summary { cursor: pointer; font-weight: 600; }
+
 .seo-topbar {
   position: sticky;
   top: 0;

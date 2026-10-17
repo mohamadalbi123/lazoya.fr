@@ -25,20 +25,14 @@
     }
   }
 
-  function loadGoogleTag(callback) {
-    if (scriptLoaded) {
-      if (typeof callback === "function") callback();
-      return;
-    }
+  function loadGoogleTag() {
+    if (scriptLoaded) return;
 
     scriptLoaded = true;
+    window.gtag("js", new Date());
     const script = document.createElement("script");
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${adsId}`;
-    script.onload = () => {
-      window.gtag("js", new Date());
-      if (typeof callback === "function") callback();
-    };
     document.head.appendChild(script);
   }
 
@@ -63,17 +57,17 @@
 
     if (!analyticsAllowed && !marketingAllowed) return;
 
-    loadGoogleTag(() => {
-      if (analyticsAllowed && !configuredAnalytics) {
-        window.gtag("config", analyticsId, { anonymize_ip: true });
-        configuredAnalytics = true;
-      }
+    // Queue configuration before any consented click events, even on a slow connection.
+    loadGoogleTag();
+    if (analyticsAllowed && !configuredAnalytics) {
+      window.gtag("config", analyticsId, { anonymize_ip: true });
+      configuredAnalytics = true;
+    }
 
-      if (marketingAllowed && !configuredAds) {
-        window.gtag("config", adsId);
-        configuredAds = true;
-      }
-    });
+    if (marketingAllowed && !configuredAds) {
+      window.gtag("config", adsId);
+      configuredAds = true;
+    }
   }
 
   window.lazoyaApplyCookieConsent = applyConsent;

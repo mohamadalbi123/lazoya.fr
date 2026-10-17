@@ -5,6 +5,7 @@ const beautyAdvisor = require("./api/beauty-advisor");
 
 const root = __dirname;
 const port = Number(process.env.PORT || 4175);
+const siteConfig = require("./vercel.json");
 
 function loadEnvFile(file) {
   const fullPath = path.join(root, file);
@@ -34,7 +35,8 @@ const mime = {
   ".json": "application/json; charset=utf-8",
   ".png": "image/png",
   ".svg": "image/svg+xml",
-  ".webp": "image/webp"
+  ".webp": "image/webp",
+  ".xml": "application/xml; charset=utf-8"
 };
 
 function send(response, statusCode, body, headers = {}) {
@@ -91,6 +93,19 @@ function staticPath(urlPath) {
 const server = http.createServer((request, response) => {
   const url = new URL(request.url, `http://${request.headers.host || "localhost"}`);
 
+  // Preview the exact static-page aliases declared in vercel.json.
+  const redirect = siteConfig.redirects.find((rule) => !rule.has && rule.source === url.pathname);
+  if (redirect) {
+    const destination = new URL(redirect.destination, url.origin);
+    destination.search = url.search;
+    send(response, redirect.permanent ? 308 : 307, "", { Location: destination.pathname + destination.search + destination.hash });
+    return;
+  }
+  if (siteConfig.trailingSlash && !url.pathname.endsWith("/") && fs.existsSync(path.join(root, url.pathname, "index.html"))) {
+    send(response, 308, "", { Location: url.pathname + "/" + url.search });
+    return;
+  }
+
   if (url.pathname === "/api/beauty-advisor") {
     handleApi(request, response);
     return;
@@ -108,7 +123,7 @@ const server = http.createServer((request, response) => {
   });
 });
 
-server.listen(port, () => {
+server.listen(port, "127.0.0.1", () => {
   const mode = process.env.OPENAI_API_KEY ? "OpenAI enabled" : "OpenAI fallback mode";
   console.log(`Lazoya local dev server: http://localhost:${port}/diagnostique/?reset=1 (${mode})`);
 });

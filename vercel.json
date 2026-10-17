@@ -1,6 +1,107 @@
 {
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "lazoya.fr"
+        }
+      ],
+      "destination": "https://www.lazoya.fr/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/a-propos/index.html",
+      "destination": "/#about",
+      "permanent": true
+    },
+    {
+      "source": "/carrieres/index.html",
+      "destination": "/#careers",
+      "permanent": true
+    },
+    {
+      "source": "/cils-sourcils/index.html",
+      "destination": "/cils-sourcils/",
+      "permanent": true
+    },
+    {
+      "source": "/coiffure/index.html",
+      "destination": "/coiffure/",
+      "permanent": true
+    },
+    {
+      "source": "/confidentialite/index.html",
+      "destination": "/confidentialite/",
+      "permanent": true
+    },
+    {
+      "source": "/defi-ongles/index.html",
+      "destination": "/defi-ongles/",
+      "permanent": true
+    },
+    {
+      "source": "/diagnostique/index.html",
+      "destination": "/diagnostique/",
+      "permanent": true
+    },
+    {
+      "source": "/epilation/index.html",
+      "destination": "/epilation/",
+      "permanent": true
+    },
+    {
+      "source": "/maquillage/index.html",
+      "destination": "/maquillage/",
+      "permanent": true
+    },
+    {
+      "source": "/massages/index.html",
+      "destination": "/massages/",
+      "permanent": true
+    },
+    {
+      "source": "/mentions-legales/index.html",
+      "destination": "/mentions-legales/",
+      "permanent": true
+    },
+    {
+      "source": "/modeles/index.html",
+      "destination": "/#models",
+      "permanent": true
+    },
+    {
+      "source": "/ongles/index.html",
+      "destination": "/ongles/",
+      "permanent": true
+    },
+    {
+      "source": "/prestations/index.html",
+      "destination": "/prestations/",
+      "permanent": true
+    },
+    {
+      "source": "/produits/index.html",
+      "destination": "/produits/",
+      "permanent": true
+    },
+    {
+      "source": "/reservation/index.html",
+      "destination": "/reservation/",
+      "permanent": true
+    },
+    {
+      "source": "/soins-visage/index.html",
+      "destination": "/soins-visage/",
+      "permanent": true
+    },
+    {
       "source": "/accueil",
       "destination": "/",
       "permanent": true
@@ -19,6 +120,38 @@
       "source": "/dashhome/",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/a-propos",
+      "destination": "/#about",
+      "permanent": true
+    },
+    {
+      "source": "/a-propos/",
+      "destination": "/#about",
+      "permanent": true
+    },
+    {
+      "source": "/carrieres",
+      "destination": "/#careers",
+      "permanent": true
+    },
+    {
+      "source": "/carrieres/",
+      "destination": "/#careers",
+      "permanent": true
+    },
+    {
+      "source": "/modeles",
+      "destination": "/#models",
+      "permanent": true
+    },
+    {
+      "source": "/modeles/",
+      "destination": "/#models",
+      "permanent": true
     }
-  ]
+  ],
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": true
 }
