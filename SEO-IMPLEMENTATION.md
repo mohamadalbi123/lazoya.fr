@@ -2,6 +2,14 @@
 
 17 October 2026. The user authorized production publication after local validation and asked that completed website changes be pushed live by default. That workflow is recorded in `AGENTS.md`. This report covers the cumulative SEO changes, including the earlier metadata and linking improvements. Git and Vercel provide the release commit and deployment status.
 
+## Production release verification
+
+The SEO release was pushed to `main` as `240e68a`. Vercel production deployment `dpl_Dhv2PNBCdRqQBjwLv5cphbydnKjc` reached READY and was assigned to `www.lazoya.fr`.
+
+Live HTTP checks passed for all 13 canonical pages, configured path redirects with campaign queries, optimized assets, actual 404 handling and API health. Vercel adds a permanent trailing-slash hop before some legacy redirects; the smoke test now follows and checks those chains. The API health endpoint also normalizes to its trailing-slash URL and responds successfully.
+
+The public homepage, nails, Korean lash-lift and reservation pages displayed the updated content. The non-www domain still responds with a temporary 307 redirect to www. Changing that domain-level setting requires dashboard access or a supported authenticated mutation; the available browser session was logged out. The runtime-log API returned 403, so a server-log error scan was unavailable. These limitations do not prevent the tested pages from being live.
+
 ## Changes and expected benefits
 
 | Change | Purpose |
