@@ -1036,30 +1036,307 @@
       if (new URLSearchParams(window.location.search).has("reset")) sessionStorage.removeItem(STORAGE_KEY);
 
       const serviceCatalog = [
-        { id: "refresh", name: "Refresh Summer", category: "skin", duration: "35 min", price: "65 €", keywords: "skin glow dullness quick event dryness sensitive gentle", benefits: ["Glow rapide", "Hydratation", "Fraîcheur"], why: "Soin esthétique utile pour réveiller un teint fatigué, hydrater légèrement et apporter de l’éclat sans protocole trop intense." },
-        { id: "hydra", name: "Hydra Touch Coréen", category: "skin", duration: "45 min", price: "150 €", keywords: "skin hydration dryness pores glow deep targeted first", benefits: ["Nettoyage profond", "Hydratation", "Éclat"], why: "Soin complet intéressant quand la peau montre un besoin de nettoyage, d’hydratation et de clarté." },
-        { id: "mixte", name: "Soin Peau Mixte à Grasse", category: "skin", duration: "40 min", price: "85 €", keywords: "skin pores acne oily imperfections pure targeted deep", benefits: ["Purifiant", "Équilibre", "Peau nette"], why: "Soin esthétique adapté aux brillances, pores visibles et imperfections non médicales." },
-        { id: "anti-acne", name: "Soin Visage Anti-Acné Intensif", category: "skin", duration: "40 min", price: "85 €", keywords: "skin acne imperfections pores oily targeted", benefits: ["Imperfections", "Clarté", "Soin ciblé"], why: "Soin à envisager pour accompagner une peau sujette aux imperfections, sous réserve de confirmer l’état de la peau sur place." },
-        { id: "peeling", name: "Peeling aux Acides de Fruits", category: "skin", duration: "1h", price: "110 €", keywords: "skin glow dullness texture progressive targeted pores", benefits: ["Grain affiné", "Teint uniforme", "Éclat"], why: "Soin utile pour le teint terne, le grain irrégulier et l’éclat, avec précautions selon sensibilité et exposition solaire." },
-        { id: "lifting", name: "Lifting Coréen", category: "skin", duration: "1h", price: "110 €", keywords: "skin firmness wrinkles event glow expert", benefits: ["Effet liftant", "Traits reposés", "Tonus"], why: "Soin esthétique à envisager si l’objectif est un visage plus tonique et des traits visuellement reposés." },
-        { id: "radio", name: "Contour Collagen Boost", category: "skin", duration: "30-50 min", price: "Dès 95 €", keywords: "skin firmness wrinkles progressive expert deep targeted", benefits: ["Fermeté", "Collagène", "Contours"], why: "Soin technique à envisager pour un objectif fermeté et contours, après vérification des contre-indications." },
-        { id: "micro", name: "Micro-needling Visage Classique + LED", category: "skin", duration: "45 min", price: "90 €", keywords: "skin texture pores firmness progressive targeted", benefits: ["Texture", "Régénération", "LED"], why: "Soin progressif à envisager pour texture, pores et qualité de peau, avec précautions importantes selon sensibilité." },
-        { id: "blowtox", name: "Soin Blowtox express MYRIAM K", category: "hair", duration: "20 min", price: "Sur consultation", keywords: "hair dry brittle shine quick frizz damaged dullness event", benefits: ["Brillance", "Souplesse", "Discipline"], why: "Soin capillaire à envisager pour cheveux secs, ternes, sensibilisés ou difficiles à discipliner." },
-        { id: "bot-capillaire", name: "Soin bot capillaire", category: "hair", duration: "3h", price: "Sur consultation", keywords: "hair dry brittle damaged deep progressive texture frizz", benefits: ["Réparation", "Souplesse", "Soin profond"], why: "Protocole à envisager quand la fibre paraît fragilisée, cassante ou en besoin de soin profond." },
-        { id: "lissage", name: "Lissage bresilien sans formol", category: "hair", duration: "3h", price: "à partir de 100 €", keywords: "hair frizz lissage smoothing discipline volume progressive", benefits: ["Discipline", "Lissage", "Confort coiffage"], why: "Service technique à envisager si le besoin principal est de réduire les frisottis, discipliner la fibre et faciliter le coiffage." },
-        { id: "couleur-patine", name: "Couleur & patine", category: "hair", duration: "Sur diagnostic", price: "Sur consultation", keywords: "hair color patine dullness glow event tone balayage", benefits: ["Reflet", "Uniformité", "Éclat cheveux"], why: "Prestation à envisager si la demande concerne l’éclat de la couleur, les reflets, la patine ou une transformation à confirmer par diagnostic." },
-        { id: "lashes", name: "Réhaussement de cils enrichie à la Kératine avec teinture", category: "eyes", duration: "1h", price: "80 €", keywords: "eyes lashes quick event tired natural density keratin", benefits: ["Regard ouvert", "Effet mascara", "Kératine"], why: "Service utile pour ouvrir le regard et intensifier les cils de façon naturelle." },
-        { id: "brow", name: "Browlift simple", category: "eyes", duration: "45 min", price: "55 €", keywords: "eyes brows density line natural tired structure", benefits: ["Sourcils structurés", "Regard ouvert", "Naturel"], why: "Service à envisager si la demande concerne la ligne, la densité ou la structure des sourcils." },
-        { id: "restructuration", name: "Restructuration Sourcils + Teinture", category: "eyes", duration: "30 min", price: "35 €", keywords: "eyes brows line density sparse teinture structure", benefits: ["Ligne nette", "Intensité", "Précision"], why: "Service à envisager quand les sourcils manquent de définition, d’intensité ou d’équilibre visuel." },
-        { id: "extensions-cils", name: "cil a cil", category: "eyes", duration: "2h 30min", price: "68 €", keywords: "eyes lashes density length event tired volume", benefits: ["Longueur", "Densité", "Regard intensifié"], why: "Service à envisager si l’objectif est d’ajouter longueur ou densité aux cils, avec un rendu plus présent qu’un rehaussement." },
-        { id: "semi-mains", name: "Vernis semi-permanent mains", category: "nails", duration: "45 min", price: "35 €", keywords: "nails vernis color hold event hands natural finition", benefits: ["Tenue", "Couleur", "Finition nette"], why: "Service à envisager pour une finition propre et durable lorsque la forme naturelle de l’ongle est suffisante." },
-        { id: "manucure-express", name: "Manucure express mains ou pieds", category: "nails", duration: "30 min", price: "25 €", keywords: "nails cuticles shape natural quick hands feet first", benefits: ["Mise en forme", "Cuticules", "Naturel"], why: "Service à envisager pour nettoyer la forme, les contours et l’aspect général sans transformation forte." },
-        { id: "soin-mains", name: "Soin des Mains + Vernis base", category: "nails", duration: "1h", price: "56 €", keywords: "nails hands dryness brittle care natural gentle hydration", benefits: ["Soin mains", "Base protectrice", "Confort"], why: "Soin à envisager si les mains ou les ongles paraissent secs, fragiles ou en besoin d’un entretien doux." },
-        { id: "soin-pieds", name: "Soin beauté des Pieds avec Soin Hydratant + Sel Marin", category: "nails", duration: "1h", price: "57 €", keywords: "nails feet dryness callosities tired hydration care relaxation", benefits: ["Hydratation", "Pieds doux", "Confort"], why: "Soin à envisager pour pieds secs, fatigués ou en besoin d’une remise en beauté plus complète." },
-        { id: "gelx", name: "Pose Gel-X", category: "nails", duration: "1h30", price: "Dès 60 €", keywords: "nails brittle broken shape length event extension gelx", benefits: ["Longueur", "Forme", "Finition nette"], why: "Service à envisager pour améliorer la forme, la longueur et l’aspect esthétique des ongles." },
-        { id: "vernis-classique", name: "Manucure + vernis classique", category: "nails", duration: "35 min", price: "37 €", keywords: "nails vernis classic quick event natural color", benefits: ["Couleur ponctuelle", "Mise en beauté", "Finition simple"], why: "Service à envisager pour une mise en beauté ponctuelle, simple et naturelle." },
-        { id: "massage", name: "Massage Signature sur mesure", category: "relaxation", duration: "50 min", price: "75 €", keywords: "relaxation stress tension fatigue comfort", benefits: ["Détente", "Tensions", "Sur mesure"], why: "Service à envisager quand le besoin principal est la détente, les tensions ou le confort global." }
-      ];
+  {
+    "id": "refresh",
+    "category": "skin",
+    "keywords": "skin glow dullness quick event dryness sensitive gentle",
+    "benefits": [
+      "Glow rapide",
+      "Hydratation",
+      "Fraîcheur"
+    ],
+    "why": "Soin esthétique utile pour réveiller un teint fatigué, hydrater légèrement et apporter de l’éclat sans protocole trop intense.",
+    "name": "L’INSTANT ÉCLAT",
+    "price": "35 €",
+    "duration": "30min",
+    "bookable": true
+  },
+  {
+    "id": "hydra",
+    "category": "skin",
+    "keywords": "skin hydration dryness pores glow deep targeted first",
+    "benefits": [
+      "Nettoyage profond",
+      "Hydratation",
+      "Éclat"
+    ],
+    "why": "Soin complet intéressant quand la peau montre un besoin de nettoyage, d’hydratation et de clarté.",
+    "name": "Une Séance Visage et Cou",
+    "price": "150 €",
+    "duration": "45min",
+    "bookable": true
+  },
+  {
+    "id": "mixte",
+    "category": "skin",
+    "keywords": "skin pores acne oily imperfections pure targeted deep",
+    "benefits": [
+      "Purifiant",
+      "Équilibre",
+      "Peau nette"
+    ],
+    "why": "Soin esthétique adapté aux brillances, pores visibles et imperfections non médicales.",
+    "name": "PURE SKIN",
+    "price": "55 €",
+    "duration": "40min",
+    "bookable": true
+  },
+  {
+    "id": "peeling",
+    "category": "skin",
+    "keywords": "skin glow dullness texture progressive targeted pores",
+    "benefits": [
+      "Grain affiné",
+      "Teint uniforme",
+      "Éclat"
+    ],
+    "why": "Soin utile pour le teint terne, le grain irrégulier et l’éclat, avec précautions selon sensibilité et exposition solaire.",
+    "name": "PROTOCOLE 1 – Soin Peeling Éclat & Uniformité",
+    "price": "110 €",
+    "duration": "1h",
+    "bookable": true
+  },
+  {
+    "id": "lifting",
+    "category": "skin",
+    "keywords": "skin firmness wrinkles event glow expert",
+    "benefits": [
+      "Effet liftant",
+      "Traits reposés",
+      "Tonus"
+    ],
+    "why": "Soin esthétique à envisager si l’objectif est un visage plus tonique et des traits visuellement reposés.",
+    "name": "Préparation de la peau + Lifting du visage entier + Masque + LED",
+    "price": "110 €",
+    "duration": "1h",
+    "bookable": true
+  },
+  {
+    "id": "radio",
+    "category": "skin",
+    "keywords": "skin firmness wrinkles progressive expert deep targeted",
+    "benefits": [
+      "Fermeté",
+      "Collagène",
+      "Contours"
+    ],
+    "why": "Soin technique à envisager pour un objectif fermeté et contours, après vérification des contre-indications.",
+    "name": "💎 Visage + Luminothérapie",
+    "price": "90 €",
+    "duration": "40min",
+    "bookable": true
+  },
+  {
+    "id": "micro",
+    "category": "skin",
+    "keywords": "skin texture pores firmness progressive targeted",
+    "benefits": [
+      "Texture",
+      "Régénération",
+      "LED"
+    ],
+    "why": "Soin progressif à envisager pour texture, pores et qualité de peau, avec précautions importantes selon sensibilité.",
+    "name": "Micro-needling Visage Classique + LED",
+    "price": "90 €",
+    "duration": "45min",
+    "bookable": true
+  },
+  {
+    "id": "bot-capillaire",
+    "category": "hair",
+    "keywords": "hair dry brittle damaged deep progressive texture frizz",
+    "benefits": [
+      "Réparation",
+      "Souplesse",
+      "Soin profond"
+    ],
+    "why": "Protocole à envisager quand la fibre paraît fragilisée, cassante ou en besoin de soin profond.",
+    "name": "Soin Botox capillaire",
+    "price": "Sur devis",
+    "duration": "3h",
+    "bookable": false
+  },
+  {
+    "id": "lissage",
+    "category": "hair",
+    "keywords": "hair frizz lissage smoothing discipline volume progressive",
+    "benefits": [
+      "Discipline",
+      "Lissage",
+      "Confort coiffage"
+    ],
+    "why": "Service technique à envisager si le besoin principal est de réduire les frisottis, discipliner la fibre et faciliter le coiffage.",
+    "name": "Lissage bresilien sans formol",
+    "price": "Sur devis",
+    "duration": "3h",
+    "bookable": false
+  },
+  {
+    "id": "couleur-patine",
+    "category": "hair",
+    "keywords": "hair color patine dullness glow event tone balayage",
+    "benefits": [
+      "Reflet",
+      "Uniformité",
+      "Éclat cheveux"
+    ],
+    "why": "Prestation à envisager si la demande concerne l’éclat de la couleur, les reflets, la patine ou une transformation à confirmer par diagnostic.",
+    "name": "Patine + Brushing",
+    "price": "à partir de 50 €",
+    "duration": "1h",
+    "bookable": true
+  },
+  {
+    "id": "lashes",
+    "category": "eyes",
+    "keywords": "eyes lashes quick event tired natural density keratin",
+    "benefits": [
+      "Regard ouvert",
+      "Effet mascara",
+      "Kératine"
+    ],
+    "why": "Service utile pour ouvrir le regard et intensifier les cils de façon naturelle.",
+    "name": "Réhaussement de cils enrichie à la Kératine avec teinture",
+    "price": "80 €",
+    "duration": "1h",
+    "bookable": true
+  },
+  {
+    "id": "brow",
+    "category": "eyes",
+    "keywords": "eyes brows density line natural tired structure",
+    "benefits": [
+      "Sourcils structurés",
+      "Regard ouvert",
+      "Naturel"
+    ],
+    "why": "Service à envisager si la demande concerne la ligne, la densité ou la structure des sourcils.",
+    "name": "Browlift simple",
+    "price": "55 €",
+    "duration": "45min",
+    "bookable": true
+  },
+  {
+    "id": "restructuration",
+    "category": "eyes",
+    "keywords": "eyes brows line density sparse teinture structure",
+    "benefits": [
+      "Ligne nette",
+      "Intensité",
+      "Précision"
+    ],
+    "why": "Service à envisager quand les sourcils manquent de définition, d’intensité ou d’équilibre visuel.",
+    "name": "Restructuration Sourcils + Teinture",
+    "price": "35 €",
+    "duration": "30min",
+    "bookable": true
+  },
+  {
+    "id": "semi-mains",
+    "category": "nails",
+    "keywords": "nails vernis color hold event hands natural finition",
+    "benefits": [
+      "Tenue",
+      "Couleur",
+      "Finition nette"
+    ],
+    "why": "Service à envisager pour une finition propre et durable lorsque la forme naturelle de l’ongle est suffisante.",
+    "name": "Vernis semi-permanent mains ( sans depose )",
+    "price": "35 €",
+    "duration": "45min",
+    "bookable": true
+  },
+  {
+    "id": "manucure-express",
+    "category": "nails",
+    "keywords": "nails cuticles shape natural quick hands feet first",
+    "benefits": [
+      "Mise en forme",
+      "Cuticules",
+      "Naturel"
+    ],
+    "why": "Service à envisager pour nettoyer la forme, les contours et l’aspect général sans transformation forte.",
+    "name": "Manucure express mains ou pieds",
+    "price": "25 €",
+    "duration": "30min",
+    "bookable": true
+  },
+  {
+    "id": "soin-mains",
+    "category": "nails",
+    "keywords": "nails hands dryness brittle care natural gentle hydration",
+    "benefits": [
+      "Soin mains",
+      "Base protectrice",
+      "Confort"
+    ],
+    "why": "Soin à envisager si les mains ou les ongles paraissent secs, fragiles ou en besoin d’un entretien doux.",
+    "name": "Soin des Mains  + Vernis base",
+    "price": "56 €",
+    "duration": "1h",
+    "bookable": true
+  },
+  {
+    "id": "soin-pieds",
+    "category": "nails",
+    "keywords": "nails feet dryness callosities tired hydration care relaxation",
+    "benefits": [
+      "Hydratation",
+      "Pieds doux",
+      "Confort"
+    ],
+    "why": "Soin à envisager pour pieds secs, fatigués ou en besoin d’une remise en beauté plus complète.",
+    "name": "Soin beauté des Pieds avec Soin Hydratant + Sel Marin",
+    "price": "57 €",
+    "duration": "1h",
+    "bookable": true
+  },
+  {
+    "id": "gelx",
+    "category": "nails",
+    "keywords": "nails brittle broken shape length event extension gelx",
+    "benefits": [
+      "Longueur",
+      "Forme",
+      "Finition nette"
+    ],
+    "why": "Service à envisager pour améliorer la forme, la longueur et l’aspect esthétique des ongles.",
+    "name": "Pose Gel-X ( S/M )",
+    "price": "60 €",
+    "duration": "1h 30min",
+    "bookable": true
+  },
+  {
+    "id": "vernis-classique",
+    "category": "nails",
+    "keywords": "nails vernis classic quick event natural color",
+    "benefits": [
+      "Couleur ponctuelle",
+      "Mise en beauté",
+      "Finition simple"
+    ],
+    "why": "Service à envisager pour une mise en beauté ponctuelle, simple et naturelle.",
+    "name": "Manucure + vernis classique",
+    "price": "37 €",
+    "duration": "35min",
+    "bookable": true
+  },
+  {
+    "id": "massage",
+    "category": "relaxation",
+    "keywords": "relaxation stress tension fatigue comfort",
+    "benefits": [
+      "Détente",
+      "Tensions",
+      "Sur mesure"
+    ],
+    "why": "Service à envisager quand le besoin principal est la détente, les tensions ou le confort global.",
+    "name": "Massage Signature – sur mesure",
+    "price": "75 €",
+    "duration": "50min",
+    "bookable": true
+  }
+];
 
       const state = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '{"started":false,"step":0,"answers":{},"note":"","image":""}');
       const $ = (selector) => document.querySelector(selector);
@@ -1271,6 +1548,7 @@
               <em>${escapeHtml([service.duration, service.price].filter(Boolean).join(" · "))}</em>
             </div>
             <p class="result-text">${escapeHtml(service.why)}</p>
+            ${!service.bookable ? `<p class="result-text">Cette prestation ne peut pas être réservée en ligne. Merci d’appeler le <a href="tel:+33956673009">09 56 67 30 09</a>.</p>` : ""}
             <div class="chips">${(service.benefits || []).map((benefit) => `<span>${escapeHtml(benefit)}</span>`).join("")}</div>
           </article>
         `).join("") : `

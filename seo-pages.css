@@ -348,3 +348,41 @@ h3 {
     justify-content: flex-start;
   }
 }
+
+/* The same reviewed Planity catalogue is rendered in the service landing pages. */
+.catalog-group {
+  margin: 36px 0;
+  scroll-margin-top: 100px;
+}
+
+.catalog-group h2,
+.catalog-service h3 {
+  overflow-wrap: anywhere;
+}
+
+.catalog-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.catalog-details {
+  margin: 14px 0;
+}
+
+.catalog-details summary {
+  cursor: pointer;
+}
+
+.catalog-details p {
+  white-space: pre-line;
+}
+
+.catalog-service .button {
+  margin-top: 12px;
+}
+
+.catalog-unavailable {
+  font-size: 0.9rem;
+}
