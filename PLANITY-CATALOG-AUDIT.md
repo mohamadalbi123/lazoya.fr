@@ -46,13 +46,13 @@ Korean lash-lift entries. Previous website listings and diagnostic recommendatio
 for those entries were replaced with Planity's current keratin rehaussement label.
 This does not assert that the salon has stopped offering another treatment.
 
-## Source inconsistency requiring the salon's review
+## Foot massage correction — resolved
 
-“Massage des pieds” has displayed fields **30min / 49 €**, while its Planity
-description says **45 min / 59 euros** and **1h / 75 euros**. Both fields and
-description were preserved to meet the requested exact match. The underlying
-Planity description should be clarified by the salon, then the site snapshot
-updated. No Planity account data or settings were changed.
+The salon corrected the public Planity entry after the initial reconciliation.
+The current “Massage des pieds” entry is **30min / 49 €**, bookable online, with
+no description. The obsolete description mentioning 45min / 59 € and 1h / 75 €
+has been removed from the source snapshot, interactive catalogue and both static
+catalogues. The name, displayed duration, price and booking destination are unchanged.
 
 ## Implementation and SEO benefit
 
