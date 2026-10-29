@@ -3351,3 +3351,16 @@ body.menu-open .diagnostic-guide {
     animation: none;
   }
 }
+
+/* Real salon photography, softly moving behind the existing hero. */
+.hero-photos { position: absolute; inset: 0; overflow: hidden; }
+.hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 52%; opacity: 0; transition: opacity 2.5s ease-in-out; }
+.hero-photo.is-active { opacity: 1; animation: hero-photo-drift 15s linear both; }
+.hero-overlay { z-index: 1; pointer-events: none; background: linear-gradient(180deg,rgba(20,9,12,.58),rgba(31,8,15,.65) 45%,rgba(20,9,12,.72)); }
+.hero-motion-control { position: absolute; bottom: 16px; left: 20px; z-index: 3; width: 44px; height: 44px; border: 1px solid rgba(255,255,255,.5); border-radius: 50%; background: rgba(25,10,15,.5); color: white; font-size: 18px; cursor: pointer; }
+.hero-motion-control[hidden] { display: none; }
+.hero-motion-control:focus-visible { outline: 2px solid white; outline-offset: 4px; }
+.hero-photos.is-paused .hero-photo { animation-play-state: paused; }
+@media (max-width: 640px) { .hero { padding-bottom: 76px; } .hero-photo { object-position: center; } }
+@media (prefers-reduced-motion: reduce) { .hero-photo { transition: none; animation: none !important; } }
+@keyframes hero-photo-drift { from { transform: scale(1.045); } to { transform: scale(1); } }
