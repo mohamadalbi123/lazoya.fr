@@ -1,6 +1,15 @@
 // The full-size image links remain usable when JavaScript is unavailable.
 (() => {
   if (!window.HTMLDialogElement) return;
+  function openLinkedCollection() {
+    const collection = document.getElementById(window.location.hash.slice(1));
+    if (collection && collection.classList.contains('gallery-collection')) {
+      collection.open = true;
+      collection.scrollIntoView({block: 'start'});
+    }
+  }
+  openLinkedCollection();
+  window.addEventListener('hashchange', openLinkedCollection);
   const links = document.querySelectorAll('[data-gallery-image]');
   if (!links.length) return;
   const dialog = document.createElement('dialog');

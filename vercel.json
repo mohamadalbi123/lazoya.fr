@@ -150,6 +150,11 @@
       "source": "/modeles/",
       "destination": "/#models",
       "permanent": true
+    },
+    {
+      "source": "/realisations/index.html",
+      "destination": "/realisations/",
+      "permanent": true
     }
   ],
   "$schema": "https://openapi.vercel.sh/vercel.json",
