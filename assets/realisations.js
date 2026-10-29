@@ -5,11 +5,12 @@
     const collection = document.getElementById(window.location.hash.slice(1));
     if (collection && collection.classList.contains('gallery-collection')) {
       collection.open = true;
-      collection.scrollIntoView({block: 'start'});
+      collection.scrollIntoView({block: 'start', behavior: 'instant'});
     }
   }
   openLinkedCollection();
   window.addEventListener('hashchange', openLinkedCollection);
+  window.addEventListener('load', openLinkedCollection);
   const links = document.querySelectorAll('[data-gallery-image]');
   if (!links.length) return;
   const dialog = document.createElement('dialog');

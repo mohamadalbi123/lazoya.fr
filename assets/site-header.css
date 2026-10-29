@@ -1,0 +1,7 @@
+@import url("/styles.css?v=20261030-1");
+.photo-landing main { padding-top: 92px; }
+.photo-landing .topbar { color: var(--ink); }
+.photo-landing .footer { margin-top: 0; }
+.photo-landing .local-contact { padding: 32px clamp(18px,5vw,70px); }
+.photo-landing .button:not(.light) { background: var(--wine); color: white; }
+@media(max-width:640px) { .photo-landing main { padding-top: 76px; } }
