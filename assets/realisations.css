@@ -1,0 +1,24 @@
+.home-realisations { padding: clamp(56px,8vw,104px) clamp(18px,5vw,70px); background: #fff; }
+.realisations { scroll-margin-top: 110px; }
+.realisations h2, .home-realisations h2 { margin: 0 0 16px; font-size: clamp(1.6rem,3vw,2.5rem); line-height: 1.2; }
+.realisations-intro { max-width: 720px; color: var(--soft-ink); line-height: 1.7; margin: 0 0 28px; }
+.realisations-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px; }
+.realisation-card { display: block; min-width: 0; margin: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); }
+.realisation-card > a { display: block; cursor: zoom-in; }
+.realisation-card img { display: block; width: 100%; height: auto; aspect-ratio: 4/5; object-fit: cover; }
+.realisation-comparison img { object-fit: contain; }
+.realisation-caption { display: block; padding: 16px; font-size: .95rem; line-height: 1.5; }
+.home-realisations .realisation-caption { color: var(--wine-dark); font-weight: 600; }
+.realisation-card:focus-visible, .realisation-card > a:focus-visible { outline: 3px solid var(--wine); outline-offset: -3px; }
+.realisation-more { margin-top: 24px; }
+.realisation-more summary { cursor: pointer; color: var(--wine-dark); padding: 12px 0; font-weight: 600; }
+.realisation-more[open] summary { margin-bottom: 12px; }
+.realisations-book { margin-top: 28px; }
+.realisation-dialog { padding: 16px; border: 0; border-radius: 8px; max-width: min(960px,94vw); max-height: 94vh; background: var(--paper); color: var(--ink); }
+.realisation-dialog::backdrop { background: rgba(29,26,26,.85); }
+.realisation-dialog img { display: block; max-width: 100%; width: auto; max-height: 72vh; height: auto; margin: auto; object-fit: contain; }
+.realisation-dialog p { margin: 16px 0 0; line-height: 1.5; }
+.realisation-dialog button { display: block; margin: 0 0 14px auto; padding: 10px 16px; border: 1px solid var(--line); border-radius: 8px; color: var(--wine-dark); background: #fff; font: inherit; cursor: pointer; }
+@media (max-width: 980px) { .realisations-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 640px) { .realisations-grid { grid-template-columns: minmax(0,1fr); gap: 16px; } .realisation-card img { max-height: 480px; } }
+@media (max-width: 640px) { .realisations { scroll-margin-top: 150px; } }
