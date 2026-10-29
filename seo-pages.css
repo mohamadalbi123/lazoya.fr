@@ -131,7 +131,7 @@ a {
   grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
   gap: clamp(26px, 5vw, 70px);
   align-items: end;
-  padding: clamp(72px, 10vw, 132px) clamp(18px, 5vw, 70px) clamp(42px, 7vw, 90px);
+  padding: clamp(44px, 6vw, 76px) clamp(18px, 5vw, 70px) clamp(42px, 6vw, 76px);
   color: var(--milk);
   background:
     linear-gradient(135deg, rgba(29, 26, 26, 0.96), rgba(110, 14, 36, 0.92)),
@@ -159,8 +159,8 @@ h3 {
 .seo-hero h1 {
   max-width: 920px;
   margin-top: 14px;
-  font-size: clamp(3.1rem, 8vw, 7.4rem);
-  line-height: 0.9;
+  font-size: clamp(2.2rem, 4.7vw, 4.4rem);
+  line-height: 1.08;
 }
 
 .seo-hero p:not(.eyebrow) {

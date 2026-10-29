@@ -70,20 +70,30 @@
     </script>
       <link rel="stylesheet" href="/assets/landing-consent.css?v=20261017-1">
     <script src="/assets/landing-consent.js?v=20261017-1" defer></script>
-  </head>
-  <body>
+  <link rel="stylesheet" href="/assets/site-header.css?v=20261030-1"><script src="/assets/site-header.js?v=20261030-1" defer></script></head>
+  <body class="photo-landing">
     <div class="page-shell">
-      <header class="seo-topbar">
-        <a href="/">
-          <img class="brand-logo" src="../assets/lazoya-logo.png" alt="Lazoya" width="1000" height="1000" decoding="async">
-        </a>
-        <nav class="seo-nav">
-          <a href="/prestations/">Prestations</a>
-          <a href="/reservation/">Réserver</a>
-          <a href="/mentions-legales/">Mentions légales</a>
-        </nav>
-        <a class="button" href="/reservation/">Réserver</a>
-      </header>
+      <header class="topbar" data-elevated="true">
+      <a class="brand" href="/" aria-label="Accueil Lazoya">
+        <img class="brand-logo" src="/assets/lazoya-logo.png" alt="Lazoya" width="1000" height="1000" decoding="async">
+      </a>
+      <nav class="nav-links" aria-label="Navigation principale">
+        <a href="/">Accueil</a>
+        <a href="/prestations/">Prestations</a>
+        <a href="/realisations/">Réalisations</a>
+        <a href="/diagnostique/">Diagnostic</a>
+        <a href="/produits/">Produits</a>
+        <a href="/#models">Modèles</a>
+        <a href="/#about">À propos</a>
+        <a href="/#careers">Carrières</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="button primary" href="/reservation/">Réserver</a>
+      </div>
+      <button class="menu-button" type="button" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </header>
 
       <main>
         <section class="legal-page view-privacy">
