@@ -68,7 +68,21 @@
         "name": "La Rochelle"
       },
       "provider": {
-        "@id": "https://www.lazoya.fr/#salon"
+        "@type": [
+          "BeautySalon",
+          "HairSalon"
+        ],
+        "@id": "https://www.lazoya.fr/#salon",
+        "name": "Lazoya",
+        "url": "https://www.lazoya.fr/",
+        "telephone": "+33956673009",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "37 Bis Avenue Jean Guiton",
+          "postalCode": "17000",
+          "addressLocality": "La Rochelle",
+          "addressCountry": "FR"
+        }
       },
       "url": "https://www.lazoya.fr/cils-sourcils/",
       "mainEntityOfPage": {

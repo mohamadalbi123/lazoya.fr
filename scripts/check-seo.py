@@ -156,6 +156,13 @@ def check():
     assert "BeautySalon" in business["@type"] and "HairSalon" in business["@type"]
     assert business["telephone"] == "+33956673009"
     assert business["address"]["postalCode"] == "17000"
+    # Organic service landings must describe their provider without requiring a
+    # crawler to fetch a second document, and must agree with the homepage NAP.
+    for entity in entities.values():
+        if entity["@type"] == "Service":
+            provider = entity["provider"]
+            for field in ("@id", "@type", "name", "url", "telephone", "address"):
+                assert provider.get(field) == business[field], (entity["@id"], "Provider mismatch", field)
     assert "aggregateRating" not in business, "Do not add unverified rating schema"
     assert any("coréen" in offer["itemOffered"]["name"] for offer in business["hasOfferCatalog"]["itemListElement"])
     config = json.loads((ROOT / "vercel.json").read_text())
