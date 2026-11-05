@@ -12,6 +12,16 @@
       "permanent": true
     },
     {
+      "source": "/horaires-adresse",
+      "destination": "https://www.lazoya.fr/",
+      "statusCode": 301
+    },
+    {
+      "source": "/horaires-adresse/",
+      "destination": "https://www.lazoya.fr/",
+      "statusCode": 301
+    },
+    {
       "source": "/index.html",
       "destination": "/",
       "permanent": true

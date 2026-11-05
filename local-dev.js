@@ -98,7 +98,7 @@ const server = http.createServer((request, response) => {
   if (redirect) {
     const destination = new URL(redirect.destination, url.origin);
     destination.search = url.search;
-    send(response, redirect.permanent ? 308 : 307, "", { Location: destination.pathname + destination.search + destination.hash });
+    send(response, redirect.statusCode || (redirect.permanent ? 308 : 307), "", { Location: destination.pathname + destination.search + destination.hash });
     return;
   }
   if (siteConfig.trailingSlash && !url.pathname.endsWith("/") && fs.existsSync(path.join(root, url.pathname, "index.html"))) {

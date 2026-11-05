@@ -27,17 +27,18 @@ def get(path):
         return error
 
 
-def redirect_destination(path):
+def redirect_destination(path, expected_status=308):
     # Vercel normalizes trailing slashes before evaluating application redirects.
     # Follow that extra permanent hop while retaining queries and fragments.
     for _ in range(4):
         response = get(path)
-        assert response.status == 308, (path, response.status)
+        assert response.status in (308, expected_status), (path, response.status)
         destination = response.headers["Location"]
         parsed = urllib.parse.urlsplit(destination)
         next_path = parsed.path + ("?" + parsed.query if parsed.query else "")
         next_response = get(next_path)
-        if next_response.status != 308:
+        if next_response.status not in (301, 308):
+            assert response.status == expected_status, (path, response.status, expected_status)
             return destination
         path = next_path
     raise AssertionError((path, "Redirect loop"))
@@ -59,10 +60,21 @@ config = json.loads((ROOT / "vercel.json").read_text())
 for rule in config["redirects"]:
     if rule.get("has"):
         continue  # Domain redirects need separate verification on Vercel after release.
-    destination = redirect_destination(rule["source"] + "?utm_source=seo_check")
+    destination = redirect_destination(rule["source"] + "?utm_source=seo_check", rule.get("statusCode", 308))
     parts = urllib.parse.urlsplit(rule["destination"])
     expected = parts.path + "?utm_source=seo_check" + ("#" + parts.fragment if parts.fragment else "")
-    assert destination == expected, (rule["source"], destination, expected)
+    actual = urllib.parse.urlsplit(destination)
+    assert actual.netloc in ("", "www.lazoya.fr"), destination
+    actual_path = actual.path + ("?" + actual.query if actual.query else "") + ("#" + actual.fragment if actual.fragment else "")
+    assert actual_path == expected, (rule["source"], destination, expected)
+
+# Both obsolete address URL forms must reach home via a 301, retaining attribution.
+for path in ("/horaires-adresse", "/horaires-adresse/"):
+    destination = redirect_destination(path + "?utm_source=seo_check&gclid=redirect_test", 301)
+    assert urllib.parse.urlsplit(destination).path == "/", destination
+    assert urllib.parse.parse_qs(urllib.parse.urlsplit(destination).query) == {
+        "utm_source": ["seo_check"], "gclid": ["redirect_test"]
+    }, destination
 
 for asset in (ROOT / "assets").rglob("*.optimized.webp"):
     response = get("/" + asset.relative_to(ROOT).as_posix())
