@@ -44,6 +44,19 @@
     return null;
   }
 
+  // Booking intent must be explicit: reviews and catalogue links share this URL.
+  function isPlanityBooking(href, options) {
+    if (options.planityBooking !== true) return false;
+    try {
+      const url = new URL(href);
+      return url.protocol === "https:" &&
+        (url.hostname === "www.planity.com" || url.hostname === "planity.com") &&
+        /^\/lazoya-17000-la-rochelle\/?$/.test(url.pathname);
+    } catch {
+      return false;
+    }
+  }
+
   function once(callback) {
     let called = false;
     return function runOnce() {
@@ -75,7 +88,8 @@
       });
     }
 
-    if (!consent?.marketing || typeof window.gtag !== "function") {
+    if (!consent?.marketing || typeof window.gtag !== "function" ||
+        (match.name === "planity" && !options.planityBooking)) {
       done();
       return false;
     }
@@ -100,7 +114,7 @@
       return false;
     }
 
-    return trackConversion(match, options);
+    return trackConversion(match, { ...options, planityBooking: isPlanityBooking(href, options) });
   }
 
   window.lazoyaTrackConversionForHref = trackHref;
@@ -115,13 +129,18 @@
     const match = conversionForHref(href);
     if (!match) return;
 
+    const planityBooking = isPlanityBooking(href, {
+      planityBooking: link.hasAttribute("data-planity-booking")
+    });
+
     if (link.target === "_blank" || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
-      trackConversion(match);
+      trackConversion(match, { planityBooking });
       return;
     }
 
     event.preventDefault();
     trackConversion(match, {
+      planityBooking,
       callback: () => {
         window.location.href = href;
       }

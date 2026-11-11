@@ -1602,7 +1602,7 @@ function renderServices() {
               <div class="service-meta">
                 <span>${escapeHtml(service.duration)}</span>
                 <strong>${escapeHtml(service.price)}</strong>
-                ${service.bookable ? `<a class="button ghost" href="https://www.planity.com/lazoya-17000-la-rochelle" target="_blank" rel="noreferrer">Choisir</a>` : ""}
+                ${service.bookable ? `<a class="button ghost" data-planity-booking href="https://www.planity.com/lazoya-17000-la-rochelle" target="_blank" rel="noreferrer">Choisir</a>` : ""}
               </div>
             </article>
           `).join("")}
@@ -2073,6 +2073,7 @@ function wireBookingNotice() {
   let pendingHref = "";
   let pendingTarget = "";
   let pendingRoute = "";
+  let pendingPlanityBooking = false;
 
   if (!modal || !close || !continueButton) return;
 
@@ -2090,6 +2091,7 @@ function wireBookingNotice() {
 
     event.preventDefault();
     pendingHref = href;
+    pendingPlanityBooking = link.hasAttribute("data-planity-booking");
     pendingTarget = link.getAttribute("target") || "";
     pendingRoute = link.dataset.route || "";
     modal.hidden = false;
@@ -2111,7 +2113,7 @@ function wireBookingNotice() {
     }
 
     if (typeof window.lazoyaTrackConversionForHref === "function") {
-      window.lazoyaTrackConversionForHref(pendingHref, { label: "booking_notice_continue" });
+      window.lazoyaTrackConversionForHref(pendingHref, { label: "booking_notice_continue", planityBooking: pendingPlanityBooking });
     }
 
     window.open(pendingHref, pendingTarget === "_blank" ? "_blank" : "_self", "noreferrer");

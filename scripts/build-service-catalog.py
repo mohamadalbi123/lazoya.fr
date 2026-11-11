@@ -26,7 +26,7 @@ def service_html(service):
     esc = html.escape
     description = (f'<details class="catalog-details"><summary>Détails de la prestation</summary>'
                    f'<p>{esc(service["description"]).replace(chr(10), "&#10;")}</p></details>') if service["description"] else ""
-    booking = (f'<a class="button" href="{PLANITY}" target="_blank" rel="noreferrer">Choisir sur Planity</a>'
+    booking = (f'<a class="button" data-planity-booking href="{PLANITY}" target="_blank" rel="noreferrer">Choisir sur Planity</a>'
                if service["bookable"] else
                '<p class="catalog-unavailable">Cette prestation ne peut pas être réservée en ligne. '
                'Merci d’appeler le <a href="tel:+33956673009">09 56 67 30 09</a>.</p>')
