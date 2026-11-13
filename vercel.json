@@ -1,6 +1,11 @@
 {
   "redirects": [
     {
+      "source": "/conditions-generales-de-vente/index.html",
+      "destination": "/conditions-generales-de-vente/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {
