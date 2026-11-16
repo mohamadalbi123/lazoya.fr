@@ -1,0 +1,62 @@
+html.lazoya-promo-open { overflow: hidden; scrollbar-gutter: stable; }
+.christmas-promo {
+  box-sizing: border-box;
+  position: fixed;
+  inset: 0;
+  width: min(460px, calc(100% - 40px));
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: auto;
+  padding: 32px 30px 26px;
+  border: 1px solid #ded1c5;
+  border-radius: 16px;
+  color: var(--ink, #211b1b);
+  background: #fbf7f1;
+  box-shadow: 0 22px 72px rgba(35, 19, 23, .19);
+  text-align: center;
+  font-family: inherit;
+}
+.christmas-promo[open] { animation: christmas-promo-enter 300ms ease-out both; }
+.christmas-promo::backdrop { background: rgba(29, 20, 23, .4); animation: christmas-overlay-enter 300ms ease-out both; }
+.christmas-promo__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wine, #9c1534);
+  font: 30px/1 Arial, sans-serif;
+  cursor: pointer;
+}
+.christmas-promo__close:hover { background: #f0e6de; }
+.christmas-promo :focus-visible { outline: 2px solid var(--wine, #9c1534); outline-offset: 4px; }
+.christmas-promo__logo { display: block; width: 56px; height: 56px; margin: 0 auto 22px; border-radius: 4px; }
+.christmas-promo p { margin: 0; }
+.christmas-promo .christmas-promo__eyebrow { color: #8b7045; font-size: 10px; line-height: 1.5; letter-spacing: .14em; font-weight: 800; }
+.christmas-promo h2 { margin: 14px 0 18px; font-family: Georgia, "Times New Roman", serif; font-size: 31px; font-weight: 500; line-height: 1.15; letter-spacing: -.025em; }
+.christmas-promo #christmasPromoDescription { color: var(--soft-ink, #635b59); font-size: 15px; line-height: 1.65; }
+.christmas-promo .christmas-promo__sunday { margin: 20px 0 24px; color: var(--wine-dark, #741329); font-size: 14px; line-height: 1.55; font-weight: 650; }
+.christmas-promo .christmas-promo__booking { box-sizing: border-box; display: flex; width: 100%; min-height: 48px; align-items: center; justify-content: center; padding: 13px 12px; border-radius: 999px; background: var(--wine, #9c1534); color: white; font-size: 12px; line-height: 1.4; text-decoration: none; }
+.christmas-promo .christmas-promo__end { margin-top: 16px; color: var(--soft-ink, #635b59); font-size: 11px; line-height: 1.5; }
+@keyframes christmas-promo-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes christmas-overlay-enter { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 640px) {
+  /* A compact non-modal panel leaves the page accessible to mobile visitors. */
+  .christmas-promo { inset: auto 16px 16px; z-index: 60; width: auto; max-height: calc(100dvh - 32px); margin: 0; padding: 22px 22px 18px; }
+  .christmas-promo__logo { width: 40px; height: 40px; margin-bottom: 12px; }
+  .christmas-promo h2 { margin: 10px 0 12px; font-size: 23px; }
+  .christmas-promo #christmasPromoDescription { font-size: 13px; line-height: 1.55; }
+  .christmas-promo .christmas-promo__sunday { margin: 12px 0 16px; font-size: 13px; }
+  .christmas-promo .christmas-promo__end { margin-top: 12px; font-size: 10px; }
+  .christmas-promo .christmas-promo__eyebrow { font-size: 9px; letter-spacing: .09em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .christmas-promo[open], .christmas-promo::backdrop { animation: none; }
+}
