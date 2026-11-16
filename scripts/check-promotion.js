@@ -33,7 +33,8 @@ function browser(options = {}) {
   const mobile = { matches: !!options.mobile, addEventListener() {}, removeEventListener() {} };
   const controls = Object.fromEntries(["#bookingNoticeModal", "#closeBookingNotice", "#continueBooking"].map(id => [id, element("button")]));
   controls["#bookingNoticeModal"].hidden = true;
-  const document = { querySelector: selector => controls[selector], body: { dataset: {}, append(node) { nodes.push(node); } }, activeElement: previous, hidden: false,
+  const sundayNotice = options.sundayNotice ? { hidden: true } : null;
+  const document = { querySelector: selector => selector === "[data-christmas-sunday]" ? sundayNotice : controls[selector], body: { dataset: {}, append(node) { nodes.push(node); } }, activeElement: previous, hidden: false,
     documentElement: { classList: { add: s => classes.add(s), remove: s => classes.delete(s) } },
     querySelectorAll(selector) {
       if (selector === "a[data-planity-booking][href]") return [source];
@@ -80,7 +81,7 @@ function browser(options = {}) {
       for (const item of [...(listeners.get(name) || [])].filter(x => x.capture === capture)) item.fn(event);
     }
   }
-  return { nodes, timers, classes, local, session, events, source, advance, mobile, options, controls,
+  return { nodes, timers, classes, local, session, events, source, advance, mobile, options, controls, sundayNotice,
     get restored() { return focused; }, get disconnected() { return disconnected; },
     mutation: () => mutation?.(),
     dismiss() { nodes[0].closeButton.handlers.get("click")(); },
@@ -120,3 +121,17 @@ for (const consent of [{ analytics: false, marketing: false }, { analytics: true
   assert.equal(home.events.filter(x => x[1] === "booking_intent").length, consent.analytics ? 1 : 0);
 }
 console.log("Homepage integration passed: popup CTA bypasses only the booking notice and uses the unchanged consent-gated tracking once.");
+
+const sunday = browser();sunday.advance(3000);
+assert.ok(sunday.nodes[0].innerHTML.includes("Le dimanche : coiffure et coloration uniquement, sur rendez-vous !"));
+console.log("Sunday announcement verified: hair and colouring only, by appointment; no opening hours invented.");
+
+const notice = browser({ sundayNotice: true, local: { "lazoya.christmas2026.dismissedAt": String(Date.parse("2026-11-16T11:00:00Z")) } });
+assert.equal(notice.sundayNotice.hidden, false);
+assert.equal(notice.nodes.length, 0);
+const expiredNotice = browser({ sundayNotice: true, date: "2026-12-31T22:59:59Z" });
+assert.equal(expiredNotice.sundayNotice.hidden, false);
+expiredNotice.advance(1000);
+assert.equal(expiredNotice.sundayNotice.hidden, true);
+assert.equal(browser({ sundayNotice: true, date: "2026-11-14T12:00:00Z" }).sundayNotice.hidden, true);
+console.log("Dated Sunday hours exception survives popup dismissal and hides outside the Paris campaign dates.");

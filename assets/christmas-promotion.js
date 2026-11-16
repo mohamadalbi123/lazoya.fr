@@ -17,6 +17,18 @@
     const day = `${value("year")}-${value("month")}-${value("day")}`;
     return day >= "2026-11-15" && day <= "2026-12-31";
   }
+  // Show the dated Sunday exception beside the usual hours, independently of popup dismissal.
+  const sundayNotice = document.querySelector("[data-christmas-sunday]");
+  if (sundayNotice) {
+    let noticeTimer;
+    const updateNotice = () => {
+      sundayNotice.hidden = !inSeason();
+      if (!sundayNotice.hidden) noticeTimer = window.setTimeout(updateNotice, Math.min(expiresAt - Date.now(), 2147483647));
+    };
+    updateNotice();
+    window.addEventListener("pagehide", () => window.clearTimeout(noticeTimer));
+    window.addEventListener("pageshow", event => { if (event.persisted) updateNotice(); });
+  }
   function read(storage, key) {
     try { return window[storage].getItem(key); } catch { return null; }
   }
@@ -154,7 +166,7 @@
       <p class="christmas-promo__eyebrow">OFFRE EXCLUSIVE DE FIN D'ANNÉE</p>
       <h2 id="christmasPromoTitle">-10 % SUR LA COIFFURE &amp; LA COLORATION</h2>
       <p id="christmasPromoDescription">Du 15 novembre au 31 décembre 2026, profitez de -10 % sur nos prestations de coiffure et coloration.</p>
-      <p class="christmas-promo__sunday">✨ Nous sommes aussi ouverts le dimanche !</p>
+      <p class="christmas-promo__sunday">✨ Le dimanche : coiffure et coloration uniquement, sur rendez-vous !</p>
       <a class="button primary christmas-promo__booking" data-planity-booking data-booking-notice-seen="true" target="_blank" rel="noreferrer">RÉSERVER MON RENDEZ-VOUS</a>
       <p class="christmas-promo__end">Offre valable jusqu'au 31 décembre 2026.</p>`;
     dialog.querySelector(".christmas-promo__booking").setAttribute("href", source.getAttribute("href"));

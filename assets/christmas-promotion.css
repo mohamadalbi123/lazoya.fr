@@ -60,3 +60,6 @@ html.lazoya-promo-open { overflow: hidden; scrollbar-gutter: stable; }
 @media (prefers-reduced-motion: reduce) {
   .christmas-promo[open], .christmas-promo::backdrop { animation: none; }
 }
+
+.christmas-sunday-notice { margin: 16px 0; color: var(--wine-dark, #741329); font-size: 14px; line-height: 1.65; }
+.christmas-sunday-notice[hidden] { display: none; }
