@@ -123,7 +123,7 @@ for (const consent of [{ analytics: false, marketing: false }, { analytics: true
 console.log("Homepage integration passed: popup CTA bypasses only the booking notice and uses the unchanged consent-gated tracking once.");
 
 const sunday = browser();sunday.advance(3000);
-assert.ok(sunday.nodes[0].innerHTML.includes("Le dimanche : coiffure et coloration uniquement, sur rendez-vous !"));
+assert.ok(sunday.nodes[0].innerHTML.includes("Le dimanche : coiffure et coloration uniquement, sur rendez-vous, jusqu’au 31 décembre 2026 !"));
 console.log("Sunday announcement verified: hair and colouring only, by appointment; no opening hours invented.");
 
 const notice = browser({ sundayNotice: true, local: { "lazoya.christmas2026.dismissedAt": String(Date.parse("2026-11-16T11:00:00Z")) } });
@@ -135,3 +135,18 @@ expiredNotice.advance(1000);
 assert.equal(expiredNotice.sundayNotice.hidden, true);
 assert.equal(browser({ sundayNotice: true, date: "2026-11-14T12:00:00Z" }).sundayNotice.hidden, true);
 console.log("Dated Sunday hours exception survives popup dismissal and hides outside the Paris campaign dates.");
+
+const november = browser({ date: "2026-11-30T22:59:55Z", sundayNotice: true });
+november.advance(3000);
+assert.ok(november.nodes[0].innerHTML.includes("Du 15 au 30 novembre 2026"));
+assert.ok(november.nodes[0].innerHTML.includes("-10 %"));
+november.advance(2000);
+assert.equal(november.nodes[0].open, false, "An open discount popup closes at midnight Paris on 1 December");
+assert.equal(november.sundayNotice.hidden, false, "Sunday exception continues through December");
+const december = browser({ date: "2026-11-30T23:00:00Z" });
+december.advance(3000);
+assert.ok(!december.nodes[0].innerHTML.includes("-10 %"));
+assert.ok(december.nodes[0].innerHTML.includes("VOTRE RENDEZ-VOUS DU DIMANCHE"));
+assert.ok(december.nodes[0].innerHTML.includes("31 décembre 2026"));
+assert.equal(december.ads().length, 0);
+console.log("Separate dates verified: discount ends 30 November Paris; Sunday-only announcement continues through 31 December.");
