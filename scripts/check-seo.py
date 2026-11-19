@@ -69,6 +69,17 @@ def check():
 
     entities = {}
     for url, page in pages.items():
+        # The interactive diagnostic keeps its existing UI and consent flow;
+        # it is not one of the generated service/booking landing pages below.
+        if url == ORIGIN + "/diagnostique/":
+            assert sum(tag == "title" for tag, _ in page.tags) == 1 and page.title.strip(), url
+            assert len(page.meta("description")) == 1 and page.meta("description")[0], url
+            assert page.meta("robots") == ["index, follow"], url
+            assert not any("noindex" in value.lower() for value in page.meta("googlebot")), url
+            canonical = [a.get("href") for tag, a in page.tags if tag == "link" and a.get("rel") == "canonical"]
+            assert canonical == [url], (url, canonical)
+            assert any(tag == "html" and a.get("lang") == "fr" for tag, a in page.tags), url
+            continue
         assert sum(tag == "title" for tag, _ in page.tags) == 1, url
         assert page.title.strip(), url
         assert len(page.meta("description")) == 1 and page.meta("description")[0], url
