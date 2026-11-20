@@ -42,8 +42,7 @@ html.lazoya-promo-open { overflow: hidden; scrollbar-gutter: stable; }
 .christmas-promo .christmas-promo__eyebrow { color: #8b7045; font-size: 10px; line-height: 1.5; letter-spacing: .14em; font-weight: 800; }
 .christmas-promo h2 { margin: 14px 0 18px; font-family: Georgia, "Times New Roman", serif; font-size: 31px; font-weight: 500; line-height: 1.15; letter-spacing: -.025em; }
 .christmas-promo #christmasPromoDescription { color: var(--soft-ink, #635b59); font-size: 15px; line-height: 1.65; }
-.christmas-promo .christmas-promo__sunday { margin: 20px 0 24px; color: var(--wine-dark, #741329); font-size: 14px; line-height: 1.55; font-weight: 650; }
-.christmas-promo .christmas-promo__booking { box-sizing: border-box; display: flex; width: 100%; min-height: 48px; align-items: center; justify-content: center; padding: 13px 12px; border-radius: 999px; background: var(--wine, #9c1534); color: white; font-size: 12px; line-height: 1.4; text-decoration: none; }
+.christmas-promo .christmas-promo__booking { box-sizing: border-box; display: flex; width: 100%; min-height: 48px; margin-top: 24px; align-items: center; justify-content: center; padding: 13px 12px; border-radius: 999px; background: var(--wine, #9c1534); color: white; font-size: 12px; line-height: 1.4; text-decoration: none; }
 .christmas-promo .christmas-promo__end { margin-top: 16px; color: var(--soft-ink, #635b59); font-size: 11px; line-height: 1.5; }
 @keyframes christmas-promo-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes christmas-overlay-enter { from { opacity: 0; } to { opacity: 1; } }
@@ -53,13 +52,10 @@ html.lazoya-promo-open { overflow: hidden; scrollbar-gutter: stable; }
   .christmas-promo__logo { width: 40px; height: 40px; margin-bottom: 12px; }
   .christmas-promo h2 { margin: 10px 0 12px; font-size: 23px; }
   .christmas-promo #christmasPromoDescription { font-size: 13px; line-height: 1.55; }
-  .christmas-promo .christmas-promo__sunday { margin: 12px 0 16px; font-size: 13px; }
+  .christmas-promo .christmas-promo__booking { margin-top: 16px; }
   .christmas-promo .christmas-promo__end { margin-top: 12px; font-size: 10px; }
   .christmas-promo .christmas-promo__eyebrow { font-size: 9px; letter-spacing: .09em; }
 }
 @media (prefers-reduced-motion: reduce) {
   .christmas-promo[open], .christmas-promo::backdrop { animation: none; }
 }
-
-.christmas-sunday-notice { margin: 16px 0; color: var(--wine-dark, #741329); font-size: 14px; line-height: 1.65; }
-.christmas-sunday-notice[hidden] { display: none; }

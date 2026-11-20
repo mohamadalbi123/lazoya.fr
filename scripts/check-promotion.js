@@ -33,8 +33,7 @@ function browser(options = {}) {
   const mobile = { matches: !!options.mobile, addEventListener() {}, removeEventListener() {} };
   const controls = Object.fromEntries(["#bookingNoticeModal", "#closeBookingNotice", "#continueBooking"].map(id => [id, element("button")]));
   controls["#bookingNoticeModal"].hidden = true;
-  const sundayNotice = options.sundayNotice ? { hidden: true } : null;
-  const document = { querySelector: selector => selector === "[data-christmas-sunday]" ? sundayNotice : controls[selector], body: { dataset: {}, append(node) { nodes.push(node); } }, activeElement: previous, hidden: false,
+  const document = { querySelector: selector => controls[selector], body: { dataset: {}, append(node) { nodes.push(node); } }, activeElement: previous, hidden: false,
     documentElement: { classList: { add: s => classes.add(s), remove: s => classes.delete(s) } },
     querySelectorAll(selector) {
       if (selector === "a[data-planity-booking][href]") return [source];
@@ -81,7 +80,7 @@ function browser(options = {}) {
       for (const item of [...(listeners.get(name) || [])].filter(x => x.capture === capture)) item.fn(event);
     }
   }
-  return { nodes, timers, classes, local, session, events, source, advance, mobile, options, controls, sundayNotice,
+  return { nodes, timers, classes, local, session, events, source, advance, mobile, options, controls,
     get restored() { return focused; }, get disconnected() { return disconnected; },
     mutation: () => mutation?.(),
     dismiss() { nodes[0].closeButton.handlers.get("click")(); },
@@ -111,7 +110,7 @@ for (const options of [{ pathname: "/reservation/" }, { pathname: "/diagnostique
 for (const options of [{ local: { [dismissal]: String(now - week) } }, { date: "2026-11-14T23:00:00Z" }, { storageFails: true }]) {
   const t = browser(options);t.advance(3000);assert.equal(t.nodes.length, 1, JSON.stringify(options));
 }
-const expiry = browser({ date: "2026-12-31T22:59:55Z" });expiry.advance(3000);assert.equal(expiry.nodes[0].open, true);expiry.advance(2000);assert.equal(expiry.nodes[0].open, false);assert.equal(expiry.timers.size, 0);
+const expiry = browser({ date: "2026-11-30T22:59:55Z" });expiry.advance(3000);assert.equal(expiry.nodes[0].open, true);expiry.advance(2000);assert.equal(expiry.nodes[0].open, false);assert.equal(expiry.timers.size, 0);
 console.log("Promotion checks passed: 3-second delay, Paris date boundaries/automatic expiry, 7-day persistence, session navigation, cookie priority, mobile panel, close/outside/Escape, focus restoration, cleanup and one existing Ads event on booking only. No network requests made.");
 
 for (const consent of [{ analytics: false, marketing: false }, { analytics: true, marketing: false }, { analytics: false, marketing: true }, { analytics: true, marketing: true }]) {
@@ -122,31 +121,19 @@ for (const consent of [{ analytics: false, marketing: false }, { analytics: true
 }
 console.log("Homepage integration passed: popup CTA bypasses only the booking notice and uses the unchanged consent-gated tracking once.");
 
-const sunday = browser();sunday.advance(3000);
-assert.ok(sunday.nodes[0].innerHTML.includes("Le dimanche : coiffure et coloration uniquement, sur rendez-vous, jusqu’au 31 décembre 2026 !"));
-console.log("Sunday announcement verified: hair and colouring only, by appointment; no opening hours invented.");
-
-const notice = browser({ sundayNotice: true, local: { "lazoya.christmas2026.dismissedAt": String(Date.parse("2026-11-16T11:00:00Z")) } });
-assert.equal(notice.sundayNotice.hidden, false);
-assert.equal(notice.nodes.length, 0);
-const expiredNotice = browser({ sundayNotice: true, date: "2026-12-31T22:59:59Z" });
-assert.equal(expiredNotice.sundayNotice.hidden, false);
-expiredNotice.advance(1000);
-assert.equal(expiredNotice.sundayNotice.hidden, true);
-assert.equal(browser({ sundayNotice: true, date: "2026-11-14T12:00:00Z" }).sundayNotice.hidden, true);
-console.log("Dated Sunday hours exception survives popup dismissal and hides outside the Paris campaign dates.");
-
-const november = browser({ date: "2026-11-30T22:59:55Z", sundayNotice: true });
+const november = browser({ date: "2026-11-30T22:59:55Z" });
 november.advance(3000);
 assert.ok(november.nodes[0].innerHTML.includes("Du 15 au 30 novembre 2026"));
 assert.ok(november.nodes[0].innerHTML.includes("-10 %"));
+assert.ok(!/dimanche|sunday/i.test(november.nodes[0].innerHTML));
 november.advance(2000);
-assert.equal(november.nodes[0].open, false, "An open discount popup closes at midnight Paris on 1 December");
-assert.equal(november.sundayNotice.hidden, false, "Sunday exception continues through December");
-const december = browser({ date: "2026-11-30T23:00:00Z" });
-december.advance(3000);
-assert.ok(!december.nodes[0].innerHTML.includes("-10 %"));
-assert.ok(december.nodes[0].innerHTML.includes("VOTRE RENDEZ-VOUS DU DIMANCHE"));
-assert.ok(december.nodes[0].innerHTML.includes("31 décembre 2026"));
-assert.equal(december.ads().length, 0);
-console.log("Separate dates verified: discount ends 30 November Paris; Sunday-only announcement continues through 31 December.");
+assert.equal(november.nodes[0].open, false, "Discount popup closes at midnight Paris on 1 December");
+for (const date of ["2026-11-30T23:00:00Z", "2026-12-15T12:00:00Z"]) {
+  const december = browser({ date });december.advance(4000);
+  assert.equal(december.nodes.length, 0, "No December Sunday-opening popup");
+  assert.equal(december.timers.size, 0);
+}
+const homepage = fs.readFileSync(path.join(root, "index.html"), "utf8");
+assert.ok(!homepage.includes("data-christmas-sunday"));
+assert.ok(homepage.includes("Dimanche & lundi"));
+console.log("Sunday announcement removed; November discount preserved and expires at midnight Paris on 1 December; no December popup.");

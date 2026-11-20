@@ -7,8 +7,7 @@
   const sessionKey = "lazoya.christmas2026.seenAt";
   const bookingKey = "lazoya.christmas2026.bookingStarted";
   const week = 7 * 24 * 60 * 60 * 1000;
-  const discountExpiresAt = Date.parse("2026-11-30T23:00:00Z"); // 1 December, midnight in Paris.
-  const expiresAt = Date.parse("2026-12-31T23:00:00Z"); // 1 January, midnight in Paris.
+  const expiresAt = Date.parse("2026-11-30T23:00:00Z"); // 1 December, midnight in Paris.
   const parisDate = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit"
   });
@@ -16,19 +15,7 @@
     const parts = parisDate.formatToParts(new Date());
     const value = type => parts.find(part => part.type === type).value;
     const day = `${value("year")}-${value("month")}-${value("day")}`;
-    return day >= "2026-11-15" && day <= "2026-12-31";
-  }
-  // Show the dated Sunday exception beside the usual hours, independently of popup dismissal.
-  const sundayNotice = document.querySelector("[data-christmas-sunday]");
-  if (sundayNotice) {
-    let noticeTimer;
-    const updateNotice = () => {
-      sundayNotice.hidden = !inSeason();
-      if (!sundayNotice.hidden) noticeTimer = window.setTimeout(updateNotice, Math.min(expiresAt - Date.now(), 2147483647));
-    };
-    updateNotice();
-    window.addEventListener("pagehide", () => window.clearTimeout(noticeTimer));
-    window.addEventListener("pageshow", event => { if (event.persisted) updateNotice(); });
+    return day >= "2026-11-15" && day <= "2026-11-30";
   }
   function read(storage, key) {
     try { return window[storage].getItem(key); } catch { return null; }
@@ -162,15 +149,13 @@
     dialog.className = "christmas-promo";
     dialog.setAttribute("aria-labelledby", "christmasPromoTitle");
     dialog.setAttribute("aria-describedby", "christmasPromoDescription");
-    const discountActive = Date.now() < discountExpiresAt;
     dialog.innerHTML = `<button class="christmas-promo__close" type="button" aria-label="Fermer l’offre de fin d’année" autofocus><span aria-hidden="true">×</span></button>
       <img class="christmas-promo__logo" src="/assets/lazoya-logo.png" alt="Lazoya" width="56" height="56" decoding="async">
       <p class="christmas-promo__eyebrow">OFFRE EXCLUSIVE DE FIN D'ANNÉE</p>
-      <h2 id="christmasPromoTitle">${discountActive ? "-10 % SUR LA COIFFURE &amp; LA COLORATION" : "VOTRE RENDEZ-VOUS DU DIMANCHE"}</h2>
-      <p id="christmasPromoDescription">${discountActive ? "Du 15 au 30 novembre 2026, profitez de -10 % sur nos prestations de coiffure et coloration." : "Jusqu’au 31 décembre 2026, profitez de nos ouvertures exceptionnelles le dimanche pour la coiffure et la coloration, sur rendez-vous."}</p>
-      <p class="christmas-promo__sunday">✨ Le dimanche : coiffure et coloration uniquement, sur rendez-vous, jusqu’au 31 décembre 2026 !</p>
+      <h2 id="christmasPromoTitle">-10 % SUR LA COIFFURE &amp; LA COLORATION</h2>
+      <p id="christmasPromoDescription">Du 15 au 30 novembre 2026, profitez de -10 % sur nos prestations de coiffure et coloration.</p>
       <a class="button primary christmas-promo__booking" data-planity-booking data-booking-notice-seen="true" target="_blank" rel="noreferrer">RÉSERVER MON RENDEZ-VOUS</a>
-      <p class="christmas-promo__end">${discountActive ? "Réduction valable jusqu’au 30 novembre 2026." : "Ouverture exceptionnelle jusqu’au 31 décembre 2026."}</p>`;
+      <p class="christmas-promo__end">Réduction valable jusqu’au 30 novembre 2026.</p>`;
     dialog.querySelector(".christmas-promo__booking").setAttribute("href", source.getAttribute("href"));
     dialog.querySelector(".christmas-promo__close").addEventListener("click", onClose);
     dialog.addEventListener("cancel", onCancel);
@@ -184,10 +169,8 @@
     timer = window.setTimeout(show, Math.max(300, readyAt - Date.now()));
   }
   function expire() {
-    if (dialog?.open && Date.now() >= discountExpiresAt && dialog.innerHTML.includes("-10 %")) { stop(false); return; }
     if (!inSeason()) { stop(false); return; }
-    const nextBoundary = Date.now() < discountExpiresAt ? discountExpiresAt : expiresAt;
-    expiryTimer = window.setTimeout(expire, Math.min(nextBoundary - Date.now(), 2147483647));
+    expiryTimer = window.setTimeout(expire, Math.min(expiresAt - Date.now(), 2147483647));
   }
   document.addEventListener("click", onClick, true);
   document.addEventListener("keydown", onKeydown);
