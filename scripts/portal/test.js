@@ -1,0 +1,28 @@
+// Integration tests use a separate schema and temporary Auth users. No emails are sent.
+const assert=require('node:assert/strict');const fs=require('node:fs');const crypto=require('node:crypto');
+const pg=require('pg');const original=pg.Client.prototype.query;pg.Client.prototype.query=function(sql,...args){if(typeof sql==='string')sql=sql.replace(/\bportal\./g,'portal_test.');return original.call(this,sql,...args);};
+const resendPath=require.resolve('resend');require(resendPath);require.cache[resendPath].exports={Resend:class{constructor(){this.emails={send:async()=>({data:{id:'test'}})};}}};
+const core=require('../../server/portal/core');const handler=require('../../api/portal');
+const created=[];let cases=0;
+async function call(action,user,body,origin=core.origin){const token=user?.token;const req={url:'/api/portal?action='+action,method:body===undefined?'GET':'POST',headers:{origin,'content-type':'application/json',cookie:token?'__Host-lazoya_portal='+token:'','x-vercel-forwarded-for':'portal-test'},body,socket:{remoteAddress:'127.0.0.1'}};const res={headers:{},setHeader(k,v){this.headers[k]=v},end(s){this.body=s?JSON.parse(s):null}};await handler(req,res);return res;}
+async function expect(action,user,body,status=200){const r=await call(action,user,body);assert.equal(r.statusCode,status,action+': '+JSON.stringify(r.body));cases++;return r;}
+(async()=>{
+ let sql=fs.readFileSync('db/portal.sql','utf8').replace(/\bportal\b/g,'portal_test');sql=sql.replace(/INSERT INTO storage\.buckets[\s\S]*?ON CONFLICT\(id\) DO NOTHING;/,'');await core.db().query(sql);
+ const people={};for(const role of ['admin','equipe','partenaire']){const email=role==='admin'?'mohalbi123@hotmail.com':`test-${crypto.randomUUID()}@example.com`;const authEmail=`test-${crypto.randomUUID()}@example.com`;const pass=crypto.randomBytes(24).toString('base64url');const {data,error}=await core.supa().auth.admin.createUser({email:authEmail,password:pass,email_confirm:true});if(error)throw new Error('Test identity creation failed');created.push(data.user.id);const user={id:data.user.id,name:'Test '+role,email:role==='admin'?email:authEmail,role,pass,authEmail,token:crypto.randomBytes(32).toString('hex')};await core.query('INSERT INTO portal.users(id,name,email,role) VALUES($1,$2,$3,$4)',[user.id,user.name,user.email,role]);await core.query("INSERT INTO portal.sessions(hash,user_id,expires_at) VALUES($1,$2,now()+interval '1 hour')",[core.hash(user.token),user.id]);people[role]=user;}
+ const {admin,equipe,partenaire}=people;
+ await expect('state',null,undefined,401);
+ for(const u of [admin,equipe,partenaire]){const r=await expect('state',u);assert.equal(r.body.user.role,u.role);if(u.role==='partenaire')assert.equal(r.body.versions,undefined);if(u.role==='equipe')assert.equal(r.body.contracts,undefined);}
+ await expect('users',equipe,{name:'Bad'},403);await expect('draft',partenaire,{content:'bad'},403);await expect('acknowledge',partenaire,{confirm:true,version:1},403);
+ const csrf=await call('category',admin,{name:'Bad'},'https://evil.example');assert.equal(csrf.statusCode,403);cases++;
+ await expect('category',admin,{name:'Formation de test'});const st=(await expect('state',admin)).body;const cat=st.categories[0];await expect('video',admin,{category:cat.id,title:'Test',url:'https://evil.example/video'},400);
+ await expect('video',admin,{category:cat.id,title:'Formation test',url:'https://www.youtube.com/watch?v=test'});const video=(await expect('state',admin)).body.videos[0];await expect('complete',equipe,{id:video.id});await expect('complete',equipe,{id:video.id});assert.equal((await core.query('SELECT count(*) FROM portal.completions')).rows[0].count,'1');
+ await expect('draft',admin,{content:'# Hygiène\nTexte de test',revision:0});await expect('draft',admin,{content:'old',revision:0},409);await expect('publish',admin,{approved:false,founder:'Test',revision:1},400);await expect('publish',admin,{approved:true,founder:'Test',revision:1});await expect('acknowledge',equipe,{confirm:true,version:1});await expect('acknowledge',equipe,{confirm:true,version:1});assert.equal((await core.query('SELECT count(*) FROM portal.acknowledgments')).rows[0].count,'1');
+ await assert.rejects(core.query("UPDATE portal.versions SET content='tampered'"));cases++;
+ await expect('draft',admin,{content:'# Nouvelle version\nTest',revision:1});await expect('publish',admin,{approved:true,founder:'Test',revision:2});await expect('acknowledge',equipe,{confirm:true,version:1},409);
+ await expect('upload',equipe,{type:'application/pdf',size:50},403);await expect('upload',admin,{type:'text/html',size:50},400);
+ const login=await expect('login',null,{email:equipe.authEmail,password:equipe.pass});assert.match(login.headers['Set-Cookie'],/HttpOnly; Secure; SameSite=Strict/);const token=login.headers['Set-Cookie'].split(';')[0].split('=')[1];
+ if(process.env.PORTAL_BROWSER==='1')await require('./browser-test')(people);
+ await expect('users',admin,{id:equipe.id,role:'equipe',active:false});await expect('state',{token},undefined,401);await expect('login',null,{email:equipe.authEmail,password:equipe.pass},403);
+ await expect('logout',partenaire,{});await expect('state',partenaire,undefined,401);
+ console.log(`${cases} portal integration assertions passed: role isolation, CSRF, auth, revocation, training, immutable versions, acknowledgment, uploads.`);
+})().catch(e=>{console.error('Portal test failed:',e.message);process.exitCode=1;}).finally(async()=>{await core.db().query('DROP SCHEMA IF EXISTS portal_test CASCADE');for(const id of created)await core.supa().auth.admin.deleteUser(id);await core.db().end();});

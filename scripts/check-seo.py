@@ -60,6 +60,8 @@ def local_file(url):
 def check():
     pages = {}
     for file in ROOT.rglob("index.html"):
+        if "node_modules" in file.parts or "public" in file.relative_to(ROOT).parts:
+            continue
         page = Page(file.read_text())
         if any("noindex" in value for value in page.meta("robots")):
             continue
@@ -188,10 +190,14 @@ def check():
     # Static site: validate every JS asset and executable inline script as its build check.
     count = 0
     for script in ROOT.rglob("*.js"):
+        if "node_modules" in script.parts or "public" in script.relative_to(ROOT).parts:
+            continue
         subprocess.run(["node", "--check", str(script)], check=True, capture_output=True)
         count += 1
     with tempfile.TemporaryDirectory() as directory:
         for file in ROOT.rglob("index.html"):
+            if "node_modules" in file.parts or "public" in file.relative_to(ROOT).parts:
+                continue
             for attrs, source in re.findall(r"<script\b([^>]*)>(.*?)</script>", file.read_text(), re.S):
                 if "application/ld+json" in attrs or not source.strip():
                     continue

@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@supabase/supabase-js": "^2.119.2",
+    "pg": "^8.23.1",
+    "resend": "^6.39.0"
+  },
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build-site.js",
+    "test:portal": "node --env-file=.env.portal.local scripts/portal/test.js"
+  }
+}

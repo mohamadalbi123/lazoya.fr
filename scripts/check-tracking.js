@@ -127,7 +127,7 @@ console.log("Booking-only Ads checks passed: explicit opt-in, exact destination,
 
 // Keep the HTML booking opt-ins and non-booking exclusions covered by regression checks.
 let markedLinks = 0, reviewLinks = 0;
-for (const file of fs.readdirSync(root, { recursive: true }).filter(file => /(^|\/)index\.html$/.test(file) && !/(^|\/)(node_modules|\.git)\//.test(file))) {
+for (const file of fs.readdirSync(root, { recursive: true }).filter(file => /(^|\/)index\.html$/.test(file) && !/(^|\/)(node_modules|\.git|public)\//.test(file))) {
   const html = fs.readFileSync(path.join(root, file), "utf8");
   for (const [anchor] of html.matchAll(/<a\b[^>]*href="https:\/\/www\.planity\.com\/lazoya-17000-la-rochelle"[^>]*>[\s\S]*?<\/a>/g)) {
     const marked = /\bdata-planity-booking\b/.test(anchor);
