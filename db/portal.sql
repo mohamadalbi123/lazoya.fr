@@ -51,4 +51,5 @@ DO $$ DECLARE t text; BEGIN
 END $$;
 INSERT INTO portal.categories(name,position) VALUES ('Coiffure & Coloration',1),('Onglerie',2),('Soins du visage',3),('Massages',4),('Épilation',5),('Cils & Sourcils',6) ON CONFLICT DO NOTHING;
 INSERT INTO storage.buckets(id,name,public,file_size_limit,allowed_mime_types) VALUES('portal-private','portal-private',false,52428800,ARRAY['application/pdf','application/vnd.openxmlformats-officedocument.wordprocessingml.document','video/mp4','video/webm']) ON CONFLICT(id) DO NOTHING;
+UPDATE storage.buckets SET allowed_mime_types=ARRAY['application/pdf','application/vnd.openxmlformats-officedocument.wordprocessingml.document','video/mp4','video/webm'] WHERE id='portal-private';
 COMMIT;
