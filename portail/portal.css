@@ -87,6 +87,15 @@ button.small { padding: 8px 12px; }
 .user-row summary { color: var(--wine); font-size: 14px; font-weight: 700; cursor: pointer; }
 .user-row details form { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 14px; }
 .user-row details form .check, .user-row details form p, .user-row details form button { grid-column: 1 / -1; }
+.user-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 12px; }
+.user-card { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; align-items: start; min-height: 146px; padding: 18px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.user-card .user-avatar { width: 36px; height: 36px; }
+.user-card .user-details h3 { font-size: 18px; }
+.user-card .user-details p { overflow-wrap: anywhere; }
+.user-card .user-meta { margin-top: 8px; color: var(--wine); font-size: 13px; font-weight: 700; }
+.user-card .user-actions { grid-column: 1 / -1; justify-content: flex-start; align-self: end; padding-top: 13px; border-top: 1px solid var(--line); }
+button.danger { border-color: #8f2335; background: #fff; box-shadow: none; color: #8f2335; }
+button.danger:hover { background: #fff1f3; }
 .muted { color: var(--muted); font-size: 14px; }
 .empty { padding: 24px 0; color: var(--muted); }
 details { margin: 20px 0; }

@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS portal.contracts (id uuid PRIMARY KEY DEFAULT gen_ran
 CREATE TABLE IF NOT EXISTS portal.audit (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,actor uuid,action text NOT NULL,resource text,created_at timestamptz NOT NULL DEFAULT now());
 CREATE TABLE IF NOT EXISTS portal.mail (id uuid PRIMARY KEY DEFAULT gen_random_uuid(),dedupe text NOT NULL UNIQUE,recipient text NOT NULL,subject text NOT NULL,body text NOT NULL,created_at timestamptz NOT NULL DEFAULT now(),sent_at timestamptz,attempts integer NOT NULL DEFAULT 0,last_error text);
 CREATE TABLE IF NOT EXISTS portal.limits (key text PRIMARY KEY,hits integer NOT NULL DEFAULT 1,expires_at timestamptz NOT NULL);
-CREATE OR REPLACE FUNCTION portal.immutable() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'Archive immutable'; END $$;
+CREATE OR REPLACE FUNCTION portal.immutable() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF current_setting('portal.allow_hard_delete',true)='true' THEN RETURN OLD; END IF; RAISE EXCEPTION 'Archive immutable'; END $$;
 DO $$ DECLARE t text; BEGIN
  FOREACH t IN ARRAY ARRAY['versions','acknowledgments','contracts','audit'] LOOP
   IF NOT EXISTS(SELECT 1 FROM pg_trigger WHERE tgname='immutable_'||t AND tgrelid=('portal.'||t)::regclass) THEN
