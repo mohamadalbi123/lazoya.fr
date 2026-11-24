@@ -104,6 +104,18 @@ button.small { padding: 8px 12px; }
 .member-row .user-actions { grid-column: 1 / -1; justify-content: flex-start; padding: 2px 0 0 44px; }
 .notification-line { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 18px; padding: 14px 2px; color: var(--muted); font-size: 13px; }
 .notification-line button { padding: 8px 10px; font-size: 12px; }
+.signature-tracker { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+.signature-tracker-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 8px; }
+.signature-tracker-heading .eyebrow { margin: 0 0 4px; }
+.signature-tracker-heading h3 { margin: 0; font-size: 21px; }
+.signature-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+.signature-row:last-child { border-bottom: 0; }
+.signature-row strong, .signature-row small { display: block; }
+.signature-row small { margin-top: 3px; color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+.signature-row button { padding: 7px 10px; font-size: 12px; }
+.signature-state { padding: 5px 9px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.signature-state.signed { background: #e4f0e7; color: #245d37; }
+.signature-state.pending { background: #f5e2e7; color: #7c142b; }
 button.danger { border-color: #8f2335; background: #fff; box-shadow: none; color: #8f2335; }
 button.danger:hover { background: #fff1f3; }
 .muted { color: var(--muted); font-size: 14px; }
@@ -135,5 +147,5 @@ td, th { padding: 14px 10px; border-bottom: 1px solid var(--line); text-align: l
 .table-wrap { overflow-x: auto; }
 :focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
 @media (max-width: 850px) { .roster-grid { grid-template-columns: 1fr; } .invite-box form { grid-template-columns: repeat(2, minmax(0, 1fr)); } .invite-box form button { grid-column: 1 / -1; } }
-@media (max-width: 650px) { header { padding: 14px 18px; } .brand-logo { width: 48px; height: 48px; } .grid { grid-template-columns: 1fr; } main { margin-top: 32px; padding: 0 18px; } .panel, .card { padding: 22px; } .row { flex-direction: column; align-items: flex-start; gap: 12px; } .user-summary { grid-template-columns: 42px minmax(0, 1fr); } .user-actions { grid-column: 1 / -1; justify-content: flex-start; } .user-row details form, .invite-box form { grid-template-columns: 1fr; } .invite-box form button { grid-column: auto; } .notification-line { align-items: flex-start; flex-direction: column; } #identity { flex-direction: column; align-items: flex-end; gap: 8px; } .login { margin: 24px auto; } footer { padding: 28px 18px 20px; } .footer-grid { grid-template-columns: 1fr; gap: 20px; } .footer-links { justify-content: flex-start; } .footer-bottom { flex-direction: column; gap: 5px; } }
+@media (max-width: 650px) { header { padding: 14px 18px; } .brand-logo { width: 48px; height: 48px; } .grid { grid-template-columns: 1fr; } main { margin-top: 32px; padding: 0 18px; } .panel, .card { padding: 22px; } .row { flex-direction: column; align-items: flex-start; gap: 12px; } .user-summary { grid-template-columns: 42px minmax(0, 1fr); } .user-actions { grid-column: 1 / -1; justify-content: flex-start; } .user-row details form, .invite-box form { grid-template-columns: 1fr; } .invite-box form button { grid-column: auto; } .notification-line { align-items: flex-start; flex-direction: column; } .signature-tracker-heading, .signature-row { align-items: flex-start; } .signature-row { grid-template-columns: 1fr; gap: 8px; } #identity { flex-direction: column; align-items: flex-end; gap: 8px; } .login { margin: 24px auto; } footer { padding: 28px 18px 20px; } .footer-grid { grid-template-columns: 1fr; gap: 20px; } .footer-links { justify-content: flex-start; } .footer-bottom { flex-direction: column; gap: 5px; } }
 @media print { header, footer, .back, .actions, form, #notice, summary, .no-print { display: none !important; } body, main, .panel { margin: 0; padding: 0; border: 0; background: #fff; } .document { max-width: none; } .stamp { break-inside: avoid; } main > *:not(.print-target) { display: none !important; } .print-target { display: block !important; } }
