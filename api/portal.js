@@ -1,5 +1,4 @@
 const crypto=require('node:crypto');
-const PDFDocument=require('pdfkit');
 const {db,query,tx,supa,hash,fail,text,uuid,rate,audit,queue,flush,invitation,origin}=require('../server/portal/core');
 const cookieName='__Host-lazoya_portal';
 function cookie(req){const x=(req.headers.cookie||'').split(';').map(x=>x.trim()).find(x=>x.startsWith(cookieName+'='));return x?.slice(cookieName.length+1)||'';}
