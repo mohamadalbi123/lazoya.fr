@@ -17,7 +17,7 @@ async function state(u){const out={user:u};if(u.role==='admin'||u.role==='equipe
  out.categories=(await query('SELECT * FROM portal.categories ORDER BY position,name')).rows;
  out.videos=(await query('SELECT * FROM portal.videos WHERE NOT archived ORDER BY position,title')).rows;
  out.completions=(await query('SELECT * FROM portal.completions WHERE user_id=$1 OR $2',[u.id,u.role==='admin'])).rows;
- out.versions=(await query('SELECT * FROM portal.versions ORDER BY id DESC')).rows;
+ out.versions=(await query('SELECT * FROM portal.versions ORDER BY id DESC')).rows;if(u.role==='equipe')out.versions.forEach(v=>delete v.original_file_id);
  out.acknowledgments=(await query('SELECT * FROM portal.acknowledgments WHERE user_id=$1 OR $2',[u.id,u.role==='admin'])).rows;out.settings=(await query('SELECT founder_name,founder_title,founder_approved_at FROM portal.settings WHERE id=true')).rows[0];
  }if(u.role==='admin'||u.role==='partenaire')out.contracts=(await query('SELECT * FROM portal.contracts WHERE user_id=$1 OR $2 ORDER BY created_at DESC',[u.id,u.role==='admin'])).rows;
  if(u.role==='admin'){out.users=(await query('SELECT * FROM portal.users ORDER BY name')).rows;out.draft=(await query('SELECT * FROM portal.draft')).rows[0];out.pendingMail=Number((await query('SELECT count(*) FROM portal.mail WHERE sent_at IS NULL')).rows[0].count);}

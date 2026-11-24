@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@supabase/supabase-js": "^2.119.2",
-    "pdfkit": "^0.21.0",
+    "pdfkit": "^0.15.0",
     "pg": "^8.23.1",
     "resend": "^6.39.0"
   },
