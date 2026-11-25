@@ -79,10 +79,9 @@ button.small { padding: 8px 12px; }
 .invite-box form button { padding: 12px 14px; white-space: nowrap; }
 .roster-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
 .roster-card { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
-.roster-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin: 0; padding: 18px; border-bottom: 1px solid var(--line); background: #fffcfb; }
-.roster-heading .eyebrow { margin: 0 0 5px; }
-.roster-heading h2 { margin: 0; font-size: 22px; }
-.roster-count { display: grid; place-items: center; min-width: 30px; height: 30px; padding: 0 8px; border-radius: 50%; background: var(--wine-soft); color: var(--wine); font-size: 13px; font-weight: 700; }
+.roster-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin: 0; padding: 18px; background: var(--wine); color: #fff; }
+.roster-heading h2 { margin: 0; font-size: 22px; color: #fff; }
+.roster-count { display: grid; place-items: center; min-width: 30px; height: 30px; padding: 0 8px; border-radius: 50%; background: #fff; color: var(--wine); font-size: 13px; font-weight: 700; }
 .member-list { padding: 0 18px; }
 .member-row { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
 .member-row:last-child { border-bottom: 0; }
