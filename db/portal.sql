@@ -7,14 +7,14 @@ CREATE TABLE IF NOT EXISTS portal.users (
  created_at timestamptz NOT NULL DEFAULT now()
 );
 DROP INDEX IF EXISTS portal.sole_admin;
--- Two administrator identities explicitly authorized by the owner.
-DO $$ BEGIN IF NOT EXISTS(SELECT 1 FROM pg_constraint WHERE conname='approved_administrators' AND conrelid='portal.users'::regclass) THEN ALTER TABLE portal.users ADD CONSTRAINT approved_administrators CHECK(role <> 'admin' OR email IN ('lazoya2025@gmail.com','mohalbi123@hotmail.com')); END IF; END $$;
+-- Administrators create additional administrators through the secured portal only.
+ALTER TABLE portal.users DROP CONSTRAINT IF EXISTS approved_administrators;
 CREATE TABLE IF NOT EXISTS portal.sessions (hash text PRIMARY KEY,user_id uuid NOT NULL REFERENCES portal.users(id),expires_at timestamptz NOT NULL);
 CREATE TABLE IF NOT EXISTS portal.categories (id uuid PRIMARY KEY DEFAULT gen_random_uuid(),name text UNIQUE NOT NULL,position integer NOT NULL DEFAULT 0);
 CREATE TABLE IF NOT EXISTS portal.files (id uuid PRIMARY KEY DEFAULT gen_random_uuid(),path text UNIQUE NOT NULL,kind text NOT NULL CHECK(kind IN ('pdf','docx','video','signature','receipt')),created_by uuid NOT NULL REFERENCES portal.users(id),created_at timestamptz NOT NULL DEFAULT now());
 DO $$ BEGIN
   IF EXISTS(SELECT 1 FROM pg_constraint WHERE conname='files_kind_check' AND conrelid='portal.files'::regclass) THEN ALTER TABLE portal.files DROP CONSTRAINT files_kind_check; END IF;
-  ALTER TABLE portal.files ADD CONSTRAINT files_kind_check CHECK(kind IN ('pdf','docx','video','signature','receipt'));
+  ALTER TABLE portal.files ADD CONSTRAINT files_kind_check CHECK(kind IN ('pdf','docx','video','signature','receipt','contract_founder','contract_final'));
 END $$;
 CREATE TABLE IF NOT EXISTS portal.videos (id uuid PRIMARY KEY DEFAULT gen_random_uuid(),category_id uuid NOT NULL REFERENCES portal.categories(id),title text NOT NULL,description text NOT NULL DEFAULT '',url text,file_id uuid REFERENCES portal.files(id),position integer NOT NULL DEFAULT 0,archived boolean NOT NULL DEFAULT false,CHECK((url IS NULL)<>(file_id IS NULL)));
 CREATE TABLE IF NOT EXISTS portal.completions (user_id uuid REFERENCES portal.users(id),video_id uuid REFERENCES portal.videos(id),completed_at timestamptz NOT NULL DEFAULT now(),PRIMARY KEY(user_id,video_id));
@@ -38,6 +38,10 @@ ALTER TABLE portal.acknowledgments ADD COLUMN IF NOT EXISTS receipt_file_id uuid
 CREATE TABLE IF NOT EXISTS portal.settings (id boolean PRIMARY KEY DEFAULT true CHECK(id),founder_name text NOT NULL DEFAULT 'Anna Douaa Almaleh',founder_title text NOT NULL DEFAULT 'Fondatrice',founder_signature_path text,founder_approved_at timestamptz);
 INSERT INTO portal.settings(id) VALUES(true) ON CONFLICT DO NOTHING;
 CREATE TABLE IF NOT EXISTS portal.contracts (id uuid PRIMARY KEY DEFAULT gen_random_uuid(),user_id uuid NOT NULL REFERENCES portal.users(id),file_id uuid NOT NULL UNIQUE REFERENCES portal.files(id),title text NOT NULL,status text NOT NULL CHECK(status IN ('signed','proposed')),agreement_date date NOT NULL,created_at timestamptz NOT NULL DEFAULT now());
+ALTER TABLE portal.contracts ADD COLUMN IF NOT EXISTS founder_file_id uuid REFERENCES portal.files(id);
+ALTER TABLE portal.contracts ADD COLUMN IF NOT EXISTS founder_signed_at timestamptz;
+ALTER TABLE portal.contracts ADD COLUMN IF NOT EXISTS document_hash text;
+CREATE TABLE IF NOT EXISTS portal.contract_signatures (contract_id uuid PRIMARY KEY REFERENCES portal.contracts(id),partner_name text NOT NULL,partner_email text NOT NULL,signature_file_id uuid NOT NULL REFERENCES portal.files(id),final_file_id uuid NOT NULL REFERENCES portal.files(id),signed_at timestamptz NOT NULL DEFAULT now());
 CREATE TABLE IF NOT EXISTS portal.audit (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,actor uuid,action text NOT NULL,resource text,created_at timestamptz NOT NULL DEFAULT now());
 CREATE TABLE IF NOT EXISTS portal.mail (id uuid PRIMARY KEY DEFAULT gen_random_uuid(),dedupe text NOT NULL UNIQUE,recipient text NOT NULL,subject text NOT NULL,body text NOT NULL,created_at timestamptz NOT NULL DEFAULT now(),sent_at timestamptz,attempts integer NOT NULL DEFAULT 0,last_error text);
 CREATE TABLE IF NOT EXISTS portal.limits (key text PRIMARY KEY,hits integer NOT NULL DEFAULT 1,expires_at timestamptz NOT NULL);
