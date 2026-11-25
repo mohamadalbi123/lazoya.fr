@@ -52,7 +52,7 @@ async function run(req,res){
   if(action==='file'){
    const id=uuid(url.searchParams.get('id'));const f=(await query('SELECT * FROM portal.files WHERE id=$1',[id])).rows[0];if(!f)fail(404,'Document introuvable.');
    if(u.role!=='admin'){
-    const allowed=u.role==='partenaire'?(await query('SELECT 1 FROM portal.contracts WHERE file_id=$1 AND user_id=$2',[id,u.id])).rowCount:u.role==='equipe'?(await query('SELECT 1 FROM portal.videos WHERE file_id=$1 AND NOT archived UNION ALL SELECT 1 FROM portal.versions WHERE original_file_id=$1 OR pdf_file_id=$1 UNION ALL SELECT 1 FROM portal.acknowledgments WHERE receipt_file_id=$1 AND user_id=$2',[id,u.id])).rowCount:0;
+    const allowed=u.role==='partenaire'?(await query('SELECT 1 FROM portal.contracts WHERE file_id=$1 AND user_id=$2',[id,u.id])).rowCount:u.role==='equipe'?(await query('SELECT 1 FROM portal.videos WHERE file_id=$1 AND NOT archived UNION ALL SELECT 1 FROM portal.versions WHERE pdf_file_id=$1 UNION ALL SELECT 1 FROM portal.acknowledgments WHERE receipt_file_id=$1 AND user_id=$2',[id,u.id])).rowCount:0;
     if(!allowed)fail(403,'Document inaccessible.');
    }
    const headers={Authorization:`Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,apikey:process.env.SUPABASE_SERVICE_ROLE_KEY};if(req.headers.range)headers.Range=req.headers.range;
